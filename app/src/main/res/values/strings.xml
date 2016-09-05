@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">PUO</string>
+    <string name="login_email_hint">E-mail</string>
+    <string name="login_password_hint">Password</string>
+    <string name="login_btn_text">Login</string>
+    <string name="login_tv_talk_to_me">talk to me</string>
+    <string name="login_tv_register">Register</string>
+    <string name="register_name_hint">Name</string>
+    <string name="register_surname_hint">Surname</string>
+    <string name="register_username_hint">Username</string>
+    <string name="register_reEnterPass_hint">Re-Enter Password</string>
+    <string name="register_tv_text_register">Register</string>
+    <string name="register_btn_submit">Submit</string>
+</resources>
