@@ -36,9 +36,7 @@
         android:layout_height="30dp"
         android:id="@+id/imageView"
         android:src="@drawable/ic_word_game"
-        android:layout_marginRight="23dp"
-        android:layout_marginEnd="23dp"
-        android:layout_alignTop="@+id/textView"
+        android:layout_alignBottom="@+id/textView"
         android:layout_toLeftOf="@+id/textView"
         android:layout_toStartOf="@+id/textView" />
 
@@ -55,6 +53,7 @@
         android:layout_marginBottom="10dp">
 
         <ImageView
+            android:layout_weight="1"
             android:layout_width="130dp"
             android:layout_height="130dp"
             android:id="@+id/imageView2"
@@ -63,6 +62,7 @@
             android:layout_marginRight="10dp" />
 
         <ImageView
+            android:layout_weight="1"
             android:layout_width="130dp"
             android:layout_height="130dp"
             android:id="@+id/imageView3"
@@ -79,9 +79,11 @@
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
         android:gravity="center_horizontal"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="10dp"
+        android:id="@+id/linearLayout2">
 
         <ImageView
+            android:layout_weight="1"
             android:layout_width="130dp"
             android:layout_height="130dp"
             android:id="@+id/imageView4"
@@ -90,6 +92,7 @@
             android:layout_marginRight="10dp" />
 
         <ImageView
+            android:layout_weight="1"
             android:layout_width="130dp"
             android:layout_height="130dp"
             android:id="@+id/imageView5"
@@ -98,5 +101,40 @@
             android:layout_marginLeft="10dp" />
 
     </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/linearLayout2"
+        android:layout_centerHorizontal="true">
+
+        <ImageView
+            android:layout_width="250dp"
+            android:layout_height="50dp"
+            android:id="@+id/imageView6"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/rect_bar" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Mixed Game"
+            android:id="@+id/textView2"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/background_floating_material_light"
+            android:textSize="28dp" />
+    </RelativeLayout>
+
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:id="@+id/imageView7"
+        android:src="@drawable/ic_word_game"
+        android:layout_alignBottom="@+id/textView"
+        android:layout_toRightOf="@+id/textView"
+        android:layout_toEndOf="@+id/textView" />
 
 </RelativeLayout>
