@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">PUO</string>
+    <string name="login_email_hint">E-mail</string>
+    <string name="login_password_hint">Password</string>
+    <string name="login_btn_text">Login</string>
+    <string name="login_tv_talk_to_me">talk to me</string>
+    <string name="login_tv_register">Register</string>
+</resources>

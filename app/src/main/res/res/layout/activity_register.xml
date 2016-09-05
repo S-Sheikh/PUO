@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="za.ac.cut.puo.RegisterActivity"
+    android:gravity="center_horizontal"
+    android:padding="15dp"
+    android:paddingRight="35dp"
+    android:paddingLeft="35dp">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal">
+
+        <ImageView
+            android:layout_width="@dimen/login_iv_puo_width"
+            android:layout_height="@dimen/login_iv_puo_height"
+            android:src="@drawable/logo_puo"
+            android:id="@+id/iv_register_puo_logo" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
+        android:gravity="center_horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="New Text"
+            android:id="@+id/tv_register_name" />
+    </LinearLayout>
+</LinearLayout>
