@@ -12,7 +12,7 @@
     <!-- Game Colors -->
     <color name="gColorWords">#b92d00</color>
     <color name="gColorTime">#04bb04</color>
-    <color name="gColorPoints">#F67200</color>
+    <color name="gColorPoints">#f67200</color>
     <color name="gColorScore">#ba2e00</color>
     <!-- Game Colors -->
 </resources>

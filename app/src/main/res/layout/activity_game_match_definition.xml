@@ -27,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Parts of Speech"
+            android:text="Match Definition"
             android:id="@+id/textView3"
             android:textColor="@android:color/primary_text_dark"
             android:layout_centerVertical="true"
