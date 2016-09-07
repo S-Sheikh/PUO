@@ -8,6 +8,7 @@
     <color name="colorSecondaryText">#757575</color>
     <color name="colorIcons">#ffffff</color>
     <color name="colorDivider">#bdbdbd</color>
+    <color name="Red">#FF0000</color>
 
     <!-- Game Colors -->
     <color name="gColorWords">#b92d00</color>

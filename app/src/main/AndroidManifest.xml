@@ -4,11 +4,11 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/logo_puo"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".GamePartsOfSpeech">
+        <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -16,7 +16,10 @@
             </intent-filter>
         </activity>
         <!-- <activity android:name=".GamePartsOfSpeech"></activity> -->
-        <activity android:name=".GameMatchDefinition"></activity>
+        <activity android:name=".GameMatchDefinition" />
+        <activity android:name=".RegisterActivity" />
+        <activity android:name=".GameWhatLanguage" />
+        <activity android:name=".GameFillInTheBlank"></activity>
     </application>
 
 </manifest>

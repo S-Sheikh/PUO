@@ -11,4 +11,5 @@
     <string name="register_reEnterPass_hint">Re-Enter Password</string>
     <string name="register_tv_text_register">Register</string>
     <string name="register_btn_submit">Submit</string>
+    <string name="txt_input_layout">Please fill in all fields</string>
 </resources>
