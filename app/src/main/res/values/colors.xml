@@ -8,12 +8,20 @@
     <color name="colorSecondaryText">#757575</color>
     <color name="colorIcons">#ffffff</color>
     <color name="colorDivider">#bdbdbd</color>
-    <color name="Red">#FF0000</color>
+    <color name="Red">#ff0000</color>
 
     <!-- Game Colors -->
-    <color name="gColorWords">#b92d00</color>
+    <color name="gColorWords">#B92D00</color>
     <color name="gColorTime">#04bb04</color>
     <color name="gColorPoints">#f67200</color>
     <color name="gColorScore">#ba2e00</color>
     <!-- Game Colors -->
+
+    <!-- Game Button Colors -->
+    <color name="gColorButtonOne">#00BA00</color>
+    <color name="gColorButtonTwo">#757575</color>
+    <color name="gColorButtonThree">#191919</color>
+    <color name="gColorButtonFour">#00FFFF</color>
+    <!-- Game Button Colors -->
+
 </resources>
