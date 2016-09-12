@@ -8,6 +8,7 @@
     <color name="colorSecondaryText">#757575</color>
     <color name="colorIcons">#ffffff</color>
     <color name="colorDivider">#bdbdbd</color>
+<<<<<<< HEAD
 
 
     <!-- Game Colors -->
@@ -41,4 +42,7 @@
         <item>@color/gLime</item>
         <item>@color/gGreen</item>
     </integer-array>
+=======
+    <color name="Red">#FF0000</color>
+>>>>>>> Test Push layouts
 </resources>

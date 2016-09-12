@@ -12,41 +12,28 @@
     <string name="register_tv_text_register">Register</string>
     <string name="register_btn_submit">Submit</string>
     <string name="txt_input_layout">Please fill in all fields</string>
-    <string name="title_activity_word_treasure">Word Treasure</string>
-    <string name="tv_label_sort">Sort</string>
-    <string name="tv_label_language">Language</string>
-    <string name="tv_label_part_of_speech">Part of speech</string>
-
-    <!-- sort_filter_bar spinner entries -->
-    <string-array name="entries_ordering">
-        <item>By date</item>
-        <item>Alphabetically</item>
-    </string-array>
-
-    <string-array name="entries_part_of_speech">
-        <item>All</item>
-        <item>Noun</item>
-        <item>Pronoun</item>
-        <item>Verb</item>
-        <item>Adverb</item>
-        <item>Adjective</item>
-        <item>Preposition</item>
-        <item>Conjunction</item>
-        <item>Determiner</item>
-    </string-array>
-
-    <string-array name="entries_language">
-        <item>All</item>
-        <item>isiXhosa</item>
-        <item>isiZulu</item>
-        <item>isiNdebele</item>
-        <item>Sepedi</item>
-        <item>Sesotho</item>
-        <item>Setswana</item>
-        <item>SiSwati</item>
-        <item>Tshivenda</item>
-        <item>Xitsonga</item>
-    </string-array>
-
-    <string name="action_settings">Settings</string>
+    <string name="add_picture">Add Picture</string>
+    <string name="cell_phone">Cell Phone</string>
+    <string name="roles_hint">Role</string>
+    <string name="location_hint">Location</string>
+    <string name="menu_save">Save</string>
+    <string name="collector">Collector</string>
+    <string name="specialist">Specialist</string>
+    <string name="admin">Administrator</string>
+    <string name="spRole_hint">Role</string>
+    <string name="spLocationHint">Location</string>
+    <string name="home_menu_item1">Add Word</string>
+    <string name="home_menu_item2">Profile</string>
+    <string name="tv_recent_words">Recent Words</string>
+    <array name="role_items">
+        <item>Collector</item>
+        <item>Specialist</item>
+        <item>Administrator</item>
+    </array>
+    <array name="location_items">
+        <item>Street Address</item>
+        <item>City</item>
+        <item>Province</item>
+        <item>Code</item>
+    </array>
 </resources>

@@ -10,28 +10,19 @@
         <item name="colorControlActivated">@color/colorAccent</item>
         <item name="colorControlHighlight">@color/colorAccent</item>
     </style>
-
-    <style name="counterText">
-        <item name="android:textColor">#aa5353cc</item>
+    <style name="Custom" parent="android:Theme.DeviceDefault.Dialog">
+        <item name="DialogTitleAppearance">@android:style/TextAppearance.Medium</item>
+        <item name="DialogTitleText">Please Wait</item>
+        <item name="DialogSpotColor">@color/colorPrimary</item>
+        <item name="DialogSpotCount">4</item>
+    </style>
+    <style name="LinearProgress" parent="Theme.AppCompat.Light">
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+    <style name="RatingBar" parent="@android:style/Widget.RatingBar">
+        <item name="android:progressDrawable">@drawable/ratingstar</item>
+        <item name="android:minHeight">22dip</item>
+        <item name="android:maxHeight">22dip</item>
     </style>
 
-    <style name="counterOverride">
-        <item name="android:textColor">#ff0000</item>
-    </style>
-
-    <style name="divider">
-        <item name="android:layout_width">1dip</item>
-        <item name="android:layout_height">40dip</item>
-        <item name="android:layout_marginRight">@dimen/divider_margin</item>
-        <item name="android:background">@android:color/darker_gray</item>
-    </style>
-
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
-    <style name="WordRatingBar" parent="Widget.AppCompat.RatingBar.Indicator">
-        <item name="android:maxHeight">18dip</item>
-        <item name="android:minHeight">18dip</item>
-    </style>
 </resources>

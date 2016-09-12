@@ -2,10 +2,8 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 24
-    buildToolsVersion '24.0.2'
-    dataBinding {
-        enabled = false
-    }
+    buildToolsVersion "24.0.1"
+
     defaultConfig {
         applicationId "za.ac.cut.puo"
         minSdkVersion 16
@@ -19,20 +17,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    productFlavors {
-    }
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:24.2.0'
     compile 'com.android.support:design:24.2.0'
     compile 'com.android.support:support-core-utils:24.2.0'
-    compile 'com.android.support:support-v4:24.2.0'
-    compile 'com.android.support:cardview-v7:24.2.0'
-    compile 'com.android.support:recyclerview-v7:24.2.0'
-    compile 'com.google.android.gms:play-services-ads:9.4.0'
-    compile 'com.google.android.gms:play-services-maps:9.4.0'
-    compile 'de.hdodenhof:circleimageview:2.1.0'
+    compile 'com.github.d-max:spots-dialog:0.4@aar'
+    compile 'de.hdodenhof:circleimageview:1.2.1'
+    compile files ('libs/backendless.jar')
 }
