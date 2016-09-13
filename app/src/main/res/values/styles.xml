@@ -46,4 +46,20 @@
         <!--<item name="android:textColorSecondary">@color/abc_secondary_text_material_light</item>-->
     </style>
 
+    <style name="divider">
+        <item name="android:layout_width">1dip</item>
+        <item name="android:layout_height">40dip</item>
+        <item name="android:layout_marginRight">@dimen/divider_margin</item>
+        <item name="android:background">@android:color/darker_gray</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="WordRatingBar" parent="Widget.AppCompat.RatingBar.Indicator">
+        <item name="android:maxHeight">18dip</item>
+        <item name="android:minHeight">18dip</item>
+    </style>
+
 </resources>
