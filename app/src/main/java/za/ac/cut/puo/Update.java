@@ -76,6 +76,7 @@ public class Update extends AppCompatActivity {
                             user.setProperty("cell", etCellPhone.getText().toString().trim());
                             user.setProperty("role", spRoles.getSelectedItem().toString().trim());
                             user.setProperty("location", spLocation.getSelectedItem().toString().trim());
+                            user.setProperty("updated", "true");
                             Backendless.UserService.update(user, new AsyncCallback<BackendlessUser>() {
                                 @Override
                                 public void handleResponse(BackendlessUser backendlessUser) {
