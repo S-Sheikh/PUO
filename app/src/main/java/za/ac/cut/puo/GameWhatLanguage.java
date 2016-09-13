@@ -1,15 +1,7 @@
 package za.ac.cut.puo;
 
-import android.content.ClipData;
-import android.graphics.Color;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.DragEvent;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 
@@ -17,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import xyz.hanks.library.SmallBang;
-import xyz.hanks.library.SmallBangListener;
 
 public class GameWhatLanguage extends AppCompatActivity {
     Button btn_question, btn_ans_topLeft, btn_ans_topRight, btn_ans_bottomLeft, btn_ans_bottomRight;
@@ -72,6 +63,8 @@ public class GameWhatLanguage extends AppCompatActivity {
         //Word Array BoilerPlate End
 
         randomGenerator = new Random(); // Initialize it lolololol
+
+        populateButtonTxt();
     }
 
     public void onBang(View v) {
@@ -81,12 +74,21 @@ public class GameWhatLanguage extends AppCompatActivity {
 
     //Set Random Buttons with Random(non Repeating words) Words
     public void populateButtonTxt() {
+        //ReSet all Flags to False
+        for(Word word : wordArrayList){
+            word.setRepeatFlag(false);
+        }
+        for(WordGameAdapter btn : adapterArrayList){
+            btn.setFlag(false);
+        }
+        //End Reset all Flags to/ False
+
         for (WordGameAdapter btn : adapterArrayList) {
             if (!btn.flag) {// if it's true, it has already been given a Word
                 btn.setFlag(true);
-                Word randWord = anyItem();
+                Word randWord = anyWord();
                 while (randWord.repeatFlag) {//if it's true , it has been used
-                    randWord = anyItem(); // get another word
+                    randWord = anyWord(); // get another word
                 }
                 if (randWord.repeatFlag == false) {
                     for (Word allWords : wordArrayList) { // Iterate through all words in list
@@ -101,7 +103,7 @@ public class GameWhatLanguage extends AppCompatActivity {
         }
     }
 
-    public Word anyItem() {
+    public Word anyWord() {
         int index = randomGenerator.nextInt(wordArrayList.size());
         Word randItem = wordArrayList.get(index);
         return randItem;
