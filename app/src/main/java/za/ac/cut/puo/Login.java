@@ -23,6 +23,7 @@ import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
+import com.backendless.persistence.local.UserIdStorageFactory;
 
 import dmax.dialog.SpotsDialog;
 
@@ -71,20 +72,54 @@ public class Login extends AppCompatActivity {
                 Backendless.UserService.login(etEmail, etPassword, new AsyncCallback<BackendlessUser>() {
                     @Override
                     public void handleResponse(BackendlessUser backendlessUser) {
+                        Backendless.UserService.isValidLogin(new AsyncCallback<Boolean>() {
+                            @Override
+                            public void handleResponse(Boolean aBoolean) {
+                                if (aBoolean) {
+                                    String userObjectId = UserIdStorageFactory.instance().getStorage().get();//gets user id of specific user that is loggen in
+                                    Backendless.Data.of(BackendlessUser.class).findById(userObjectId, new AsyncCallback<BackendlessUser>() {
+                                        @Override
+                                        public void handleResponse(BackendlessUser backendlessUser) {
+                                            if (backendlessUser.getProperty("cell").toString().trim().equals("") ||
+                                                    backendlessUser.getProperty("role").toString().trim().equals("") ||
+                                                    backendlessUser.getProperty("location").toString().trim().equals("")) {
+                                                Intent intent = new Intent(Login.this, Update.class);
+                                                intent.putExtra("user", backendlessUser.getEmail());
+                                                intent.putExtra("password", backendlessUser.getPassword());
+                                                intent.putExtra("name", backendlessUser.getProperty("name").toString().trim());
+                                                intent.putExtra("surname", backendlessUser.getProperty("surname").toString().trim());
+                                                intent.putExtra("username", backendlessUser.getProperty("username").toString().trim());
+                                                intent.putExtra("objectId", backendlessUser.getObjectId());
+                                                startActivity(intent);
+                                            } else {
+                                                Intent intent1 = new Intent(Login.this, HomeMenu.class);
+                                                intent1.putExtra("user", backendlessUser.getEmail());
+                                                intent1.putExtra("name", backendlessUser.getProperty("name").toString().trim());
+                                                intent1.putExtra("surname", backendlessUser.getProperty("surname").toString().trim());
+                                                startActivity(intent1);
+                                            }
+                                        }
+
+                                        @Override
+                                        public void handleFault(BackendlessFault backendlessFault) {
+                                        }
+                                    });
+                                }
+                            }
+
+                            @Override
+                            public void handleFault(BackendlessFault backendlessFault) {
+
+                            }
+                        });
+
+
+
+
+
                         Toast.makeText(Login.this, backendlessUser.getEmail() + " successfully logged in!", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(Login.this, Update.class);
-                        intent.putExtra("user", backendlessUser.getEmail());
-                        intent.putExtra("password", backendlessUser.getPassword());
-                        intent.putExtra("name", backendlessUser.getProperty("name").toString().trim());
-                        intent.putExtra("surname", backendlessUser.getProperty("surname").toString().trim());
-                        intent.putExtra("username", backendlessUser.getProperty("username").toString().trim());
-                        intent.putExtra("objectId", backendlessUser.getObjectId());
-                        startActivity(intent);
-                        /** Intent intent1 = new Intent(Login.this,HomeMenu.class);
-                         intent1.putExtra("user",backendlessUser.getEmail());
-                         intent1.putExtra("name",backendlessUser.getProperty("name").toString().trim());
-                         intent1.putExtra("surname",backendlessUser.getProperty("surname").toString().trim());
-                         startActivity(intent1);**/
+
+
                         progressDialog.dismiss();
                     }
 

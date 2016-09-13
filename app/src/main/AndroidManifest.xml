@@ -35,7 +35,8 @@
         <activity
             android:name=".Update"
             android:parentActivityName=".HomeMenu" />
-        <activity android:name=".ContactList"></activity>
+        <activity android:name=".ContactList" />
+        <activity android:name=".Splash"></activity>
     </application>
 
 </manifest>

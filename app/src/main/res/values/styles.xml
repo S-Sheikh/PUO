@@ -16,7 +16,8 @@
         <item name="DialogSpotColor">@color/colorPrimary</item>
         <item name="DialogSpotCount">4</item>
     </style>
-    <style name="LinearProgress" parent="Theme.AppCompat.Light">
+
+    <style name="CircularProgress" parent="Theme.AppCompat.Light">
         <item name="colorAccent">@color/colorAccent</item>
     </style>
     <style name="RatingBar" parent="@android:style/Widget.RatingBar">

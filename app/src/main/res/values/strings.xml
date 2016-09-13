@@ -28,6 +28,7 @@
     <string name="sp_Status">Status</string>
     <string name="contact_role">Role</string>
     <string name="tv_word_mates">Word Mates</string>
+    <string name="tvLoading">Logging in</string>
     <array name="role_items">
         <item>Collector</item>
         <item>Specialist</item>
