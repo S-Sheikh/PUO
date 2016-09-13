@@ -59,7 +59,6 @@ public class Register extends AppCompatActivity {
                 user.setProperty("name",edt_register__name.getText().toString().trim());
                 user.setProperty("surname",edt_register__surname.getText().toString().trim());
                 user.setProperty("username",edt_register__username.getText().toString().trim());
-                user.setProperty("updated", "false");
                 user.setPassword(edt_register__password.getText().toString().trim());
                 progressDialog = new SpotsDialog(Register.this, R.style.Custom);
                 progressDialog.show();
