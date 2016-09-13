@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -13,8 +14,10 @@ import xyz.hanks.library.SmallBang;
 public class GameWhatLanguage extends AppCompatActivity {
     Button btn_question, btn_ans_topLeft, btn_ans_topRight, btn_ans_bottomLeft, btn_ans_bottomRight;
     private SmallBang mSmallBang;
+    Word correctWord;
     ArrayList<Word> wordArrayList = new ArrayList<>();
-    ArrayList<WordGameAdapter> adapterArrayList = new ArrayList<>();
+    ArrayList<Word> questionArray = new ArrayList<>();
+    ArrayList<WordGameAdapter> buttonAdapter = new ArrayList<>();
     private Random randomGenerator;
 
     @Override
@@ -30,10 +33,10 @@ public class GameWhatLanguage extends AppCompatActivity {
         mSmallBang = SmallBang.attach2Window(GameWhatLanguage.this);
 
         //init button adapter
-        adapterArrayList.add(new WordGameAdapter(btn_ans_bottomLeft));
-        adapterArrayList.add(new WordGameAdapter(btn_ans_bottomRight));
-        adapterArrayList.add(new WordGameAdapter(btn_ans_topLeft));
-        adapterArrayList.add(new WordGameAdapter(btn_ans_topRight));
+        buttonAdapter.add(new WordGameAdapter(btn_ans_bottomLeft));
+        buttonAdapter.add(new WordGameAdapter(btn_ans_bottomRight));
+        buttonAdapter.add(new WordGameAdapter(btn_ans_topLeft));
+        buttonAdapter.add(new WordGameAdapter(btn_ans_topRight));
         //end Init button adpater
 
         //Word Array BoilerPlate Start
@@ -68,7 +71,15 @@ public class GameWhatLanguage extends AppCompatActivity {
     }
 
     public void onBang(View v) {
-        //mSmallBang.bang(v);
+        Button btn = (Button)v;
+        if(correctWord.getWord().toString().trim().equals(btn.getText().toString())){//Absolutley Necessary kek
+            Toast.makeText(GameWhatLanguage.this, "Good For you !!!", Toast.LENGTH_SHORT).show();
+            mSmallBang.setColors(GameWhatLanguage.this.getResources().getIntArray(R.array.gBangCorrect));
+        }else{
+            Toast.makeText(GameWhatLanguage.this, "Please KYS", Toast.LENGTH_SHORT).show();
+            mSmallBang.setColors(GameWhatLanguage.this.getResources().getIntArray(R.array.gBangWrong));
+        }
+        mSmallBang.bang(v);
        populateButtonTxt();
     }
 
@@ -78,12 +89,14 @@ public class GameWhatLanguage extends AppCompatActivity {
         for(Word word : wordArrayList){
             word.setRepeatFlag(false);
         }
-        for(WordGameAdapter btn : adapterArrayList){
+        for(WordGameAdapter btn : buttonAdapter){
             btn.setFlag(false);
         }
         //End Reset all Flags to/ False
 
-        for (WordGameAdapter btn : adapterArrayList) {
+        questionArray.clear();//resets question array
+
+        for (WordGameAdapter btn : buttonAdapter) {
             if (!btn.flag) {// if it's true, it has already been given a Word
                 btn.setFlag(true);
                 Word randWord = anyWord();
@@ -97,15 +110,24 @@ public class GameWhatLanguage extends AppCompatActivity {
                         }
                     }
                     btn.Answer.setText(randWord.getWord());
+                    questionArray.add(randWord);
                 }
                 randWord.setRepeatFlag(true);
             }
         }
+        correctWord = makeQuestion();
+        btn_question.setText(correctWord.getLanguage());
     }
 
     public Word anyWord() {
         int index = randomGenerator.nextInt(wordArrayList.size());
         Word randItem = wordArrayList.get(index);
+        return randItem;
+    }
+
+    public Word makeQuestion(){
+        int index = randomGenerator.nextInt(questionArray.size());
+        Word randItem = questionArray.get(index);
         return randItem;
     }
 }
