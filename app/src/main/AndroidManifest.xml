@@ -37,6 +37,23 @@
             android:parentActivityName=".HomeMenu" />
         <activity android:name=".ContactList" />
         <activity android:name=".Splash"></activity>
+        <activity android:name=".GameMatchDefinition" />
+        <activity android:name=".GameWhatLanguage">
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        </activity>
+        <activity android:name=".GameFillInTheBlank" />
+        <activity android:name=".WordTreasureActivity">
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        </activity>
+
     </application>
 
 </manifest>

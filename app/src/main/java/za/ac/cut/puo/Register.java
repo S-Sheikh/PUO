@@ -26,25 +26,26 @@ import dmax.dialog.SpotsDialog;
 
 public class Register extends AppCompatActivity {
     Button btn_submit;
-    EditText edt_register__name, edt_register__surname, edt_register__email, edt_register__password, edt_register__rePassword;
-    TextInputLayout txt_input, surname_txt_input, email_txt_input, pass_txt_input, repass_txt_input;
+    EditText edt_register__name, edt_register__surname, edt_register__username, edt_register__email, edt_register__password, edt_register__rePassword;
+    TextInputLayout txt_input,surname_txt_input,username_txt_input,email_txt_input,pass_txt_input,repass_txt_input;
     SpotsDialog progressDialog;
     Toolbar register_toolBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.register);
+        setContentView(R.layout.activity_register);
         initialiseViews();
         errorMsg();
     }
 
     public void btnSubmit(View V){
         if(edt_register__name.getText().toString().trim().isEmpty() && edt_register__surname.getText().toString().trim().isEmpty()
-                && edt_register__email.getText().toString().trim().isEmpty()
+                && edt_register__username.getText().toString().trim().isEmpty() && edt_register__email.getText().toString().trim().isEmpty()
                 && edt_register__password.getText().toString().trim().isEmpty() && edt_register__rePassword.getText().toString().trim().isEmpty()){
             txt_input.setError(getString(R.string.txt_input_layout));
             surname_txt_input.setError(getString(R.string.txt_input_layout));
+            username_txt_input.setError(getString(R.string.txt_input_layout));
             email_txt_input.setError(getString(R.string.txt_input_layout));
             pass_txt_input.setError(getString(R.string.txt_input_layout));
             repass_txt_input.setError(getString(R.string.txt_input_layout));
@@ -57,6 +58,7 @@ public class Register extends AppCompatActivity {
                 user.setProperty("email",edt_register__email.getText().toString().trim());
                 user.setProperty("name",edt_register__name.getText().toString().trim());
                 user.setProperty("surname",edt_register__surname.getText().toString().trim());
+                user.setProperty("username",edt_register__username.getText().toString().trim());
                 user.setPassword(edt_register__password.getText().toString().trim());
                 progressDialog = new SpotsDialog(Register.this, R.style.Custom);
                 progressDialog.show();
@@ -64,10 +66,12 @@ public class Register extends AppCompatActivity {
                     @Override
                     public void handleResponse(BackendlessUser backendlessUser) {
                         Toast.makeText(Register.this, "Confirmation link has been sent to you!", Toast.LENGTH_SHORT).show();
+
                         Intent intent = new Intent(Register.this, Login.class);
                         intent.putExtra("user",edt_register__email.getText().toString().trim());
                         intent.putExtra("name",edt_register__name.getText().toString().trim());
                         intent.putExtra("surname",edt_register__surname.getText().toString().trim());
+                        intent.putExtra("username",edt_register__username.getText().toString().trim());
                         intent.putExtra("objectId", backendlessUser.getObjectId());
                         startActivity(intent);
                         progressDialog.dismiss();
@@ -93,6 +97,8 @@ public class Register extends AppCompatActivity {
             txt_input.setError(null);
             else if(v.getId() == R.id.edt_register_surname)
                 surname_txt_input.setError(null);
+            else if(v.getId() == R.id.edt_register_username)
+                username_txt_input.setError(null);
             else if(v.getId() == R.id.edt_register_email)
                 email_txt_input.setError(null);
             else if(v.getId() == R.id.edt_register_password)
@@ -105,6 +111,8 @@ public class Register extends AppCompatActivity {
                 txt_input.setError(getString(R.string.txt_input_layout));
             else if(v.getId() == R.id.edt_register_surname)
                 surname_txt_input.setError(getString(R.string.txt_input_layout));
+            else if(v.getId() == R.id.edt_register_username)
+                username_txt_input.setError(getString(R.string.txt_input_layout));
             else if(v.getId() == R.id.edt_register_email)
                 email_txt_input.setError(getString(R.string.txt_input_layout));
             else if(v.getId() == R.id.edt_register_password)
@@ -117,11 +125,13 @@ public class Register extends AppCompatActivity {
         btn_submit = (Button) findViewById(R.id.btn_submit);
         edt_register__name = (EditText) findViewById(R.id.edt_register_name);
         edt_register__surname = (EditText) findViewById(R.id.edt_register_surname);
+        edt_register__username = (EditText) findViewById(R.id.edt_register_username);
         edt_register__email = (EditText) findViewById(R.id.edt_register_email);
         edt_register__password = (EditText) findViewById(R.id.edt_register_password);
         edt_register__rePassword = (EditText) findViewById(R.id.edt_register_rePassword);
         txt_input = (TextInputLayout)findViewById(R.id.name_txt_input);
         surname_txt_input = (TextInputLayout)findViewById(R.id.surname_txt_input);
+        username_txt_input = (TextInputLayout)findViewById(R.id.usermame_txt_input);
         email_txt_input = (TextInputLayout)findViewById(R.id.email_txt_input);
         pass_txt_input = (TextInputLayout)findViewById(R.id.password_txt_input);
         repass_txt_input = (TextInputLayout)findViewById(R.id.repassword_txt_input);
@@ -129,7 +139,6 @@ public class Register extends AppCompatActivity {
         setSupportActionBar(register_toolBar);
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
-        register_toolBar.setTitleTextColor(getResources().getColor(R.color.colorIcons));
     }
     private void errorMsg(){
         edt_register__name.addTextChangedListener(new TextWatcher() {
@@ -169,6 +178,26 @@ public class Register extends AppCompatActivity {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     validateEditText(((EditText) v).getText(),edt_register__surname);
+                }
+            }
+        });
+        edt_register__username.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+                validateEditText(s,edt_register__username);
+            }
+        });
+        edt_register__username.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    validateEditText(((EditText) v).getText(),edt_register__username);
                 }
             }
         });
