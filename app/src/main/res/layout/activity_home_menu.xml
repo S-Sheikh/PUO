@@ -14,28 +14,19 @@
         android:theme="@style/toolBarText"
         app:popupTheme="@style/AppTheme" />
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="120dp"
         android:background="@color/colorPrimary"
         android:orientation="horizontal">
-        <FrameLayout
+
+        <de.hdodenhof.circleimageview.CircleImageView
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp">
-            <ImageView
-                android:id="@+id/ivProfilePic"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:src="@drawable/logo_puo" />
-            <ImageView
-                android:id="@+id/ivCircle"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:clickable="true"
-                android:src="@drawable/circleblue" />
-        </FrameLayout>
+            android:layout_marginTop="20dp"
+            android:src="@drawable/logo_puo" />
 
         <LinearLayout
             android:layout_width="match_parent"
