@@ -1,23 +1,30 @@
 package za.ac.cut.puo;
 
+import android.content.ClipData;
 import android.graphics.Color;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.DragEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Random;
 
+import xyz.hanks.library.SmallBang;
+import xyz.hanks.library.SmallBangListener;
+
 public class GameWhatLanguage extends AppCompatActivity {
     Button btn_question, btn_ans_topLeft, btn_ans_topRight, btn_ans_bottomLeft, btn_ans_bottomRight;
-    Random rand;
-    boolean randomColorFlagOne, randomColorFlagTwo, randomColorFlagThree, randomColorFlagFour;
-    ArrayList<Integer> blocks = new ArrayList<>();
-    GradientDrawable bgShape;
-    int[] abcArray = {0, 1, 2, 3, 4};
+    private SmallBang mSmallBang;
+    ArrayList<Word> wordArrayList = new ArrayList<>();
+    ArrayList<WordGameAdapter> adapterArrayList = new ArrayList<>();
+    private Random randomGenerator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,148 +35,75 @@ public class GameWhatLanguage extends AppCompatActivity {
         btn_ans_topRight = (Button) findViewById(R.id.btn_ans_topRight);
         btn_ans_bottomLeft = (Button) findViewById(R.id.btn_ans_bottomLeft);
         btn_ans_bottomRight = (Button) findViewById(R.id.btn_ans_bottomRight);
-        for (int i : abcArray) {
-            blocks.add(i);
-        }
+        //Init small bang
+        mSmallBang = SmallBang.attach2Window(GameWhatLanguage.this);
 
+        //init button adapter
+        adapterArrayList.add(new WordGameAdapter(btn_ans_bottomLeft));
+        adapterArrayList.add(new WordGameAdapter(btn_ans_bottomRight));
+        adapterArrayList.add(new WordGameAdapter(btn_ans_topLeft));
+        adapterArrayList.add(new WordGameAdapter(btn_ans_topRight));
+        //end Init button adpater
+
+        //Word Array BoilerPlate Start
+        //English Words
+        wordArrayList.add(new Word("eutaxy", "English", "good order or management", "noun"));
+        wordArrayList.add(new Word("dabster", "English", "Slang. an expert", "noun"));
+        wordArrayList.add(new Word("pulverulent", "English", "covered with dust or powder.", "adjective"));
+        wordArrayList.add(new Word("vilipend", "English", "to vilify; depreciate", "verb"));
+
+        //Afrikaans Words
+        wordArrayList.add(new Word("vark", "Afrikaans", "an omnivorous domesticated hoofed mammal", "noun"));
+        wordArrayList.add(new Word("evalueer", "Afrikaans", "evaluate or estimate the nature, ability, or quality of", "verb"));
+        wordArrayList.add(new Word("piek", "Afrikaans", "a thin, pointed piece of metal, wood, or another rigid material", "noun"));
+        wordArrayList.add(new Word("golf", "Afrikaans", "a gesture or signal made by moving one's hand to and fro", "noun"));
+
+        //Zulu Words
+        wordArrayList.add(new Word("ukuzibulala", "Zulu", "the action of killing oneself intentionally", "noun"));
+        wordArrayList.add(new Word("bazizwa", "Zulu", "experience (an emotion or sensation)", "verb"));
+        wordArrayList.add(new Word("kuzwakale", "Zulu", "in good condition; not damaged, injured, or diseased", "adjective"));
+        wordArrayList.add(new Word("ingadi", "Zulu", "a piece of ground, often near a house, used for growing flowers, fruit, or vegetablesy", "noun"));
+
+        //Xhosa Words
+        wordArrayList.add(new Word("inja", "Xhosa", "a domesticated carnivorous mammal that typically has a long snout", "noun"));
+        wordArrayList.add(new Word("Dudula", "Xhosa", "an act of exerting force on someone or something", "verb"));
+        wordArrayList.add(new Word("umzabalazo", "Xhosa", "a forceful or violent effort to get free of restraint or resist attack", "noun"));
+        wordArrayList.add(new Word("thetha", "Xhosa", "conversation; discussion", "noun"));
+        //Word Array BoilerPlate End
+
+        randomGenerator = new Random(); // Initialize it lolololol
     }
 
-    public void btn_quesion(View v) {
-
-
+    public void onBang(View v) {
+        //mSmallBang.bang(v);
+       populateButtonTxt();
     }
 
-    public void mixColors(View v) {
-        rand = new Random();
-        int n = rand.nextInt(5); // Gives n such that 0 <= n < 20
-        for (int i = 0; i < blocks.size(); i++) {
-            int element = blocks.get(i);
-
-            switch (element) {
-                case 0:
-                    bgShape = (GradientDrawable) btn_question.getBackground();
-
-                    n = rand.nextInt(5);
-                    switch (n){
-                        case 0:
-                            bgShape.setColor(getResources().getColor(R.color.colorPrimary));
-                            break;
-                        case 1:
-                            bgShape.setColor(getResources().getColor(R.color.gColorPoints));
-                            break;
-                        case 2:
-                            bgShape.setColor(getResources().getColor(R.color.gColorPoints));
-                            break;
-                        case 3:
-                            bgShape.setColor(getResources().getColor(R.color.gColorButtonTwo));
-                            break;
-                        case 4:
-                            bgShape.setColor(getResources().getColor(R.color.gColorButtonOne));
-                            break;
-                        default:
-                            break;
+    //Set Random Buttons with Random(non Repeating words) Words
+    public void populateButtonTxt() {
+        for (WordGameAdapter btn : adapterArrayList) {
+            if (!btn.flag) {// if it's true, it has already been given a Word
+                btn.setFlag(true);
+                Word randWord = anyItem();
+                while (randWord.repeatFlag) {//if it's true , it has been used
+                    randWord = anyItem(); // get another word
+                }
+                if (randWord.repeatFlag == false) {
+                    for (Word allWords : wordArrayList) { // Iterate through all words in list
+                        if (allWords.getLanguage().equals(randWord.getLanguage())) { // if the used word has a language thats been used up
+                            allWords.setRepeatFlag(true);//set it to true( Used )
+                        }
                     }
-                    break;
-                case 1:
-                    bgShape = (GradientDrawable) btn_ans_topRight.getBackground();
-
-                    n = rand.nextInt(5);
-                    switch (n){
-                        case 0:
-                            bgShape.setColor(getResources().getColor(R.color.colorPrimary));
-                            break;
-                        case 1:
-                            bgShape.setColor(getResources().getColor(R.color.gColorPoints));
-                            break;
-                        case 2:
-                            bgShape.setColor(getResources().getColor(R.color.gColorPoints));
-                            break;
-                        case 3:
-                            bgShape.setColor(getResources().getColor(R.color.gColorButtonTwo));
-                            break;
-                        case 4:
-                            bgShape.setColor(getResources().getColor(R.color.gColorButtonOne));
-                            break;
-                        default:
-                            break;
-                    }
-                    break;
-                case 2:
-                    bgShape = (GradientDrawable) btn_ans_topLeft.getBackground();
-
-                    n = rand.nextInt(5);
-                    switch (n){
-                        case 0:
-                            bgShape.setColor(getResources().getColor(R.color.colorPrimary));
-                            break;
-                        case 1:
-                            bgShape.setColor(getResources().getColor(R.color.gColorPoints));
-                            break;
-                        case 2:
-                            bgShape.setColor(getResources().getColor(R.color.gColorPoints));
-                            break;
-                        case 3:
-                            bgShape.setColor(getResources().getColor(R.color.gColorButtonTwo));
-                            break;
-                        case 4:
-                            bgShape.setColor(getResources().getColor(R.color.gColorButtonOne));
-                            break;
-                        default:
-                            break;
-                    }
-                    break;
-                case 3:
-                    bgShape = (GradientDrawable)btn_ans_bottomRight.getBackground();
-
-                    n = rand.nextInt(5);
-                    switch (n){
-                        case 0:
-                            bgShape.setColor(getResources().getColor(R.color.colorPrimary));
-                            break;
-                        case 1:
-                            bgShape.setColor(getResources().getColor(R.color.gColorPoints));
-                            break;
-                        case 2:
-                            bgShape.setColor(getResources().getColor(R.color.gColorPoints));
-                            break;
-                        case 3:
-                            bgShape.setColor(getResources().getColor(R.color.gColorButtonTwo));
-                            break;
-                        case 4:
-                            bgShape.setColor(getResources().getColor(R.color.gColorButtonOne));
-                            break;
-                        default:
-                            break;
-                    }
-                    break;
-                case 4:
-                    bgShape = (GradientDrawable) btn_ans_bottomLeft.getBackground();
-
-                    n = rand.nextInt(5);
-                    switch (n){
-                        case 0:
-                            bgShape.setColor(getResources().getColor(R.color.colorPrimary));
-                            break;
-                        case 1:
-                            bgShape.setColor(getResources().getColor(R.color.gColorPoints));
-                            break;
-                        case 2:
-                            bgShape.setColor(getResources().getColor(R.color.gColorPoints));
-                            break;
-                        case 3:
-                            bgShape.setColor(getResources().getColor(R.color.gColorButtonTwo));
-                            break;
-                        case 4:
-                            bgShape.setColor(getResources().getColor(R.color.gColorButtonOne));
-                            break;
-                        default:
-                            break;
-                    }
-                    break;
-                default:
-                    Toast.makeText(GameWhatLanguage.this, "Toasty!", Toast.LENGTH_SHORT).show();
-                    break;
+                    btn.Answer.setText(randWord.getWord());
+                }
+                randWord.setRepeatFlag(true);
             }
         }
+    }
+
+    public Word anyItem() {
+        int index = randomGenerator.nextInt(wordArrayList.size());
+        Word randItem = wordArrayList.get(index);
+        return randItem;
     }
 }

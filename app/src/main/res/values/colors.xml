@@ -8,7 +8,7 @@
     <color name="colorSecondaryText">#757575</color>
     <color name="colorIcons">#ffffff</color>
     <color name="colorDivider">#bdbdbd</color>
-    <color name="Red">#ff0000</color>
+
 
     <!-- Game Colors -->
     <color name="gColorWords">#B92D00</color>
@@ -24,4 +24,21 @@
     <color name="gColorButtonFour">#00FFFF</color>
     <!-- Game Button Colors -->
 
+    <!-- Bang Array Colors -->
+    <color name="gRed">#ff0000</color>
+    <color name="gOrange">#fc7601</color>
+    <color name="gGreen">#11ff00</color>
+    <color name="gLime">#00ff66</color>
+    <!-- Bang Array Colors -->
+
+    <!-- Banging Animation Arrays -->
+    <integer-array name="gBangWrong">
+        <item>@color/gOrange</item>
+        <item>@color/gRed</item>
+    </integer-array>
+
+    <integer-array name="gBangCorrect">
+        <item>@color/gLime</item>
+        <item>@color/gGreen</item>
+    </integer-array>
 </resources>

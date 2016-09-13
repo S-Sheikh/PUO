@@ -166,13 +166,15 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:text="a"
-            android:id="@+id/button14" />
+            android:id="@+id/button14"
+            android:layout_marginRight="5dp" />
 
         <Button
             android:layout_width="48dp"
             android:layout_height="wrap_content"
             android:text="b"
-            android:id="@+id/button15" />
+            android:id="@+id/button15"
+            android:layout_marginRight="5dp" />
 
         <Button
             android:layout_width="48dp"
@@ -184,13 +186,15 @@
             android:layout_width="48dp"
             android:layout_height="wrap_content"
             android:text="d"
-            android:id="@+id/button17" />
+            android:id="@+id/button17"
+            android:layout_marginLeft="5dp" />
 
         <Button
             android:layout_width="48dp"
             android:layout_height="wrap_content"
             android:text="E"
-            android:id="@+id/button18" />
+            android:id="@+id/button18"
+            android:layout_marginLeft="5dp" />
     </LinearLayout>
 
     <LinearLayout
