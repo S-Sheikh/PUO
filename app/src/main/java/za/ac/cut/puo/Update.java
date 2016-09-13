@@ -73,10 +73,13 @@ public class Update extends AppCompatActivity {
                             BackendlessUser user = new BackendlessUser();
                             user.setProperty("objectId", getIntent().getStringExtra("objectId"));
                             user.setPassword(etPassword.getText().toString().trim());
+                            user.setProperty("name", etCellPhone.getText().toString().trim());
+                            user.setProperty("surname", etCellPhone.getText().toString().trim());
+                            user.setProperty("username", etCellPhone.getText().toString().trim());
                             user.setProperty("cell", etCellPhone.getText().toString().trim());
                             user.setProperty("role", spRoles.getSelectedItem().toString().trim());
                             user.setProperty("location", spLocation.getSelectedItem().toString().trim());
-                            user.setProperty("updated", "true");
+                            user.setProperty("isUpdated", true);
                             Backendless.UserService.update(user, new AsyncCallback<BackendlessUser>() {
                                 @Override
                                 public void handleResponse(BackendlessUser backendlessUser) {
