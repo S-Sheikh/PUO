@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context="za.ac.cut.puo.HomeMenu">
     <android.support.v7.widget.Toolbar
@@ -11,106 +11,110 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-        android:elevation="4dp"
-        android:theme="@style/AppTheme"
-        app:popupTheme="@style/AppTheme"
-        android:titleTextColor="@color/colorIcons"/>
+        android:theme="@style/toolBarText"
+        app:popupTheme="@style/AppTheme" />
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="120dp"
-        android:background="@color/colorPrimary">
+        android:background="@color/colorPrimary"
+        android:orientation="horizontal">
         <FrameLayout
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp">
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp">
             <ImageView
+                android:id="@+id/ivProfilePic"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
-                android:id="@+id/ivProfilePic"
                 android:src="@drawable/logo_puo" />
             <ImageView
+                android:id="@+id/ivCircle"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:clickable="true"
-                android:id="@+id/ivCircle"
-                android:src="@drawable/circle" />
+                android:src="@drawable/circleblue" />
         </FrameLayout>
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:orientation="vertical">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Large Text"
                 android:id="@+id/tvEmail"
-                android:layout_gravity="center_horizontal" />
-
-            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="Small Text"
+                android:layout_gravity="center_horizontal"
+                android:text="Large Text"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/colorIcons"
+                android:textStyle="bold" />
+
+            <TextView
                 android:id="@+id/tvUserType"
-                android:layout_gravity="center_horizontal" />
-
-            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:layout_gravity="center_horizontal"
                 android:text="Small Text"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/colorIcons"
+                android:textStyle="normal" />
+
+            <TextView
                 android:id="@+id/tvWordCount"
-                android:layout_gravity="center_horizontal" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="Small Text"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/colorIcons"
+                android:textStyle="italic" />
         </LinearLayout>
 
 
     </LinearLayout>
 
     <TextView
+        android:id="@+id/tvRecentWords"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/tv_recent_words"
-        android:id="@+id/tvRecentWords"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:text="@string/tv_recent_words" />
 
     <ListView
+        android:id="@+id/lv_words"
         android:layout_width="match_parent"
         android:layout_height="180dp"
-        android:id="@+id/lv_words"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp" />
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp" />
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp">
+        android:layout_marginBottom="5dp"
+        android:orientation="horizontal">
     </LinearLayout>
 
     <TextView
+        android:id="@+id/tvWordInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Small Text"
-        android:id="@+id/tvWordInfo"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:text="Description..."
+        android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <TextView
+        android:id="@+id/textView2"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:id="@+id/textView2" />
+        android:layout_weight="1" />
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="30dp"
-        android:layout_marginBottom="5dp"></LinearLayout>
+        android:layout_marginBottom="5dp"
+        android:orientation="horizontal"></LinearLayout>
 
 </LinearLayout>

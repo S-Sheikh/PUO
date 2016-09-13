@@ -19,19 +19,23 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".LoginActivity">
+        <activity android:name=".Login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".RegisterActivity"
-            android:parentActivityName=".HomeMenu"></activity>
-        <activity android:name=".HomeMenu"
-            android:parentActivityName=".LoginActivity"></activity>
-        <activity android:name=".UpdateProfile"
-            android:parentActivityName=".HomeMenu"></activity>
+        <activity
+            android:name=".Register"
+            android:parentActivityName=".HomeMenu" />
+        <activity
+            android:name=".HomeMenu"
+            android:parentActivityName=".Login" />
+        <activity
+            android:name=".Update"
+            android:parentActivityName=".HomeMenu" />
+        <activity android:name=".ContactList"></activity>
     </application>
 
 </manifest>

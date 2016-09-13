@@ -25,6 +25,9 @@
     <string name="home_menu_item1">Add Word</string>
     <string name="home_menu_item2">Profile</string>
     <string name="tv_recent_words">Recent Words</string>
+    <string name="sp_Status">Status</string>
+    <string name="contact_role">Role</string>
+    <string name="tv_word_mates">Word Mates</string>
     <array name="role_items">
         <item>Collector</item>
         <item>Specialist</item>

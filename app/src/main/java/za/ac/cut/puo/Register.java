@@ -1,22 +1,20 @@
 package za.ac.cut.puo;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.support.v7.widget.*;
 import android.widget.Toast;
 
 import com.backendless.Backendless;
@@ -26,7 +24,7 @@ import com.backendless.exceptions.BackendlessFault;
 
 import dmax.dialog.SpotsDialog;
 
-public class RegisterActivity extends AppCompatActivity{
+public class Register extends AppCompatActivity {
     Button btn_submit;
     EditText edt_register__name, edt_register__surname, edt_register__username, edt_register__email, edt_register__password, edt_register__rePassword;
     TextInputLayout txt_input,surname_txt_input,username_txt_input,email_txt_input,pass_txt_input,repass_txt_input;
@@ -53,7 +51,7 @@ public class RegisterActivity extends AppCompatActivity{
             repass_txt_input.setError(getString(R.string.txt_input_layout));
         }
         else if(!(edt_register__password.getText().toString().trim().equals(edt_register__rePassword.getText().toString().trim()))){
-            Toast.makeText(RegisterActivity.this,"Please make sure passwords match",Toast.LENGTH_SHORT).show();
+            Toast.makeText(Register.this, "Please make sure passwords match", Toast.LENGTH_SHORT).show();
         }else{
             if(connectionAvailable()){
                 BackendlessUser user = new BackendlessUser();
@@ -62,32 +60,32 @@ public class RegisterActivity extends AppCompatActivity{
                 user.setProperty("surname",edt_register__surname.getText().toString().trim());
                 user.setProperty("username",edt_register__username.getText().toString().trim());
                 user.setPassword(edt_register__password.getText().toString().trim());
-                progressDialog = new SpotsDialog(RegisterActivity.this,R.style.Custom);
+                progressDialog = new SpotsDialog(Register.this, R.style.Custom);
                 progressDialog.show();
                 Backendless.UserService.register(user, new AsyncCallback<BackendlessUser>() {
                     @Override
                     public void handleResponse(BackendlessUser backendlessUser) {
-                        Toast.makeText(RegisterActivity.this,"Confirmation link has been sent to you!",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Register.this, "Confirmation link has been sent to you!", Toast.LENGTH_SHORT).show();
 
-                        Intent intent = new Intent(RegisterActivity.this,LoginActivity.class);
+                        Intent intent = new Intent(Register.this, Login.class);
                         intent.putExtra("user",edt_register__email.getText().toString().trim());
                         intent.putExtra("name",edt_register__name.getText().toString().trim());
                         intent.putExtra("surname",edt_register__surname.getText().toString().trim());
                         intent.putExtra("username",edt_register__username.getText().toString().trim());
-                        intent.putExtra("password",edt_register__password.getText().toString().trim());
+                        intent.putExtra("objectId", backendlessUser.getObjectId());
                         startActivity(intent);
                         progressDialog.dismiss();
-                        RegisterActivity.this.finish();
+                        Register.this.finish();
                     }
 
                     @Override
                     public void handleFault(BackendlessFault backendlessFault) {
-                        Toast.makeText(RegisterActivity.this,backendlessFault.getMessage(),Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Register.this, backendlessFault.getMessage(), Toast.LENGTH_SHORT).show();
                         progressDialog.dismiss();
                     }
                 });
             }else {
-                Toast.makeText(RegisterActivity.this,"No internet connection!",Toast.LENGTH_SHORT).show();
+                Toast.makeText(Register.this, "No internet connection!", Toast.LENGTH_SHORT).show();
             }
         }
 

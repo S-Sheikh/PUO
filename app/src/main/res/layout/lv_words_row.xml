@@ -1,103 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
     <android.support.v7.widget.Toolbar
         android:id="@+id/home_toolBar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
+        android:layout_marginBottom="16dp"
         android:background="?attr/colorPrimary"
         android:elevation="4dp"
-        android:theme="@style/AppTheme"
-        app:popupTheme="@style/AppTheme"
-        android:titleTextColor="@color/colorIcons"
-        android:layout_marginBottom="16dp"/>
+        android:theme="@style/toolBarText"
+        app:popupTheme="@style/AppTheme" />
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
         android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp">
+        android:layout_marginRight="10dp"
+        android:background="@color/colorPrimary"
+        android:orientation="horizontal">
         <FrameLayout
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             android:layout_marginLeft="10dp"
-            android:layout_marginBottom="10dp">
+            android:layout_marginTop="10dp">
             <ImageView
+                android:id="@+id/ivProfilePic"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:id="@+id/ivProfilePic"
                 android:src="@drawable/logo_puo" />
             <ImageView
+                android:id="@+id/ivCircle"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:clickable="true"
-                android:id="@+id/ivCircle"
-                android:src="@drawable/circle" />
+                android:src="@drawable/circleblue" />
         </FrameLayout>
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginLeft="7dp"
             android:gravity="center_vertical"
-            android:layout_marginLeft="7dp">
+            android:orientation="vertical">
 
             <LinearLayout
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
                 <TextView
+                    android:id="@+id/tvUsername"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
                     android:text="Large Text"
-                    android:id="@+id/tvUsername" />
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
 
                 <ImageView
+                    android:id="@+id/ivSupportWord"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/ivSupportWord"
                     android:layout_marginLeft="5dp" />
 
                 <TextView
+                    android:id="@+id/tvWordTypeLang"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:layout_marginLeft="50dp"
                     android:text="Small Text"
-                    android:id="@+id/tvWordTypeLang"
-                    android:layout_marginLeft="50dp" />
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
 
             </LinearLayout>
 
             <LinearLayout
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp">
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal">
 
                 <TextView
+                    android:id="@+id/tvNameSurname"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:text="Small Text"
-                    android:id="@+id/tvNameSurname" />
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
 
                 <RatingBar
+                    android:id="@+id/ratingBar"
+                    style="@style/RatingBar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/ratingBar"
-                    android:numStars="5"
-                    android:rating="3.5"
+                    android:layout_marginLeft="90dp"
                     android:isIndicator="false"
-                    style="@style/RatingBar"
-                    android:layout_marginLeft="90dp" />
+                    android:numStars="5"
+                    android:rating="3.5" />
             </LinearLayout>
         </LinearLayout>
 

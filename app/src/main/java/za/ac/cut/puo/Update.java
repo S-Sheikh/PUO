@@ -1,6 +1,7 @@
 package za.ac.cut.puo;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -11,10 +12,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -28,12 +25,12 @@ import com.backendless.exceptions.BackendlessFault;
 
 import dmax.dialog.SpotsDialog;
 
-public class UpdateProfile extends AppCompatActivity {
+public class Update extends AppCompatActivity {
     Spinner spRoles,spLocation;
-    EditText etName,etSurname,etUsername,etEmail,etCellPhone,etPassword;
+    EditText etName, etSurname, etUsername, etEmail, etCellPhone, etPassword, etRePassword;
     TextView tvAddPic;
     ImageView ivProfilePic;
-    TextInputLayout nameInput,surnameInput,userNameInput,emailInput,passwordInput,cellInput;
+    TextInputLayout nameInput, surnameInput, userNameInput, emailInput, passwordInput, rePasswordInput, cellInput;
     SpotsDialog progressDialog;
     Toolbar update_toolBar;
     @Override
@@ -45,7 +42,6 @@ public class UpdateProfile extends AppCompatActivity {
         etName.setText(getIntent().getStringExtra("name"));
         etSurname.setText(getIntent().getStringExtra("surname"));
         etUsername.setText(getIntent().getStringExtra("username"));
-        //etPassword.setText("");
     }
 
     @Override
@@ -62,7 +58,7 @@ public class UpdateProfile extends AppCompatActivity {
                 //update profile
                 if(connectionAvailable()){
                     if(etName.getText().toString().trim().isEmpty()|| etSurname.getText().toString().trim().isEmpty() ||
-                            etUsername.getText().toString().trim().isEmpty()|| etEmail.getText().toString().trim().isEmpty()||
+                            etUsername.getText().toString().trim().isEmpty() || etEmail.getText().toString().trim().isEmpty() ||
                             etPassword.getText().toString().trim().isEmpty()){
                         nameInput.setError(getString(R.string.txt_input_layout));
                         surnameInput.setError(getString(R.string.txt_input_layout));
@@ -71,42 +67,42 @@ public class UpdateProfile extends AppCompatActivity {
                         passwordInput.setError(getString(R.string.txt_input_layout));
                         cellInput.setError(getString(R.string.txt_input_layout));
                     }else{
+                        if (etPassword.getText().toString().trim().equals(etRePassword.getText().toString().trim())) {
+                            progressDialog = new SpotsDialog(Update.this, R.style.Custom);
+                            progressDialog.show();
+                            BackendlessUser user = new BackendlessUser();
+                            user.setProperty("objectId", getIntent().getStringExtra("objectId"));
+                            user.setPassword(etPassword.getText().toString().trim());
+                            user.setProperty("cell", etCellPhone.getText().toString().trim());
+                            user.setProperty("role", spRoles.getSelectedItem().toString().trim());
+                            user.setProperty("location", spLocation.getSelectedItem().toString().trim());
+                            Backendless.UserService.update(user, new AsyncCallback<BackendlessUser>() {
+                                @Override
+                                public void handleResponse(BackendlessUser backendlessUser) {
+                                    Toast.makeText(Update.this, etName.getText().toString().trim() + " " +
+                                            etSurname.getText().toString().trim() +
+                                            " successfully saved!", Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(Update.this, HomeMenu.class);
+                                    intent.putExtra("user", backendlessUser.getEmail());
+                                    intent.putExtra("name", backendlessUser.getProperty("name").toString().trim());
+                                    intent.putExtra("surname", backendlessUser.getProperty("surname").toString().trim());
+                                    startActivity(intent);
+                                    progressDialog.dismiss();
+                                }
 
-                        progressDialog = new SpotsDialog(UpdateProfile.this,R.style.Custom);
-                        progressDialog.show();
-                        Backendless.UserService.login(getIntent().getStringExtra("user"), getIntent().getStringExtra("password"), new AsyncCallback<BackendlessUser>() {
-                            @Override
-                            public void handleResponse(BackendlessUser backendlessUser) {
-                                backendlessUser.setProperty("cellphone",etCellPhone.getText().toString().trim());
-                                backendlessUser.setProperty("role",spRoles.getSelectedItem().toString().trim());
-                                backendlessUser.setProperty("location",spLocation.getSelectedItem().toString().trim());
-                                progressDialog.dismiss();
-                                Backendless.UserService.update(backendlessUser, new AsyncCallback<BackendlessUser>() {
-                                    @Override
-                                    public void handleResponse(BackendlessUser backendlessUser) {
-                                        Toast.makeText(UpdateProfile.this,etName + " " + "successfully updated!",Toast.LENGTH_SHORT).show();
-                                    }
+                                @Override
+                                public void handleFault(BackendlessFault backendlessFault) {
+                                    Toast.makeText(Update.this, backendlessFault.getMessage(), Toast.LENGTH_SHORT).show();
+                                    progressDialog.dismiss();
+                                }
+                            });
+                        } else {
+                            Toast.makeText(Update.this, "Please make sure passwords match!", Toast.LENGTH_SHORT).show();
+                        }
 
-                                    @Override
-                                    public void handleFault(BackendlessFault backendlessFault) {
-                                        progressDialog.dismiss();
-                                        Toast.makeText(UpdateProfile.this,backendlessFault.getMessage(),Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                            }
-
-                            @Override
-                            public void handleFault(BackendlessFault backendlessFault) {
-                                progressDialog.dismiss();
-                                Toast.makeText(UpdateProfile.this,backendlessFault.getMessage(),Toast.LENGTH_SHORT).show();
-                            }
-                        });
-
-                            }
-
+                    }
                 }else {
-                    Toast.makeText(UpdateProfile.this,"No internet connection!",Toast.LENGTH_SHORT).show();
-
+                    Toast.makeText(Update.this, "No internet connection!", Toast.LENGTH_SHORT).show();
                 }
                 return true;
         }
@@ -121,7 +117,8 @@ public class UpdateProfile extends AppCompatActivity {
         etUsername = (EditText)findViewById(R.id.etUsername);
         etEmail = (EditText)findViewById(R.id.etEmail);
         etCellPhone = (EditText)findViewById(R.id.etCellPhone);
-        etPassword = (EditText)findViewById(R.id.edt_password);
+        etPassword = (EditText) findViewById(R.id.etPassword);
+        etRePassword = (EditText) findViewById(R.id.etRePassword);
         tvAddPic = (TextView)findViewById(R.id.tvAddPic);
         ivProfilePic = (ImageView)findViewById(R.id.ivProfilePic);
         nameInput = (TextInputLayout)findViewById(R.id.name_input);
@@ -129,6 +126,7 @@ public class UpdateProfile extends AppCompatActivity {
         userNameInput = (TextInputLayout)findViewById(R.id.username_input);
         emailInput = (TextInputLayout)findViewById(R.id.email_input);
         passwordInput = (TextInputLayout)findViewById(R.id.password_input);
+        rePasswordInput = (TextInputLayout) findViewById(R.id.repassword_txt_input);
         cellInput = (TextInputLayout)findViewById(R.id.cell_input);
         update_toolBar = (Toolbar)findViewById(R.id.update_toolBar);
         setSupportActionBar(update_toolBar);
