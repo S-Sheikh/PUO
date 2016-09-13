@@ -1,0 +1,24 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="8dip"
+    tools:context="za.ac.cut.puo.WordListFragment">
+
+    <include layout="@layout/sort_filter_bar" />
+
+    <include layout="@layout/word_list_item" />
+    <include layout="@layout/word_list_item" />
+    <include layout="@layout/word_list_item" />
+    <include layout="@layout/word_list_item" />
+    <include layout="@layout/word_list_item" />
+    <include layout="@layout/word_list_item" />
+    <include layout="@layout/word_list_item" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_word_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

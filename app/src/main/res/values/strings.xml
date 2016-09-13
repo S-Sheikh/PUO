@@ -12,4 +12,41 @@
     <string name="register_tv_text_register">Register</string>
     <string name="register_btn_submit">Submit</string>
     <string name="txt_input_layout">Please fill in all fields</string>
+    <string name="title_activity_word_treasure">Word Treasure</string>
+    <string name="tv_label_sort">Sort</string>
+    <string name="tv_label_language">Language</string>
+    <string name="tv_label_part_of_speech">Part of speech</string>
+
+    <!-- sort_filter_bar spinner entries -->
+    <string-array name="entries_ordering">
+        <item>By date</item>
+        <item>Alphabetically</item>
+    </string-array>
+
+    <string-array name="entries_part_of_speech">
+        <item>All</item>
+        <item>Noun</item>
+        <item>Pronoun</item>
+        <item>Verb</item>
+        <item>Adverb</item>
+        <item>Adjective</item>
+        <item>Preposition</item>
+        <item>Conjunction</item>
+        <item>Determiner</item>
+    </string-array>
+
+    <string-array name="entries_language">
+        <item>All</item>
+        <item>isiXhosa</item>
+        <item>isiZulu</item>
+        <item>isiNdebele</item>
+        <item>Sepedi</item>
+        <item>Sesotho</item>
+        <item>Setswana</item>
+        <item>SiSwati</item>
+        <item>Tshivenda</item>
+        <item>Xitsonga</item>
+    </string-array>
+
+    <string name="action_settings">Settings</string>
 </resources>
