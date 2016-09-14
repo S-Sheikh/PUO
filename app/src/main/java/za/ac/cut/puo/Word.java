@@ -8,15 +8,11 @@ public class Word {
     private String Language;
     private String Definition;
     private String PartOfSpeech;
-    boolean repeatFlag;
-
-    public boolean isRepeatFlag() {
-        return repeatFlag;
-    }
-
-    public void setRepeatFlag(boolean repeatFlag) {
-        this.repeatFlag = repeatFlag;
-    }
+    private String email;
+    private String name;
+    private String surname;
+    private boolean supported;
+    private boolean repeatFlag;
 
     public Word(String word, String language, String definition, String partOfSpeech) {
         Word = word;
@@ -25,6 +21,14 @@ public class Word {
 
         PartOfSpeech = partOfSpeech;
         repeatFlag = false;
+    }
+
+    public boolean isRepeatFlag() {
+        return repeatFlag;
+    }
+
+    public void setRepeatFlag(boolean repeatFlag) {
+        this.repeatFlag = repeatFlag;
     }
 
     public String getLanguage() {
