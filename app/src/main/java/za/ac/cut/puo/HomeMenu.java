@@ -82,6 +82,7 @@ public class HomeMenu extends AppCompatActivity {
             case R.id.word_mates:
                 return true;
             case R.id.word_game:
+                startActivity(new Intent(HomeMenu.this, GameHome.class));
                 return true;
             case R.id.word_highscore:
                 return true;

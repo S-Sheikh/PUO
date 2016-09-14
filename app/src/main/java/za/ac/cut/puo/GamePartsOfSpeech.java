@@ -117,6 +117,8 @@ public class GamePartsOfSpeech extends AppCompatActivity {
         score = 001;
         mHandler.sendEmptyMessage(MSG_START_TIMER);
 
+//        ActionBar actionbar = getSupportActionBar();
+//        actionbar.setDisplayHomeAsUpEnabled(true);
     }
 
     public void onBang(View v) {
