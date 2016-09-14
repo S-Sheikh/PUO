@@ -52,6 +52,14 @@
     <string name="word_highscore">High Scores</string>
     <string name="logout">Log Out</string>
     <string name="updating">Updating</string>
+    <string name="supported">Supported</string>
+    <string name="not_supported">Not Supported</string>
+    <string name="add_word">Add a Word</string>
+    <string name="prompt_language">Language</string>
+    <string name="prompt_part_of_speech">Part of Speech</string>
+    <string name="enter_word">Enter a word</string>
+    <string name="definition">Enter a definition</string>
+    <string name="sentence_example">Enter sentence with word</string>
 
     <!-- sort_filter_bar spinner entries -->
     <string-array name="entries_ordering">

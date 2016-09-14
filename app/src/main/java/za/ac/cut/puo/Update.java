@@ -12,9 +12,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -32,10 +29,10 @@ import dmax.dialog.SpotsDialog;
 
 public class Update extends AppCompatActivity {
     Spinner spRoles,spLocation;
-    EditText etName, etSurname, etUsername, etEmail, etCellPhone, etPassword, etRePassword;
+    EditText etName, etSurname, etEmail, etCellPhone, etPassword, etRePassword;
     TextView tvAddPic;
     ImageView ivProfilePic;
-    TextInputLayout nameInput, surnameInput, userNameInput, emailInput, passwordInput, rePasswordInput, cellInput;
+    TextInputLayout nameInput, surnameInput, emailInput, passwordInput, rePasswordInput, cellInput;
     SpotsDialog progressDialog;
     Toolbar update_toolBar;
     Button btn_update_submit;
@@ -51,14 +48,12 @@ public class Update extends AppCompatActivity {
                 etName.setText(user.getProperty("name").toString().trim());
                 etSurname.setText(user.getProperty("surname").toString().trim());
                 etEmail.setText(user.getEmail());
-                etUsername.setText(user.getProperty("username").toString().trim());
                 etPassword.setText(user.getPassword());
                 etRePassword.setText(user.getPassword());
             } else {
                 etName.setText(user.getProperty("name").toString().trim());
                 etSurname.setText(user.getProperty("surname").toString().trim());
                 etEmail.setText(user.getEmail());
-                etUsername.setText(user.getProperty("username").toString().trim());
                 etPassword.setText(user.getPassword());
                 etRePassword.setText(user.getPassword());
                 etCellPhone.setText(user.getProperty("cell").toString().trim());
@@ -69,25 +64,12 @@ public class Update extends AppCompatActivity {
 
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_update_profile,menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return super.onOptionsItemSelected(item);
-    }
-
 
     public void initViews(){
         spRoles = (Spinner)findViewById(R.id.spRoles);
         spLocation = (Spinner)findViewById(R.id.spLocation);
         etName = (EditText)findViewById(R.id.etName);
         etSurname = (EditText)findViewById(R.id.etSurname);
-        etUsername = (EditText)findViewById(R.id.etUsername);
         etEmail = (EditText)findViewById(R.id.etEmail);
         etCellPhone = (EditText)findViewById(R.id.etCellPhone);
         etPassword = (EditText) findViewById(R.id.etPassword);
@@ -96,7 +78,6 @@ public class Update extends AppCompatActivity {
         ivProfilePic = (ImageView)findViewById(R.id.ivProfilePic);
         nameInput = (TextInputLayout)findViewById(R.id.name_input);
         surnameInput = (TextInputLayout)findViewById(R.id.surname_input);
-        userNameInput = (TextInputLayout)findViewById(R.id.username_input);
         emailInput = (TextInputLayout)findViewById(R.id.email_input);
         passwordInput = (TextInputLayout)findViewById(R.id.password_input);
         rePasswordInput = (TextInputLayout) findViewById(R.id.repassword_input);
@@ -247,28 +228,7 @@ public class Update extends AppCompatActivity {
                 }
             }
         });
-        etUsername.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                validateEditText(s, etUsername);
-            }
-        });
-        etUsername.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
-                    validateEditText(((EditText) v).getText(), etUsername);
-                }
-            }
-        });
         etCellPhone.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -305,8 +265,6 @@ public class Update extends AppCompatActivity {
                 nameInput.setError(null);
             else if (v.getId() == R.id.etSurname)
                 surnameInput.setError(null);
-            else if (v.getId() == R.id.etUsername)
-                userNameInput.setError(null);
             else if (v.getId() == R.id.etCellPhone)
                 cellInput.setError(null);
         } else {
@@ -320,8 +278,6 @@ public class Update extends AppCompatActivity {
                 nameInput.setError(getString(R.string.txt_input_layout));
             else if (v.getId() == R.id.etSurname)
                 surnameInput.setError(getString(R.string.txt_input_layout));
-            else if (v.getId() == R.id.etUsername)
-                userNameInput.setError(getString(R.string.txt_input_layout));
             else if (v.getId() == R.id.etCellPhone)
                 cellInput.setError(getString(R.string.txt_input_layout));
         }
@@ -330,11 +286,10 @@ public class Update extends AppCompatActivity {
     public void btnUpdateSubmit(View v) {
         if (connectionAvailable()) {
             if (etName.getText().toString().trim().isEmpty() && etSurname.getText().toString().trim().isEmpty() &&
-                    etUsername.getText().toString().trim().isEmpty() && etEmail.getText().toString().trim().isEmpty() &&
+                    etEmail.getText().toString().trim().isEmpty() &&
                     etPassword.getText().toString().trim().isEmpty() && etRePassword.getText().toString().trim().isEmpty()) {
                 nameInput.setError(getString(R.string.txt_input_layout));
                 surnameInput.setError(getString(R.string.txt_input_layout));
-                userNameInput.setError(getString(R.string.txt_input_layout));
                 emailInput.setError(getString(R.string.txt_input_layout));
                 passwordInput.setError(getString(R.string.txt_input_layout));
                 rePasswordInput.setError(getString(R.string.txt_input_layout));
@@ -348,7 +303,6 @@ public class Update extends AppCompatActivity {
                     user.setPassword(etPassword.getText().toString().trim());
                     user.setProperty("name", etName.getText().toString().trim());
                     user.setProperty("surname", etSurname.getText().toString().trim());
-                    user.setProperty("username", etUsername.getText().toString().trim());
                     user.setProperty("cell", etCellPhone.getText().toString().trim());
                     user.setProperty("role", spRoles.getSelectedItem().toString().trim());
                     user.setProperty("location", spLocation.getSelectedItem().toString().trim());
@@ -368,7 +322,6 @@ public class Update extends AppCompatActivity {
                             intent.putExtra("password", user.getPassword());
                             intent.putExtra("name", user.getProperty("name").toString().trim());
                             intent.putExtra("surname", user.getProperty("surname").toString().trim());
-                            intent.putExtra("username", user.getProperty("username").toString().trim());
                             intent.putExtra("role", user.getProperty("role").toString().trim());
                             intent.putExtra("location", user.getProperty("location").toString().trim());
                             intent.putExtra("cell", user.getProperty("cell").toString().trim());

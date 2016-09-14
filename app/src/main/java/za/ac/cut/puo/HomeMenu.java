@@ -1,20 +1,38 @@
 package za.ac.cut.puo;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
 
+import java.util.List;
+
 public class HomeMenu extends AppCompatActivity {
     Toolbar home_toolBar;
     TextView tvUsernameHome, tvUserType, tvWordCount;
+    ListView lvWords;
+    List<Word> words;
+    EditText etAddWord, etDefinition, etSentence;
+    Spinner spLanguage, spPartOfSpeech;
+    ImageView ivAddImage, ivAddSound;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,10 +41,18 @@ public class HomeMenu extends AppCompatActivity {
         tvUsernameHome = (TextView) findViewById(R.id.tvUsernameHome);
         tvUserType = (TextView) findViewById(R.id.tvUserType);
         tvWordCount = (TextView) findViewById(R.id.tvWordCount);
+        lvWords = (ListView) findViewById(R.id.lv_words);
+        etAddWord = (EditText) findViewById(R.id.etAddWord);
+        etDefinition = (EditText) findViewById(R.id.etDefinition);
+        etSentence = (EditText) findViewById(R.id.etSentence);
+        spLanguage = (Spinner) findViewById(R.id.spLanguage);
+        spPartOfSpeech = (Spinner) findViewById(R.id.spPartOfSpeech);
+        ivAddImage = (ImageView) findViewById(R.id.ivAddImage);
+        ivAddSound = (ImageView) findViewById(R.id.ivAddSound);
         setSupportActionBar(home_toolBar);
 
         BackendlessUser user = Backendless.UserService.CurrentUser();
-        tvUsernameHome.setText(user.getProperty("username").toString().trim());
+        tvUsernameHome.setText(user.getProperty("name").toString().trim() + " " + user.getProperty("surname").toString().trim());
         tvUserType.setText(user.getProperty("role").toString().trim());
     }
 
@@ -41,7 +67,7 @@ public class HomeMenu extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
             case R.id.home_menu_addWord:
-                //Add a word
+                AddWord();
                 return true;
             case R.id.home_menu_profile:
                 //go to profile
@@ -65,6 +91,12 @@ public class HomeMenu extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onResume() {
+        //loadData();
+        super.onResume();
+    }
+
     public void updateProfileData() {
 
         BackendlessUser user = Backendless.UserService.CurrentUser();
@@ -74,12 +106,74 @@ public class HomeMenu extends AppCompatActivity {
         intent.putExtra("password", user.getPassword());
         intent.putExtra("name", user.getProperty("name").toString().trim());
         intent.putExtra("surname", user.getProperty("surname").toString().trim());
-        intent.putExtra("username", user.getProperty("username").toString().trim());
         intent.putExtra("role", user.getProperty("role").toString().trim());
         intent.putExtra("location", user.getProperty("location").toString().trim());
         intent.putExtra("cell", user.getProperty("cell").toString().trim());
         intent.putExtra("isUpdated", user.getProperty("isUpdated").toString().trim());
         startActivity(intent);
 
+    }
+
+    /**
+     * public void loadData(){
+     * if(words != null){
+     * words.clear();
+     * }
+     * BackendlessUser user = Backendless.UserService.CurrentUser();
+     * BackendlessDataQuery dataQuery = new BackendlessDataQuery();
+     * dataQuery.setWhereClause("user = '" + user.getEmail() + "'");
+     * Backendless.Persistence.of(Word.class).find(dataQuery, new AsyncCallback<BackendlessCollection<Word>>() {
+     *
+     * @Override public void handleResponse(BackendlessCollection<Word> wordBackendlessCollection) {
+     * words = wordBackendlessCollection.getData();
+     * WordHomeAdapter wordHomeAdapter = new WordHomeAdapter(HomeMenu.this,words);
+     * lvWords.setAdapter(wordHomeAdapter);
+     * <p/>
+     * }
+     * @Override public void handleFault(BackendlessFault backendlessFault) {
+     * Toast.makeText(HomeMenu.this,backendlessFault.getMessage(),Toast.LENGTH_SHORT).show();
+     * }
+     * });
+     * <p/>
+     * }
+     **/
+    public void AddWord() {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setView(R.layout.home_add_word);
+        dialog.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (connectionAvailable()) {
+                    if (!(etAddWord.getText().toString().trim().isEmpty() || etSentence.getText().toString().trim().isEmpty() ||
+                            etDefinition.getText().toString().trim().isEmpty()) && spLanguage.isSelected() || spPartOfSpeech.isSelected()) {
+                        Word word = new Word();
+                    }
+                } else {
+
+                }
+            }
+        });
+        dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        dialog.show();
+    }
+    private boolean connectionAvailable(){
+        boolean connected = false;
+        ConnectivityManager cm = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        if (activeNetwork != null) {//if true,connected to the internet
+            if (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI) {
+                connected = true;//connected to using wifi
+            } else if (activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE) {
+                connected = true;//connected using mobile data
+            }
+        } else {
+            connected = false;//no internet connection
+        }
+        return connected;
     }
 }

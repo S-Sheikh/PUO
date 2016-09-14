@@ -84,7 +84,6 @@ public class Login extends AppCompatActivity {
                             intent.putExtra("password", backendlessUser.getPassword());
                             intent.putExtra("name", backendlessUser.getProperty("name").toString().trim());
                             intent.putExtra("surname", backendlessUser.getProperty("surname").toString().trim());
-                            intent.putExtra("username", backendlessUser.getProperty("username").toString().trim());
                             intent.putExtra("objectId", backendlessUser.getObjectId());
                             startActivity(intent);
                         } else {
@@ -95,7 +94,6 @@ public class Login extends AppCompatActivity {
                             intent1.putExtra("user", backendlessUser.getEmail());
                             intent1.putExtra("name", backendlessUser.getProperty("name").toString().trim());
                             intent1.putExtra("surname", backendlessUser.getProperty("surname").toString().trim());
-                            intent1.putExtra("username", backendlessUser.getProperty("username").toString().trim());
                             intent1.putExtra("role", backendlessUser.getProperty("role").toString().trim());
                             intent1.putExtra("cell", backendlessUser.getProperty("cell").toString().trim());
                             intent1.putExtra("isUpdated", backendlessUser.getProperty("isUpdated").toString().trim());
