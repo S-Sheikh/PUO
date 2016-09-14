@@ -74,6 +74,7 @@ public class HomeMenu extends AppCompatActivity {
                 updateProfileData();
                 return true;
             case R.id.word_treasure:
+                startActivity(new Intent(HomeMenu.this, WordTreasureActivity.class));
                 return true;
             case R.id.word_chest:
                 return true;
@@ -82,6 +83,7 @@ public class HomeMenu extends AppCompatActivity {
             case R.id.word_mates:
                 return true;
             case R.id.word_game:
+                startActivity(new Intent(HomeMenu.this, GameWhatLanguage.class));
                 return true;
             case R.id.word_highscore:
                 return true;

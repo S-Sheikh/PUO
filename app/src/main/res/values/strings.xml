@@ -93,6 +93,11 @@
     </string-array>
 
     <string name="action_settings">Settings</string>
+    <string name="popup_menu_support">Support</string>
+    <string name="popup_menu_block">Block</string>
+    <string name="popup_menu_rate">Rate</string>
+    <string name="popup_menu_add_to_word_chest">Add to Word Chest</string>
+    <string name="popup_menu_share">Share</string>
     <array name="role_items">
         <item>Collector</item>
         <item>Specialist</item>

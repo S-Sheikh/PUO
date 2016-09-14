@@ -26,9 +26,9 @@ public class WordTreasureActivity extends AppCompatActivity implements
         appBar.setTitle(" "+title);
         setSupportActionBar(appBar);
 
-//        if (activity.getSupportActionBar() != null) {
-//            activity.getSupportActionBar().setDisplayShowHomeEnabled(true);
-//        }
+        if (activity.getSupportActionBar() != null) {
+            activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
     }
 
 
