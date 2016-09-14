@@ -130,6 +130,7 @@ public class Register extends AppCompatActivity {
         setSupportActionBar(register_toolBar);
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
+        register_toolBar.setTitleTextColor(getResources().getColor(R.color.colorIcons));
     }
     private void errorMsg(){
         edt_register__name.addTextChangedListener(new TextWatcher() {
