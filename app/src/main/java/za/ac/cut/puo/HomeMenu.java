@@ -143,10 +143,15 @@ public class HomeMenu extends AppCompatActivity {
         dialog.setPositiveButton("Add", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                BackendlessUser user = Backendless.UserService.CurrentUser();
                 if (connectionAvailable()) {
                     if (!(etAddWord.getText().toString().trim().isEmpty() || etSentence.getText().toString().trim().isEmpty() ||
                             etDefinition.getText().toString().trim().isEmpty()) && spLanguage.isSelected() || spPartOfSpeech.isSelected()) {
                         Word word = new Word();
+                        word.setEmail(user.getEmail());
+                        word.setWord(etAddWord.getText().toString().trim());
+                        word.setDefinition(etDefinition.getText().toString().trim());
+                        word.set(etAddWord.getText().toString().trim());
                     }
                 } else {
 

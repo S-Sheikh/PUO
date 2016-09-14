@@ -10,6 +10,7 @@ public class Word {
     private String Email;
     private String Name;
     private String Surname;
+    private String Sentence;
     private boolean Supported;
     private boolean RepeatFlag;
     private String objectId;
@@ -26,6 +27,7 @@ public class Word {
         this.Surname = null;
         this.Supported = false;
         this.RepeatFlag = false;
+        this.Sentence = null;
     }
     //For the Word Game
     public Word(String word, String language, String definition, String partOfSpeech) {
@@ -130,5 +132,13 @@ public class Word {
 
     public void setUpdated(Date updated) {
         this.updated = updated;
+    }
+
+    public String getSentence() {
+        return Sentence;
+    }
+
+    public void setSentence(String sentence) {
+        Sentence = sentence;
     }
 }
