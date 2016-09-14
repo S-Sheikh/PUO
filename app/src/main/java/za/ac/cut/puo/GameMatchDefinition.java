@@ -26,7 +26,7 @@ public class GameMatchDefinition extends AppCompatActivity {
     ArrayList<Word> questionArray = new ArrayList<>();
     ArrayList<WordGameAdapter> buttonAdapter = new ArrayList<>();
     ObjectAnimator animY;
-    int score;
+    int score, answerAttempts;
     Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -116,6 +116,8 @@ public class GameMatchDefinition extends AppCompatActivity {
         populateButtonTxt();
 
         score = 001;
+        answerAttempts = 0;
+
         mHandler.sendEmptyMessage(MSG_START_TIMER);
 
     }

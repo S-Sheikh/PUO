@@ -3,111 +3,110 @@ package za.ac.cut.puo;
 import java.util.Date;
 
 public class Word {
-    private String Word;
-    private String Language;
-    private String Definition;
-    private String PartOfSpeech;
-    private String Email;
-    private String Name;
-    private String Surname;
-    private String Sentence;
-    private boolean Supported;
-    private boolean RepeatFlag;
+    private String word;
+    private String language;
+    private String definition;
+    private String partOfSpeech;
+    private String email;
+    private String name;
+    private String surname;
+    private boolean supported;
+    private boolean repeatFlag;
     private String objectId;
     private Date created;
     private Date updated;
 
     public Word() {
-        this.Word = null;
-        this.Language = null;
-        this.Definition = null;
-        this.PartOfSpeech = null;
-        this.Email = null;
-        this.Name = null;
-        this.Surname = null;
-        this.Supported = false;
-        this.RepeatFlag = false;
-        this.Sentence = null;
+        this.word = null;
+        this.language = null;
+        this.definition = null;
+        this.partOfSpeech = null;
+        this.email = null;
+        this.name = null;
+        this.surname = null;
+        this.supported = false;
+        this.repeatFlag = false;
     }
-    //For the Word Game
+
+    //For the word Game
     public Word(String word, String language, String definition, String partOfSpeech) {
-        Word = word;
-        Language = language;
-        Definition = definition;
-        PartOfSpeech = partOfSpeech;
-        RepeatFlag = false;
+        this.word = word;
+        this.language = language;
+        this.definition = definition;
+        this.partOfSpeech = partOfSpeech;
+        repeatFlag = false;
     }
 
     public boolean isRepeatFlag() {
-        return RepeatFlag;
+        return repeatFlag;
     }
 
     public void setRepeatFlag(boolean repeatFlag) {
-        this.RepeatFlag = repeatFlag;
+        this.repeatFlag = repeatFlag;
     }
 
     public String getLanguage() {
-        return Language;
+        return language;
     }
 
     public void setLanguage(String language) {
-        Language = language;
+        this.language = language;
     }
 
     public String getWord() {
-        return Word;
+        return word;
     }
 
     public void setWord(String word) {
-        Word = word;
+        this.word = word;
     }
 
     public String getDefinition() {
-        return Definition;
+        return definition;
     }
 
     public void setDefinition(String definition) {
-        Definition = definition;
+        this.definition = definition;
     }
 
     public String getPartOfSpeech() {
-        return PartOfSpeech;
+        return partOfSpeech;
     }
 
     public void setPartOfSpeech(String partOfSpeech) {
-        PartOfSpeech = partOfSpeech;
+        this.partOfSpeech = partOfSpeech;
     }
 
     public String getEmail() {
-        return Email;
+        return email;
     }
 
     public void setEmail(String email) {
-        this.Email = email;
+        this.email = email;
     }
 
     public String getName() {
-        return Name;
+        return name;
     }
 
     public void setName(String name) {
-        this.Name = name;
+        this.name = name;
     }
 
     public String getSurname() {
-        return Surname;
+        return surname;
     }
 
     public void setSurname(String surname) {
-        this.Surname = surname;
+        this.surname = surname;
     }
 
     public boolean isSupported() {
-        return Supported;
+        return supported;
     }
 
     public void setSupported(boolean supported) {
-        this.Supported = supported;
+        this.supported = supported;
     }
 
     public String getObjectId() {
@@ -132,13 +131,5 @@ public class Word {
 
     public void setUpdated(Date updated) {
         this.updated = updated;
-    }
-
-    public String getSentence() {
-        return Sentence;
-    }
-
-    public void setSentence(String sentence) {
-        Sentence = sentence;
     }
 }
