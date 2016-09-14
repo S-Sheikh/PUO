@@ -10,6 +10,7 @@ public class Word {
     private String email;
     private String name;
     private String surname;
+    private String sentence;
     private boolean supported;
     private boolean repeatFlag;
     private String objectId;
@@ -131,5 +132,13 @@ public class Word {
 
     public void setUpdated(Date updated) {
         this.updated = updated;
+    }
+
+    public String getSentence() {
+        return sentence;
+    }
+
+    public void setSentence(String sentence) {
+        this.sentence = sentence;
     }
 }

@@ -9,19 +9,26 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
+import com.backendless.async.callback.AsyncCallback;
+import com.backendless.exceptions.BackendlessFault;
 
 import java.util.List;
+
+import dmax.dialog.SpotsDialog;
 
 public class HomeMenu extends AppCompatActivity {
     Toolbar home_toolBar;
@@ -31,6 +38,7 @@ public class HomeMenu extends AppCompatActivity {
     EditText etAddWord, etDefinition, etSentence;
     Spinner spLanguage, spPartOfSpeech;
     ImageView ivAddImage, ivAddSound;
+    SpotsDialog progressDialog;
 
 
     @Override
@@ -42,15 +50,7 @@ public class HomeMenu extends AppCompatActivity {
         tvUserType = (TextView) findViewById(R.id.tvUserType);
         tvWordCount = (TextView) findViewById(R.id.tvWordCount);
         lvWords = (ListView) findViewById(R.id.lv_words);
-        etAddWord = (EditText) findViewById(R.id.etAddWord);
-        etDefinition = (EditText) findViewById(R.id.etDefinition);
-        etSentence = (EditText) findViewById(R.id.etSentence);
-        spLanguage = (Spinner) findViewById(R.id.spLanguage);
-        spPartOfSpeech = (Spinner) findViewById(R.id.spPartOfSpeech);
-        ivAddImage = (ImageView) findViewById(R.id.ivAddImage);
-        ivAddSound = (ImageView) findViewById(R.id.ivAddSound);
         setSupportActionBar(home_toolBar);
-
         BackendlessUser user = Backendless.UserService.CurrentUser();
         tvUsernameHome.setText(user.getProperty("name").toString().trim() + " " + user.getProperty("surname").toString().trim());
         tvUserType.setText(user.getProperty("role").toString().trim());
@@ -138,22 +138,56 @@ public class HomeMenu extends AppCompatActivity {
      * }
      **/
     public void AddWord() {
+        LayoutInflater inflater = getLayoutInflater();
+        final View view = inflater.inflate(R.layout.home_add_word, null);
+        etAddWord = (EditText) view.findViewById(R.id.etAddWord);
+        etDefinition = (EditText) view.findViewById(R.id.etDefinition);
+        etSentence = (EditText) view.findViewById(R.id.etSentence);
+        spLanguage = (Spinner) view.findViewById(R.id.spLanguage);
+        spPartOfSpeech = (Spinner) view.findViewById(R.id.spPartOfSpeech);
+        ivAddImage = (ImageView) view.findViewById(R.id.ivAddImage);
+        ivAddSound = (ImageView) view.findViewById(R.id.ivAddSound);
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setView(R.layout.home_add_word);
+        dialog.setView(view);
         dialog.setPositiveButton("Add", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                progressDialog = new SpotsDialog(HomeMenu.this, R.style.Custom);
                 BackendlessUser user = Backendless.UserService.CurrentUser();
                 if (connectionAvailable()) {
                     if (!(etAddWord.getText().toString().trim().isEmpty() || etSentence.getText().toString().trim().isEmpty() ||
-                            etDefinition.getText().toString().trim().isEmpty()) && spLanguage.isSelected() || spPartOfSpeech.isSelected()) {
+                            etDefinition.getText().toString().trim().isEmpty())) {
+                        progressDialog.show();
                         Word word = new Word();
                         word.setEmail(user.getEmail());
+                        word.setObjectId(user.getObjectId());
                         word.setWord(etAddWord.getText().toString().trim());
                         word.setDefinition(etDefinition.getText().toString().trim());
-                        word.set(etAddWord.getText().toString().trim());
+                        word.setSentence(etSentence.getText().toString().trim());
+                        if (spLanguage.getSelectedItemPosition() < 0) {
+                            word.setLanguage(spLanguage.getSelectedItem().toString().trim());
+                        } else if (spPartOfSpeech.getSelectedItemPosition() < 0) {
+                            word.setPartOfSpeech(spPartOfSpeech.getSelectedItem().toString().trim());
+                        }
+                        Backendless.Persistence.save(word, new AsyncCallback<Word>() {
+                            @Override
+                            public void handleResponse(Word word) {
+                                Toast.makeText(HomeMenu.this, word.getWord() + " saved successfully!", Toast.LENGTH_SHORT).show();
+                                progressDialog.dismiss();
+                            }
+
+                            @Override
+                            public void handleFault(BackendlessFault backendlessFault) {
+                                Toast.makeText(HomeMenu.this, backendlessFault.getMessage(), Toast.LENGTH_LONG).show();
+                                progressDialog.dismiss();
+                            }
+                        });
+                    } else {
+                        Toast.makeText(HomeMenu.this, "Please fill in all fields!!", Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
                     }
                 } else {
+                    Toast.makeText(HomeMenu.this, "Please connect to the internet!", Toast.LENGTH_SHORT).show();
 
                 }
             }

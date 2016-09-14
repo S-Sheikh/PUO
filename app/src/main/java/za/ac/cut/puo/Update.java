@@ -297,6 +297,7 @@ public class Update extends AppCompatActivity {
             } else {
                 if (etPassword.getText().toString().trim().equals(etRePassword.getText().toString().trim())) {
                     progressDialog = new SpotsDialog(Update.this, R.style.Custom);
+                    progressDialog.setTitle("Updating");
                     progressDialog.show();
                     BackendlessUser user = Backendless.UserService.CurrentUser();
                     user.setProperty("objectId", getIntent().getStringExtra("objectId"));
