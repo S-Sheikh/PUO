@@ -1,36 +1,49 @@
 package za.ac.cut.puo;
 
 import android.graphics.Bitmap;
-import android.media.Rating;
 
 import com.backendless.media.audio.AudioStream;
 
-/**
- * Created by Shahbaaz Sheikh on 12/09/2016.
- */
+import java.util.Date;
+
 public class Word {
-    private String word, language, definition, partOfSpeech, usageSentence;
-    private Bitmap descImage;
-    private AudioStream pronunciation;
-    private Rating wordRating;
+    private String word;
+    private String language;
+    private String definition;
+    private String partOfSpeech;
+    private String email;
+    private String name;
+    private String surname;
+    private String sentence;
+    private String lexicon;
+    private boolean supported;
     private boolean repeatFlag;
+    private String objectId;
+    private Date created;
+    private Date updated;
+    private AudioStream pronunciation;
+    private float rating;
+    private Bitmap descImage;
 
-    public Word() {}
+    public Word() {
+        this.word = null;
+        this.language = null;
+        this.definition = null;
+        this.partOfSpeech = null;
+        this.email = null;
+        this.name = null;
+        this.surname = null;
+        this.supported = false;
+        this.repeatFlag = false;
+    }
 
+    //For the word Game
     public Word(String word, String language, String definition, String partOfSpeech) {
         this.word = word;
         this.language = language;
         this.definition = definition;
         this.partOfSpeech = partOfSpeech;
         repeatFlag = false;
-    }
-
-    public Bitmap getDescImage() {
-        return descImage;
-    }
-
-    public void setDescImage(Bitmap descImage) {
-        this.descImage = descImage;
     }
 
     public boolean isRepeatFlag() {
@@ -73,13 +86,70 @@ public class Word {
         this.partOfSpeech = partOfSpeech;
     }
 
-    public String getUsageSentence() {
-        return usageSentence;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUsageSentence(String usageSentence) {
-        this.usageSentence = usageSentence;
+    public void setEmail(String email) {
+        this.email = email;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+    public boolean isSupported() {
+        return supported;
+    }
+
+    public void setSupported(boolean supported) {
+        this.supported = supported;
+    }
+
+    public String getObjectId() {
+        return objectId;
+    }
+
+    public void setObjectId(String objectId) {
+        this.objectId = objectId;
+    }
+
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
+    }
+
+    public Date getUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(Date updated) {
+        this.updated = updated;
+    }
+
+    public String getSentence() {
+        return sentence;
+    }
+
+    public void setSentence(String sentence) {
+        this.sentence = sentence;
+    }
+
 
     public AudioStream getPronunciation() {
         return pronunciation;
@@ -89,11 +159,35 @@ public class Word {
         this.pronunciation = pronunciation;
     }
 
-    public Rating getWordRating() {
-        return wordRating;
+    public float getRating() {
+        return rating;
     }
 
-    public void setWordRating(Rating wordRating) {
-        this.wordRating = wordRating;
+    public void setRating(float rating) {
+        this.rating = rating;
+    }
+
+    public Bitmap getDescImage() {
+        return descImage;
+    }
+
+    public void setDescImage(Bitmap descImage) {
+        this.descImage = descImage;
+    }
+
+    public String getLexicon() {
+        return lexicon;
+    }
+
+    public void setLexicon(String lexicon) {
+        this.lexicon = lexicon;
+    }
+
+    public String getStatus() {
+        return supported ? "supported" : "not supported";
+    }
+
+    public String getAuthor(){
+        return name + " " + surname;
     }
 }

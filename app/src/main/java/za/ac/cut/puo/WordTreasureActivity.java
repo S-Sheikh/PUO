@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 public class WordTreasureActivity extends AppCompatActivity implements
-        WordListFragment.OnWordSelectedListener {
+        WordListFragment.OnWordListItemListener {
     Toolbar appBar;
 
     @Override
@@ -32,7 +32,7 @@ public class WordTreasureActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
+    public void onWordListItemSelected(Uri uri) {
 
     }
 }
