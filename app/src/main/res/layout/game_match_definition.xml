@@ -147,12 +147,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="New Button"
-            android:id="@+id/button8"
+            android:id="@+id/btn_question"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:textColor="#ffffff"
-            android:background="@drawable/rect_bar"
-            android:onClick="mixColors" />
+            android:background="@drawable/rect_bar" />
     </LinearLayout>
 
     <LinearLayout
@@ -166,17 +165,19 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="New Button"
-            android:id="@+id/button9"
+            android:id="@+id/btn_ans_topLeft"
             android:layout_weight="1"
-            android:layout_marginRight="5dp" />
+            android:layout_marginRight="5dp"
+            android:onClick="onBang" />
 
         <Button
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="New Button"
-            android:id="@+id/button10"
+            android:id="@+id/btn_ans_topRight"
             android:layout_weight="1"
-            android:layout_marginLeft="5dp" />
+            android:layout_marginLeft="5dp"
+            android:onClick="onBang" />
     </LinearLayout>
 
     <LinearLayout
@@ -190,17 +191,19 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="New Button"
-            android:id="@+id/button11"
+            android:id="@+id/btn_ans_bottomLeft"
             android:layout_weight="1"
-            android:layout_marginRight="5dp" />
+            android:layout_marginRight="5dp"
+            android:onClick="onBang" />
 
         <Button
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="New Button"
-            android:id="@+id/button12"
+            android:id="@+id/btn_ans_bottomRight"
             android:layout_weight="1"
-            android:layout_marginLeft="5dp" />
+            android:layout_marginLeft="5dp"
+            android:onClick="onBang" />
     </LinearLayout>
 
 </LinearLayout>

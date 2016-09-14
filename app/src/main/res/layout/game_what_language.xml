@@ -2,16 +2,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearRoot"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:clipChildren="false"
     android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".GameWhatLanguage"
-    android:id="@+id/linearRoot"
-    android:clipChildren="false">
+    tools:context=".GameWhatLanguage">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -103,7 +103,7 @@
             android:layout_marginRight="15dp"
             android:allowUndo="false"
             android:background="@drawable/game_button_bg_score"
-            android:text="001"
+            android:text="000"
             android:textColor="@color/gColorScore"
             android:textStyle="bold" />
 
@@ -126,7 +126,8 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"            android:clipChildren="false"
+        android:layout_height="match_parent"
+        android:clipChildren="false"
 
         android:gravity="center_horizontal"
         android:orientation="horizontal">
@@ -143,146 +144,149 @@
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"            android:clipChildren="false"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
+        android:clipChildren="false"
 
         android:gravity="center_horizontal"
-        android:layout_marginTop="10dp">
+        android:orientation="horizontal">
 
         <Button
+            android:id="@+id/btn_question"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="New Button"
-            android:id="@+id/btn_question"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:textColor="#ffffff"
-            android:background="@drawable/rect_bar" />
+            android:background="@drawable/rect_bar"
+            android:text="New Button"
+            android:textColor="#ffffff" />
 
     </LinearLayout>
 
     <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/tableLayout1"
-        android:layout_width="match_parent"            android:clipChildren="false"
-
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="10dp">
+
+        android:layout_marginTop="10dp"
+        android:clipChildren="false">
 
         <TableRow
             android:id="@+id/tableRow1"
             android:layout_width="fill_parent"
             android:layout_height="0dp"
-            android:clipChildren="false"
-            android:layout_weight="1" >
+            android:layout_weight="1"
+            android:clipChildren="false">
 
             <Button
                 android:id="@+id/btn_ans_topLeft"
                 android:layout_width="0dp"
                 android:layout_height="fill_parent"
-                android:layout_weight="1"
                 android:layout_marginRight="5dp"
+                android:layout_weight="1"
                 android:onClick="onBang" />
 
             <Button
                 android:id="@+id/btn_ans_topRight"
                 android:layout_width="0dp"
                 android:layout_height="fill_parent"
-                android:layout_weight="1"
                 android:layout_marginLeft="5dp"
+                android:layout_weight="1"
                 android:onClick="onBang" />
         </TableRow>
 
         <TableRow
             android:id="@+id/tableRow2"
             android:layout_width="fill_parent"
-            android:layout_height="0dp"            android:clipChildren="false"
+            android:layout_height="0dp"
+            android:layout_marginTop="5dp"
 
             android:layout_weight="1"
-            android:layout_marginTop="5dp">
+            android:clipChildren="false">
 
             <Button
                 android:id="@+id/btn_ans_bottomLeft"
                 android:layout_width="0dp"
                 android:layout_height="fill_parent"
-                android:layout_weight="1"
                 android:layout_marginRight="5dp"
+                android:layout_weight="1"
                 android:onClick="onBang" />
 
             <Button
                 android:id="@+id/btn_ans_bottomRight"
                 android:layout_width="0dp"
                 android:layout_height="fill_parent"
-                android:layout_weight="1"
                 android:layout_marginLeft="5dp"
+                android:layout_weight="1"
                 android:onClick="onBang" />
         </TableRow>
 
     </TableLayout>
     <!--<GridLayout-->
-        <!--android:layout_width="309dp"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:columnCount="3"-->
-        <!--android:columnWidth="320dp"-->
-        <!--android:orientation="vertical"-->
-        <!--android:rowCount="2"-->
-        <!--android:stretchMode="columnWidth"-->
-        <!--android:foregroundTint="@color/abc_btn_colored_borderless_text_material"-->
-        <!--android:useDefaultMargins="true"-->
-        <!--android:layout_marginLeft="25dp">-->
+    <!--android:layout_width="309dp"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:columnCount="3"-->
+    <!--android:columnWidth="320dp"-->
+    <!--android:orientation="vertical"-->
+    <!--android:rowCount="2"-->
+    <!--android:stretchMode="columnWidth"-->
+    <!--android:foregroundTint="@color/abc_btn_colored_borderless_text_material"-->
+    <!--android:useDefaultMargins="true"-->
+    <!--android:layout_marginLeft="25dp">-->
 
-        <!--<LinearLayout-->
-            <!--android:id="@+id/linearLayout"-->
-            <!--android:layout_width="140dp"-->
-            <!--android:layout_height="40dp"-->
-            <!--android:layout_row="0"-->
-            <!--android:gravity="center_horizontal">-->
+    <!--<LinearLayout-->
+    <!--android:id="@+id/linearLayout"-->
+    <!--android:layout_width="140dp"-->
+    <!--android:layout_height="40dp"-->
+    <!--android:layout_row="0"-->
+    <!--android:gravity="center_horizontal">-->
 
-            <!--<Button-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:text="New Button"-->
-                <!--android:id="@+id/button20" />-->
-        <!--</LinearLayout>-->
+    <!--<Button-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="New Button"-->
+    <!--android:id="@+id/button20" />-->
+    <!--</LinearLayout>-->
 
-        <!--<LinearLayout-->
-            <!--android:id="@+id/linearLayout3"-->
-            <!--android:layout_width="140dp"-->
-            <!--android:layout_height="40dp"-->
-            <!--android:gravity="center_horizontal">-->
+    <!--<LinearLayout-->
+    <!--android:id="@+id/linearLayout3"-->
+    <!--android:layout_width="140dp"-->
+    <!--android:layout_height="40dp"-->
+    <!--android:gravity="center_horizontal">-->
 
-            <!--<Button-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:text="New Button"-->
-                <!--android:id="@+id/button21" />-->
-        <!--</LinearLayout>-->
+    <!--<Button-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="New Button"-->
+    <!--android:id="@+id/button21" />-->
+    <!--</LinearLayout>-->
 
-        <!--<LinearLayout-->
-            <!--android:id="@+id/linearLayout4"-->
-            <!--android:layout_width="140dp"-->
-            <!--android:layout_height="40dp"-->
-            <!--android:gravity="center_horizontal">-->
+    <!--<LinearLayout-->
+    <!--android:id="@+id/linearLayout4"-->
+    <!--android:layout_width="140dp"-->
+    <!--android:layout_height="40dp"-->
+    <!--android:gravity="center_horizontal">-->
 
-            <!--<Button-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:text="New Button"-->
-                <!--android:id="@+id/button22" />-->
-        <!--</LinearLayout>-->
+    <!--<Button-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="New Button"-->
+    <!--android:id="@+id/button22" />-->
+    <!--</LinearLayout>-->
 
-        <!--<LinearLayout-->
-            <!--android:id="@+id/linearLayout5"-->
-            <!--android:layout_width="140dp"-->
-            <!--android:layout_height="40dp"-->
-            <!--android:gravity="center_horizontal">-->
+    <!--<LinearLayout-->
+    <!--android:id="@+id/linearLayout5"-->
+    <!--android:layout_width="140dp"-->
+    <!--android:layout_height="40dp"-->
+    <!--android:gravity="center_horizontal">-->
 
-            <!--<Button-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:text="New Button"-->
-                <!--android:id="@+id/button23" />-->
-        <!--</LinearLayout>-->
+    <!--<Button-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="New Button"-->
+    <!--android:id="@+id/button23" />-->
+    <!--</LinearLayout>-->
     <!--</GridLayout>-->
 
 </LinearLayout>

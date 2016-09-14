@@ -14,11 +14,12 @@ public class Word {
     private boolean supported;
     private boolean repeatFlag;
 
+
+    //For the Word Game
     public Word(String word, String language, String definition, String partOfSpeech) {
         Word = word;
         Language = language;
         Definition = definition;
-
         PartOfSpeech = partOfSpeech;
         repeatFlag = false;
     }

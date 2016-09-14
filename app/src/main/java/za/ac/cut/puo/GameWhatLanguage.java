@@ -1,8 +1,10 @@
 package za.ac.cut.puo;
 
+import android.animation.ObjectAnimator;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.animation.BounceInterpolator;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -12,12 +14,15 @@ import java.util.Random;
 import xyz.hanks.library.SmallBang;
 
 public class GameWhatLanguage extends AppCompatActivity {
-    Button btn_question, btn_ans_topLeft, btn_ans_topRight, btn_ans_bottomLeft, btn_ans_bottomRight;
+    Button btn_question, btn_ans_topLeft, btn_ans_topRight, btn_ans_bottomLeft, btn_ans_bottomRight
+            ,btn_circleScore;
     private SmallBang mSmallBang;
     Word correctWord;
     ArrayList<Word> wordArrayList = new ArrayList<>();
     ArrayList<Word> questionArray = new ArrayList<>();
     ArrayList<WordGameAdapter> buttonAdapter = new ArrayList<>();
+    ObjectAnimator animY;
+    int score;
     private Random randomGenerator;
 
     @Override
@@ -29,6 +34,7 @@ public class GameWhatLanguage extends AppCompatActivity {
         btn_ans_topRight = (Button) findViewById(R.id.btn_ans_topRight);
         btn_ans_bottomLeft = (Button) findViewById(R.id.btn_ans_bottomLeft);
         btn_ans_bottomRight = (Button) findViewById(R.id.btn_ans_bottomRight);
+        btn_circleScore = (Button)findViewById(R.id.btn_circleScore);
         //Init small bang
         mSmallBang = SmallBang.attach2Window(GameWhatLanguage.this);
 
@@ -41,7 +47,7 @@ public class GameWhatLanguage extends AppCompatActivity {
 
         //Word Array BoilerPlate Start
         //English Words
-        wordArrayList.add(new Word("eutaxy", "English", "good order or management", "noun"));
+        wordArrayList.add(new Word("some", "English", "not all, but not none", "determiner"));
         wordArrayList.add(new Word("dabster", "English", "Slang. an expert", "noun"));
         wordArrayList.add(new Word("pulverulent", "English", "covered with dust or powder.", "adjective"));
         wordArrayList.add(new Word("vilipend", "English", "to vilify; depreciate", "verb"));
@@ -68,13 +74,18 @@ public class GameWhatLanguage extends AppCompatActivity {
         randomGenerator = new Random(); // Initialize it lolololol
 
         populateButtonTxt();
+
+        score = 001;
     }
 
     public void onBang(View v) {
         Button btn = (Button)v;
-        if(correctWord.getWord().toString().trim().equals(btn.getText().toString())){//Absolutley Necessary kek
+        //If Answer is correct
+        if(correctWord.getLanguage().toString().trim().equals(btn.getText().toString())){//Absolutley Necessary kek
             Toast.makeText(GameWhatLanguage.this, "Good For you !!!", Toast.LENGTH_SHORT).show();
             mSmallBang.setColors(GameWhatLanguage.this.getResources().getIntArray(R.array.gBangCorrect));
+            btn_circleScore.setText(Integer.toString(score++));
+            bounce();
         }else{
             Toast.makeText(GameWhatLanguage.this, "Please KYS", Toast.LENGTH_SHORT).show();
             mSmallBang.setColors(GameWhatLanguage.this.getResources().getIntArray(R.array.gBangWrong));
@@ -100,23 +111,23 @@ public class GameWhatLanguage extends AppCompatActivity {
             if (!btn.flag) {// if it's true, it has already been given a Word
                 btn.setFlag(true);
                 Word randWord = anyWord();
-                while (randWord.repeatFlag) {//if it's true , it has been used
+                while (randWord.isRepeatFlag()) {//if it's true , it has been used
                     randWord = anyWord(); // get another word
                 }
-                if (randWord.repeatFlag == false) {
+                if (randWord.isRepeatFlag() == false) {
                     for (Word allWords : wordArrayList) { // Iterate through all words in list
                         if (allWords.getLanguage().equals(randWord.getLanguage())) { // if the used word has a language thats been used up
                             allWords.setRepeatFlag(true);//set it to true( Used )
                         }
                     }
-                    btn.Answer.setText(randWord.getWord());
+                    btn.Answer.setText(randWord.getLanguage());
                     questionArray.add(randWord);
                 }
                 randWord.setRepeatFlag(true);
             }
         }
         correctWord = makeQuestion();
-        btn_question.setText(correctWord.getLanguage());
+        btn_question.setText(correctWord.getWord());
     }
 
     public Word anyWord() {
@@ -129,5 +140,13 @@ public class GameWhatLanguage extends AppCompatActivity {
         int index = randomGenerator.nextInt(questionArray.size());
         Word randItem = questionArray.get(index);
         return randItem;
+    }
+
+    public void bounce(){
+        animY = ObjectAnimator.ofFloat(btn_circleScore, "translationY", -100f, 0f);
+        animY.setDuration(700);//0.7sec
+        animY.setInterpolator(new BounceInterpolator());
+        animY.setRepeatCount(0);
+        animY.start();
     }
 }

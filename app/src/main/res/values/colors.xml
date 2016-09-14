@@ -41,6 +41,8 @@
         <item>@color/gLime</item>
         <item>@color/gGreen</item>
     </integer-array>
+    <!-- Banging Animation Arrays -->
+
 
     <color name="Red">#FF0000</color>
 
