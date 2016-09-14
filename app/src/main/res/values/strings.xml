@@ -1,16 +1,20 @@
 <resources>
+    <!-- login string values -->
     <string name="app_name">PUO</string>
     <string name="login_email_hint">E-mail</string>
     <string name="login_password_hint">Password</string>
     <string name="login_btn_text">Login</string>
     <string name="login_tv_talk_to_me">talk to me</string>
     <string name="login_tv_register">Register</string>
+    <!--                          -->
+    <!-- register string values -->
     <string name="register_name_hint">Name</string>
     <string name="register_surname_hint">Surname</string>
     <string name="register_username_hint">Username</string>
     <string name="register_reEnterPass_hint">Re-Enter Password</string>
     <string name="register_tv_text_register">Register</string>
     <string name="register_btn_submit">Submit</string>
+    <!--                          -->
     <string name="txt_input_layout">Please fill in all fields</string>
     <string name="add_picture">Add Picture</string>
     <string name="cell_phone">Cell Phone</string>
@@ -22,17 +26,32 @@
     <string name="admin">Administrator</string>
     <string name="spRole_hint">Role</string>
     <string name="spLocationHint">Location</string>
-    <string name="home_menu_item1">Add Word</string>
-    <string name="home_menu_item2">Profile</string>
+    <string name="home_menu_add_word">Add Word</string>
+    <string name="home_menu_profile">Profile</string>
     <string name="tv_recent_words">Recent Words</string>
     <string name="sp_Status">Status</string>
     <string name="contact_role">Role</string>
     <string name="tv_word_mates">Word Mates</string>
-    <string name="tvLoading">Logging in</string>
+    <string name="tvLoading">Logging in...please wait</string>
     <string name="title_activity_word_treasure">Word Treasure</string>
     <string name="tv_label_sort">Sort</string>
     <string name="tv_label_language">Language</string>
     <string name="tv_label_part_of_speech">Part of speech</string>
+    <string name="btn_reset_password">Reset Password</string>
+    <string name="enter_email">Enter your e-mail address</string>
+    <string name="reset">Reset</string>
+    <string name="cancel">Cancel</string>
+    <string name="please_wait">Please Wait</string>
+    <string name="logging_in">Logging...in</string>
+    <string name="word_treasure">Word Treasure</string>
+    <string name="word_game">Word Game</string>
+    <string name="word_centre">Word Centre</string>
+    <string name="word_2_word">Word2Word</string>
+    <string name="word_mates">Word Mates</string>
+    <string name="word_chest">Word Chest</string>
+    <string name="word_highscore">High Scores</string>
+    <string name="logout">Log Out</string>
+    <string name="updating">Updating</string>
 
     <!-- sort_filter_bar spinner entries -->
     <string-array name="entries_ordering">

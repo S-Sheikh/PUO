@@ -14,6 +14,7 @@ import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 import com.backendless.persistence.local.UserIdStorageFactory;
 
+//------> Still needs Work <------- @Watley
 public class Splash extends AppCompatActivity {
     TextView tvLoading;
     ProgressBar progressBar;
@@ -21,10 +22,9 @@ public class Splash extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash);
+        setContentView(R.layout.splash);
         tvLoading = (TextView) findViewById(R.id.tvLoading);
         progressBar = (ProgressBar) findViewById(R.id.progressBarCircular);
-        progressBar.setVisibility(View.GONE);
         Backendless.UserService.isValidLogin(new AsyncCallback<Boolean>() {
             @Override
             public void handleResponse(Boolean aBoolean) {
@@ -32,6 +32,7 @@ public class Splash extends AppCompatActivity {
                     startActivity(new Intent(Splash.this, Login.class));
                     Splash.this.finish();
                 } else {
+                    progressBar.setVisibility(View.VISIBLE);
                     tvLoading.setText(getString(R.string.tvLoading));
                     String userObjectId = UserIdStorageFactory.instance().getStorage().get();//gets user id of specific user that is loggen in
                     Backendless.Data.of(BackendlessUser.class).findById(userObjectId, new AsyncCallback<BackendlessUser>() {
@@ -39,10 +40,16 @@ public class Splash extends AppCompatActivity {
                         public void handleResponse(BackendlessUser backendlessUser) {
                             Intent intent = new Intent(Splash.this, HomeMenu.class);
                             intent.putExtra("user", backendlessUser.getEmail());
+                            intent.putExtra("password", backendlessUser.getPassword());
                             intent.putExtra("name", backendlessUser.getProperty("name").toString().trim());
                             intent.putExtra("surname", backendlessUser.getProperty("surname").toString().trim());
+                            intent.putExtra("username", backendlessUser.getProperty("username").toString().trim());
+                            intent.putExtra("cell", backendlessUser.getProperty("cell").toString().trim());
+                            intent.putExtra("role", backendlessUser.getProperty("role").toString().trim());
+                            intent.putExtra("location", backendlessUser.getProperty("location").toString().trim());
                             startActivity(intent);
                             Splash.this.finish();
+                            progressBar.setVisibility(View.GONE);
                         }
 
                         @Override
@@ -50,6 +57,7 @@ public class Splash extends AppCompatActivity {
                             Toast.makeText(Splash.this, backendlessFault.getMessage(), Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(Splash.this, Login.class));
                             Splash.this.finish();
+                            progressBar.setVisibility(View.GONE);
                         }
                     });
                 }
@@ -64,4 +72,7 @@ public class Splash extends AppCompatActivity {
         });
     }
 
-}
+
+    }
+
+

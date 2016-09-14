@@ -10,7 +10,7 @@ public class ContactList extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_contact_list);
+        setContentView(R.layout.word_mates);
         lvContactList = (ListView) findViewById(R.id.lvContactList);
     }
 

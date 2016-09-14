@@ -6,22 +6,25 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="za.ac.cut.puo.Splash">
-
     <android.support.v7.widget.Toolbar
-        android:id="@+id/home_toolBar"
+        android:id="@+id/splash_toolBar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:layout_marginBottom="50dp"
         android:background="?attr/colorPrimary"
+        android:elevation="4dp"
         android:theme="@style/toolBarText"
         app:popupTheme="@style/AppTheme" />
 
-    <ImageView
-        android:id="@+id/iv_puo_splash"
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/ivUserProfile"
         android:layout_width="match_parent"
         android:layout_height="150dp"
         android:layout_gravity="center_vertical"
-        android:src="@drawable/logo_puo" />
+        android:layout_marginTop="50dp"
+        android:src="@drawable/logo_puo"
+        app:civ_border_color="@color/colorAccent"
+        app:civ_border_overlay="true"
+        app:civ_border_width="1dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -40,8 +43,8 @@
             <ProgressBar
                 android:id="@+id/progressBarCircular"
                 style="@style/Widget.AppCompat.ProgressBar"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:layout_gravity="center_horizontal"
                 android:indeterminate="true"
                 android:theme="@style/CircularProgress" />
@@ -52,8 +55,10 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp"
-                android:text="Large Text"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
+                android:text="@string/logging_in"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="20sp"
+                android:textStyle="bold" />
         </LinearLayout>
 
     </LinearLayout>

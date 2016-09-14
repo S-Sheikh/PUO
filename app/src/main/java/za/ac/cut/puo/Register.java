@@ -34,7 +34,7 @@ public class Register extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register);
+        setContentView(R.layout.register);
         initialiseViews();
         errorMsg();
     }
@@ -66,7 +66,6 @@ public class Register extends AppCompatActivity {
                     @Override
                     public void handleResponse(BackendlessUser backendlessUser) {
                         Toast.makeText(Register.this, "Confirmation link has been sent to you!", Toast.LENGTH_SHORT).show();
-
                         Intent intent = new Intent(Register.this, Login.class);
                         intent.putExtra("user",edt_register__email.getText().toString().trim());
                         intent.putExtra("name",edt_register__name.getText().toString().trim());
@@ -139,6 +138,7 @@ public class Register extends AppCompatActivity {
         setSupportActionBar(register_toolBar);
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
+        register_toolBar.setTitleTextColor(getResources().getColor(R.color.colorIcons));
     }
     private void errorMsg(){
         edt_register__name.addTextChangedListener(new TextWatcher() {
