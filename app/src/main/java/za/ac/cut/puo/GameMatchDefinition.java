@@ -2,11 +2,12 @@ package za.ac.cut.puo;
 
 import android.animation.ObjectAnimator;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.animation.BounceInterpolator;
 import android.widget.Button;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -14,16 +15,54 @@ import java.util.Random;
 import xyz.hanks.library.SmallBang;
 
 public class GameMatchDefinition extends AppCompatActivity {
-    Button btn_question, btn_ans_topLeft, btn_ans_topRight, btn_ans_bottomLeft, btn_ans_bottomRight
-            ,btn_circleScore;
-    private SmallBang mSmallBang;
+    final int MSG_START_TIMER = 0;
+    final int MSG_STOP_TIMER = 1;
+    final int MSG_UPDATE_TIMER = 2;
+    final int REFRESH_RATE = 100;
+    Button btn_question, btn_ans_topLeft, btn_ans_topRight, btn_ans_bottomLeft, btn_ans_bottomRight, btn_circleScore, btn_timer;
+    Stopwatch timer = new Stopwatch();
     Word correctWord;
     ArrayList<Word> wordArrayList = new ArrayList<>();
     ArrayList<Word> questionArray = new ArrayList<>();
     ArrayList<WordGameAdapter> buttonAdapter = new ArrayList<>();
     ObjectAnimator animY;
     int score;
+    Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case MSG_START_TIMER:
+                    timer.start(); //start timer
+                    mHandler.sendEmptyMessage(MSG_UPDATE_TIMER);
+                    break;
+
+                case MSG_UPDATE_TIMER:
+                    if (timer.getElapsedTimeSecs() >= 0 && timer.getElapsedTimeSecs() <= 9) {
+                        btn_timer.setText("Time: " + timer.getElapsedTimeMin() + ":0" + timer.getElapsedTimeSecs());
+                    } else {
+                        btn_timer.setText("Time: " + timer.getElapsedTimeMin() + ":" + timer.getElapsedTimeSecs());
+                    }
+                    mHandler.sendEmptyMessageDelayed(MSG_UPDATE_TIMER, REFRESH_RATE); //text view is updated every second,
+                    break;                                  //though the timer is still running
+                case MSG_STOP_TIMER:
+                    mHandler.removeMessages(MSG_UPDATE_TIMER); // no more updates.
+                    timer.stop();//stop timer
+                    if (timer.getElapsedTimeSecs() >= 0 && timer.getElapsedTimeSecs() <= 9) {
+                        btn_timer.setText("Time: " + timer.getElapsedTimeMin() + ":0" + timer.getElapsedTimeSecs());
+                    } else {
+                        btn_timer.setText("Time: " + timer.getElapsedTimeMin() + ":" + timer.getElapsedTimeSecs());
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    };
+    private SmallBang mSmallBang;
     private Random randomGenerator;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +74,7 @@ public class GameMatchDefinition extends AppCompatActivity {
         btn_ans_bottomLeft = (Button) findViewById(R.id.btn_ans_bottomLeft);
         btn_ans_bottomRight = (Button) findViewById(R.id.btn_ans_bottomRight);
         btn_circleScore = (Button)findViewById(R.id.btn_circleScore);
+        btn_timer = (Button) findViewById(R.id.btn_timer);
         //Init small bang
         mSmallBang = SmallBang.attach2Window(GameMatchDefinition.this);
 
@@ -76,18 +116,18 @@ public class GameMatchDefinition extends AppCompatActivity {
         populateButtonTxt();
 
         score = 001;
+        mHandler.sendEmptyMessage(MSG_START_TIMER);
+
     }
 
     public void onBang(View v) {
         Button btn = (Button)v;
         //If Answer is correct
         if(correctWord.getWord().toString().trim().equals(btn.getText().toString())){//Absolutley Necessary kek
-            Toast.makeText(GameMatchDefinition.this, "Good For you !!!", Toast.LENGTH_SHORT).show();
             mSmallBang.setColors(GameMatchDefinition.this.getResources().getIntArray(R.array.gBangCorrect));
             btn_circleScore.setText(Integer.toString(score++));
             bounce();
         }else{
-            Toast.makeText(GameMatchDefinition.this, "Please KYS", Toast.LENGTH_SHORT).show();
             mSmallBang.setColors(GameMatchDefinition.this.getResources().getIntArray(R.array.gBangWrong));
         }
         mSmallBang.bang(v);
@@ -121,6 +161,8 @@ public class GameMatchDefinition extends AppCompatActivity {
                         }
                     }
                     btn.Answer.setText(randWord.getWord());
+                    btn.Answer.setBackgroundColor(getColor());
+
                     questionArray.add(randWord);
                 }
                 randWord.setRepeatFlag(true);
@@ -149,4 +191,12 @@ public class GameMatchDefinition extends AppCompatActivity {
         animY.setRepeatCount(0);
         animY.start();
     }
+
+    public int getColor() {
+        int index = randomGenerator.nextInt(GameMatchDefinition.this.getResources().getIntArray(R.array.gRandomColors).length);
+        int[] colorArray = GameMatchDefinition.this.getResources().getIntArray(R.array.gRandomColors);
+        int randItem = colorArray[index];
+        return randItem;
+    }
+
 }

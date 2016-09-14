@@ -73,7 +73,7 @@
             android:textStyle="bold" />
 
         <Button
-            android:id="@+id/button3"
+            android:id="@+id/btn_timer"
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="25dp"
@@ -91,7 +91,7 @@
             android:id="@+id/btn_circleScore"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_alignBottom="@+id/button3"
+            android:layout_alignBottom="@+id/btn_timer"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_gravity="right"
@@ -137,74 +137,73 @@
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
         android:gravity="center_horizontal"
-        android:layout_marginTop="10dp" >
+        android:orientation="horizontal">
 
         <Button
+            android:id="@+id/btn_question"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="New Button"
-            android:id="@+id/btn_question"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:textColor="#ffffff"
             android:background="@drawable/rect_bar"
-            android:onClick="mixColors" />
+            android:text="New Button"
+            android:textColor="#ffffff" />
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
         android:gravity="center_horizontal"
-        android:layout_marginTop="10dp" >
+        android:orientation="horizontal">
 
         <Button
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="New Button"
             android:id="@+id/btn_ans_topLeft"
-            android:layout_weight="1"
-            android:layout_marginRight="5dp"
-            android:onClick="onBang" />
-
-        <Button
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="New Button"
-            android:id="@+id/btn_ans_topRight"
+            android:layout_marginRight="5dp"
             android:layout_weight="1"
+            android:onClick="onBang"
+            android:text="New Button" />
+
+        <Button
+            android:id="@+id/btn_ans_topRight"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
-            android:onClick="onBang" />
+            android:layout_weight="1"
+            android:onClick="onBang"
+            android:text="New Button" />
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="5dp"
         android:gravity="center_horizontal"
-        android:layout_marginTop="5dp" >
+        android:orientation="horizontal">
 
         <Button
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="New Button"
             android:id="@+id/btn_ans_bottomLeft"
-            android:layout_weight="1"
-            android:layout_marginRight="5dp"
-            android:onClick="onBang" />
-
-        <Button
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="New Button"
-            android:id="@+id/btn_ans_bottomRight"
+            android:layout_marginRight="5dp"
             android:layout_weight="1"
+            android:onClick="onBang"
+            android:text="New Button" />
+
+        <Button
+            android:id="@+id/btn_ans_bottomRight"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
-            android:onClick="onBang" />
+            android:layout_weight="1"
+            android:onClick="onBang"
+            android:text="New Button" />
     </LinearLayout>
 
 </LinearLayout>

@@ -73,7 +73,7 @@
             android:textStyle="bold" />
 
         <Button
-            android:id="@+id/button3"
+            android:id="@+id/btn_timer"
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="25dp"
@@ -91,7 +91,7 @@
             android:id="@+id/btn_circleScore"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_alignBottom="@+id/button3"
+            android:layout_alignBottom="@+id/btn_timer"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_gravity="right"
@@ -137,78 +137,78 @@
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
         android:gravity="center_horizontal"
-        android:layout_marginTop="10dp" >
+        android:orientation="horizontal">
 
         <Button
+            android:id="@+id/button13"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="New Button"
-            android:id="@+id/button13"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:textColor="#ffffff"
             android:background="@drawable/rect_bar"
-            android:onClick="mixColors" />
+            android:onClick="mixColors"
+            android:text="New Button"
+            android:textColor="#ffffff" />
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="20dp"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/button14"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginRight="5dp"
+            android:text="a" />
+
+        <Button
+            android:id="@+id/button15"
+            android:layout_width="48dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:text="b" />
+
+        <Button
+            android:id="@+id/button16"
+            android:layout_width="48dp"
+            android:layout_height="wrap_content"
+            android:text="c" />
+
+        <Button
+            android:id="@+id/button17"
+            android:layout_width="48dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:text="d" />
+
+        <Button
+            android:id="@+id/button18"
+            android:layout_width="48dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:text="E" />
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center_horizontal"
-        android:layout_marginTop="20dp">
+        android:orientation="horizontal">
 
         <Button
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:text="a"
-            android:id="@+id/button14"
-            android:layout_marginRight="5dp" />
-
-        <Button
-            android:layout_width="48dp"
-            android:layout_height="wrap_content"
-            android:text="b"
-            android:id="@+id/button15"
-            android:layout_marginRight="5dp" />
-
-        <Button
-            android:layout_width="48dp"
-            android:layout_height="wrap_content"
-            android:text="c"
-            android:id="@+id/button16" />
-
-        <Button
-            android:layout_width="48dp"
-            android:layout_height="wrap_content"
-            android:text="d"
-            android:id="@+id/button17"
-            android:layout_marginLeft="5dp" />
-
-        <Button
-            android:layout_width="48dp"
-            android:layout_height="wrap_content"
-            android:text="E"
-            android:id="@+id/button18"
-            android:layout_marginLeft="5dp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_horizontal">
-
-        <Button
+            android:id="@+id/button19"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="CHECK"
-            android:id="@+id/button19"
-            android:layout_marginTop="15dp" />
+            android:layout_marginTop="15dp"
+            android:text="CHECK" />
     </LinearLayout>
 
 </LinearLayout>

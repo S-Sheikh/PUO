@@ -6,9 +6,9 @@ import android.widget.Button;
  * Created by Shahbaaz Sheikh on 13/09/2016.
  */
 public class WordGameAdapter {
-    Button Question;
     Button Answer;
     boolean flag;
+    int btnColor;
 
     public WordGameAdapter(Button Answer){
         this.Answer = Answer;

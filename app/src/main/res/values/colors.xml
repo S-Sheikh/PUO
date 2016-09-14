@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#009688</color>
-    <color name="colorPrimaryDark">#00796B</color>
+    <color name="colorPrimaryDark">#00796b</color>
     <color name="colorPrimaryLight">#B2DFDB</color>
     <color name="colorAccent">#00bcd4</color>
     <color name="colorPrimaryText">#212121</color>
@@ -11,24 +11,28 @@
 
 
     <!-- Game Colors -->
-    <color name="gColorWords">#B92D00</color>
-    <color name="gColorTime">#04bb04</color>
-    <color name="gColorPoints">#f67200</color>
-    <color name="gColorScore">#ba2e00</color>
+    <color name="gColorWords">#bf360c</color>
+    <color name="gColorTime">#00c853</color>
+    <color name="gColorPoints">#ff6f00</color>
+    <color name="gColorScore">#bf360c</color>
     <!-- Game Colors -->
 
     <!-- Game Button Colors -->
-    <color name="gColorButtonOne">#00BA00</color>
-    <color name="gColorButtonTwo">#757575</color>
-    <color name="gColorButtonThree">#191919</color>
-    <color name="gColorButtonFour">#00FFFF</color>
+    <color name="gColorButtonOne">#d500f9</color>
+    <color name="gColorButtonTwo">#8e24aa</color>
+    <color name="gColorButtonThree">#eeff41</color>
+    <color name="gColorButtonFour">#18ffff</color>
+    <color name="gColorButtonFive">#2962ff</color>
+    <color name="gColorButtonSix">#f50057</color>
+    <color name="gColorButtonSeven">#f9a825</color>
+    <color name="gColorButtonEight">#00e676</color>
     <!-- Game Button Colors -->
 
     <!-- Bang Array Colors -->
-    <color name="gRed">#ff0000</color>
-    <color name="gOrange">#fc7601</color>
-    <color name="gGreen">#11ff00</color>
-    <color name="gLime">#00ff66</color>
+    <color name="gRed">#d50000</color>
+    <color name="gOrange">#ff6f00</color>
+    <color name="gGreen">#76ff03</color>
+    <color name="gLime">#00c853</color>
     <!-- Bang Array Colors -->
 
     <!-- Banging Animation Arrays -->
@@ -43,6 +47,14 @@
     </integer-array>
     <!-- Banging Animation Arrays -->
 
+    <integer-array name="gRandomColors">
+        <item>@color/gColorButtonOne</item>
+        <item>@color/gColorButtonTwo</item>
+        <item>@color/gColorButtonThree</item>
+        <item>@color/gColorButtonFour</item>
+        <item>@color/gColorButtonFive</item>
+        <item>@color/gColorButtonSix</item>
+    </integer-array>
 
     <color name="Red">#FF0000</color>
 
