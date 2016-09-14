@@ -158,7 +158,7 @@ public class GameWhatLanguage extends AppCompatActivity {
                 }
                 if (randWord.isRepeatFlag() == false) {
                     for (Word allWords : wordArrayList) { // Iterate through all words in list
-                        if (allWords.getLanguage().equals(randWord.getLanguage())) { // if the used word has a language thats been used up
+                        if (allWords.getLanguage().equals(randWord.getLanguage())) { // if the used word has a language that's been used up
                             allWords.setRepeatFlag(true);//set it to true( Used )
                         }
                     }

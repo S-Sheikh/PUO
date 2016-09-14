@@ -1,5 +1,9 @@
 package za.ac.cut.puo;
 
+import android.graphics.Bitmap;
+
+import com.backendless.media.audio.AudioStream;
+
 import java.util.Date;
 
 public class Word {
@@ -11,11 +15,15 @@ public class Word {
     private String name;
     private String surname;
     private String sentence;
+    private String lexicon;
     private boolean supported;
     private boolean repeatFlag;
     private String objectId;
     private Date created;
     private Date updated;
+    private AudioStream pronunciation;
+    private float rating;
+    private Bitmap descImage;
 
     public Word() {
         this.word = null;
@@ -140,5 +148,46 @@ public class Word {
 
     public void setSentence(String sentence) {
         this.sentence = sentence;
+    }
+
+
+    public AudioStream getPronunciation() {
+        return pronunciation;
+    }
+
+    public void setPronunciation(AudioStream pronunciation) {
+        this.pronunciation = pronunciation;
+    }
+
+    public float getRating() {
+        return rating;
+    }
+
+    public void setRating(float rating) {
+        this.rating = rating;
+    }
+
+    public Bitmap getDescImage() {
+        return descImage;
+    }
+
+    public void setDescImage(Bitmap descImage) {
+        this.descImage = descImage;
+    }
+
+    public String getLexicon() {
+        return lexicon;
+    }
+
+    public void setLexicon(String lexicon) {
+        this.lexicon = lexicon;
+    }
+
+    public String getStatus() {
+        return supported ? "supported" : "not supported";
+    }
+
+    public String getAuthor(){
+        return name + " " + surname;
     }
 }

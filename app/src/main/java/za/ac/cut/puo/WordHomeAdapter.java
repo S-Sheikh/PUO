@@ -25,7 +25,7 @@ public class WordHomeAdapter extends ArrayAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(R.layout.word_list_item, parent, false);
-        tv_word_title = (TextView) rowView.findViewById(R.id.tv_word_title);
+        tv_word_title = (TextView) rowView.findViewById(R.id.tv_word_text);
         tv_word_status = (TextView) rowView.findViewById(R.id.tv_word_status);
         tv_word_author = (TextView) rowView.findViewById(R.id.tv_word_author);
         tv_word_title.setText(values.get(position).getWord());

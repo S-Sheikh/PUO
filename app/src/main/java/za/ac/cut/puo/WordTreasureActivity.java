@@ -1,13 +1,13 @@
 package za.ac.cut.puo;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 
 public class WordTreasureActivity extends AppCompatActivity implements
-        WordListFragment.OnWordSelectedListener {
+        WordListFragment.OnWordListItemListener {
     Toolbar appBar;
 
     @Override
@@ -31,8 +31,9 @@ public class WordTreasureActivity extends AppCompatActivity implements
 //        }
     }
 
-    @Override
-    public void onFragmentInteraction(Uri uri) {
 
+    @Override
+    public void onWordListItemSelected(View v) {
+        
     }
 }

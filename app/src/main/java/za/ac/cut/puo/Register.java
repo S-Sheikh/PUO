@@ -64,6 +64,7 @@ public class Register extends AppCompatActivity {
                     @Override
                     public void handleResponse(BackendlessUser backendlessUser) {
                         Toast.makeText(Register.this, "Confirmation link has been sent to you!", Toast.LENGTH_SHORT).show();
+
                         Intent intent = new Intent(Register.this, Login.class);
                         intent.putExtra("user",edt_register__email.getText().toString().trim());
                         intent.putExtra("name",edt_register__name.getText().toString().trim());
