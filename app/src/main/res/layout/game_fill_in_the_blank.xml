@@ -155,7 +155,6 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:background="@drawable/rect_bar"
-            android:onClick="mixColors"
             android:text="New Button"
             android:textColor="#ffffff" />
     </LinearLayout>

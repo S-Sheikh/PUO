@@ -120,7 +120,8 @@ public class GameWhatLanguage extends AppCompatActivity {
         score = 001;
 
         mHandler.sendEmptyMessage(MSG_START_TIMER);
-
+        PUOHelper.setAppBar(this, getResources().getString(R.string.app_name))
+                .setDisplayHomeAsUpEnabled(true);
         //setSupportActionBar(register_toolBar);
         //ActionBar actionbar = getSupportActionBar();
         //     actionbar.setDisplayHomeAsUpEnabled(true);
