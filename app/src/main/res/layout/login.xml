@@ -35,16 +35,19 @@
                 android:layout_marginBottom="60dip"
                 android:src="@drawable/logo_puo" />
 
-
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusableInTouchMode="true">
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/email_txt_input_login"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:errorEnabled="true"
                 app:errorTextAppearance="?attr/errorTextAppearance"
+                app:hintAnimationEnabled="true"
                 app:hintEnabled="true"
                 app:hintTextAppearance="?attr/hintTextAppearance"
-                app:hintAnimationEnabled="true"
                 app:theme="@style/Widget.Design.TextInputLayout">
 
                 <EditText
@@ -56,6 +59,8 @@
                     android:maxLines="1"
                     android:textStyle="bold" />
             </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/pass_txt_input_login"
