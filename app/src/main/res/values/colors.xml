@@ -56,6 +56,6 @@
         <item>@color/gColorButtonSix</item>
     </integer-array>
 
-    <color name="Red">#FF0000</color>
+    <color name="Red">#ff0000</color>
 
 </resources>

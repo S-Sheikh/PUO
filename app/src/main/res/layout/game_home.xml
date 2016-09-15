@@ -10,6 +10,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".GameHome">
 
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -61,23 +62,24 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/imageView11"
+            android:id="@+id/iv_whatLanguage"
             android:layout_width="115dp"
             android:layout_height="115dp"
             android:layout_margin="20dp"
             android:layout_marginLeft="5dp"
-            android:src="@drawable/ic_word_game"
-            android:tint="@color/colorAccent"
-            android:tintMode="src_over" />
+            android:onClick="onClick"
+            android:src="@drawable/ic_game_home"
+            android:tintMode="screen" />
 
         <ImageView
-            android:id="@+id/imageView12"
+            android:id="@+id/iv_partsOfSpeech"
             android:layout_width="115dp"
             android:layout_height="115dp"
             android:layout_margin="20dp"
             android:layout_marginRight="5dp"
-            android:src="@drawable/ic_word_game"
-            android:tint="@color/colorAccent"
+            android:foregroundTint="@color/Red"
+            android:onClick="onClick"
+            android:src="@drawable/ic_game_home"
             android:tintMode="src_over" />
     </LinearLayout>
 
@@ -89,23 +91,23 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/imageView13"
+            android:id="@+id/iv_matchDefinition"
             android:layout_width="115dp"
             android:layout_height="115dp"
             android:layout_margin="20dp"
             android:layout_marginLeft="5dp"
-            android:src="@drawable/ic_word_game"
-            android:tint="@color/colorAccent"
+            android:onClick="onClick"
+            android:src="@drawable/ic_game_home"
             android:tintMode="src_over" />
 
         <ImageView
-            android:id="@+id/imageView14"
+            android:id="@+id/iv_fillInBlanks"
             android:layout_width="115dp"
             android:layout_height="115dp"
             android:layout_margin="20dp"
             android:layout_marginRight="5dp"
-            android:src="@drawable/ic_word_game"
-            android:tint="@color/colorAccent"
+            android:onClick="onClick"
+            android:src="@drawable/ic_game_home"
             android:tintMode="src_over" />
     </LinearLayout>
     <RelativeLayout

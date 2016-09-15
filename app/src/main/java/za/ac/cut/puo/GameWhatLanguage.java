@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.animation.BounceInterpolator;
 import android.widget.Button;
@@ -26,6 +27,8 @@ public class GameWhatLanguage extends AppCompatActivity {
     ArrayList<Word> questionArray = new ArrayList<>();
     ArrayList<WordGameAdapter> buttonAdapter = new ArrayList<>();
     ObjectAnimator animY;
+    Toolbar register_toolBar;
+
     int score;
     Handler mHandler = new Handler() {
         @Override
@@ -118,7 +121,10 @@ public class GameWhatLanguage extends AppCompatActivity {
 
         mHandler.sendEmptyMessage(MSG_START_TIMER);
 
-
+        //setSupportActionBar(register_toolBar);
+        //ActionBar actionbar = getSupportActionBar();
+        //     actionbar.setDisplayHomeAsUpEnabled(true);
+        //register_toolBar.setTitleTextColor(getResources().getColor(R.color.colorIcons));
     }
 
     public void onBang(View v) {
@@ -199,5 +205,4 @@ public class GameWhatLanguage extends AppCompatActivity {
         animY.setRepeatCount(0);
         animY.start();
     }
-
 }

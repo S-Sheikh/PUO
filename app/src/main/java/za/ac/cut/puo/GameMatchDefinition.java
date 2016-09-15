@@ -120,6 +120,8 @@ public class GameMatchDefinition extends AppCompatActivity {
 
         mHandler.sendEmptyMessage(MSG_START_TIMER);
 
+//        ActionBar actionbar = getSupportActionBar();
+//        actionbar.setDisplayHomeAsUpEnabled(true);
     }
 
     public void onBang(View v) {
