@@ -185,17 +185,39 @@
                 android:prompt="@string/location_hint" />
         </android.support.design.widget.CollapsingToolbarLayout>
 
-        <Button
-            android:id="@+id/btn_update_submit"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
             android:layout_marginBottom="50dp"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/buttons"
-            android:onClick="btnUpdateSubmit"
-            android:text="@string/menu_save"
-            android:textColor="@color/colorIcons" />
+            android:layout_marginTop="10dp"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_update_submit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/buttons"
+                android:onClick="btnUpdateSubmit"
+                android:text="@string/menu_save"
+                android:textColor="@color/colorIcons" />
+
+            <Button
+                android:id="@+id/btnResetPass"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/buttons"
+                android:onClick="ChangePassword"
+                android:text="@string/change_password"
+                android:textColor="@color/colorIcons" />
+        </LinearLayout>
 
         <TextView
             android:layout_width="match_parent"

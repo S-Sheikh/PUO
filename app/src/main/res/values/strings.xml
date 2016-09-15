@@ -60,6 +60,7 @@
     <string name="enter_word">Enter a word</string>
     <string name="definition">Enter a definition</string>
     <string name="sentence_example">Enter sentence with word</string>
+    <string name="change_password">Change Password</string>
 
     <!-- sort_filter_bar spinner entries -->
     <string-array name="entries_ordering">
@@ -98,6 +99,9 @@
     <string name="popup_menu_rate">Rate</string>
     <string name="popup_menu_add_to_word_chest">Add to Word Chest</string>
     <string name="popup_menu_share">Share</string>
+    <string name="add_image">Add Image</string>
+    <string name="add_sound_clip">Add Sound Clip</string>
+    <string name="edit">Edit</string>
     <array name="role_items">
         <item>Collector</item>
         <item>Specialist</item>
