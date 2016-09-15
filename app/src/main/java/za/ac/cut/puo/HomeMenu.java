@@ -90,6 +90,7 @@ public class HomeMenu extends AppCompatActivity {
                 updateProfileData();
                 return true;
             case R.id.word_treasure:
+                startActivity(new Intent(HomeMenu.this, WordTreasureActivity.class));
                 return true;
             case R.id.word_chest:
                 return true;

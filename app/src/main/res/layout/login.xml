@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <LinearLayout
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-    android:gravity="center_horizontal"
+    android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".Login">
+
     <android.support.v7.widget.Toolbar
         android:id="@+id/login_toolBar"
         android:layout_width="match_parent"
@@ -20,116 +16,110 @@
         android:theme="@style/toolBarText"
         app:popupTheme="@style/AppTheme" />
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="16dp"
-            android:orientation="horizontal">
+            android:orientation="vertical"
+            android:padding="@dimen/activity_vertical_margin">
+
 
             <ImageView
                 android:id="@+id/iv_puo_logo"
                 android:layout_width="@dimen/login_iv_puo_width"
                 android:layout_height="@dimen/login_iv_puo_height"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="60dip"
                 android:src="@drawable/logo_puo" />
 
-        </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:focusableInTouchMode="true"
-            android:orientation="horizontal"
-            android:paddingBottom="30dp"
-            android:paddingTop="30dp">
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/email_txt_input_login"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-            <EditText
-                android:id="@+id/edt_email"
-                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/login_email_hint"
-                android:inputType="textEmailAddress"
-                android:singleLine="true"
-                android:textStyle="bold" />
+                app:errorEnabled="true"
+                app:errorTextAppearance="?attr/errorTextAppearance"
+                app:hintEnabled="true"
+                app:hintTextAppearance="?attr/hintTextAppearance"
+                app:hintAnimationEnabled="true"
+                app:theme="@style/Widget.Design.TextInputLayout">
+
+                <EditText
+                    android:id="@+id/edt_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/login_email_hint"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="1"
+                    android:textStyle="bold" />
             </android.support.design.widget.TextInputLayout>
-        </LinearLayout>
+
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/pass_txt_input_login"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="20dp">
-            <EditText
-                android:id="@+id/edt_password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/login_password_hint"
-                android:password="true"
-                android:singleLine="true"
-                android:textStyle="bold" />
+                android:layout_marginTop="16dip"
+                app:passwordToggleEnabled="true"
+                app:passwordToggleTint="@color/colorPrimary">
+
+                <EditText
+                    android:id="@+id/edt_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/login_password_hint"
+                    android:inputType="textPassword"
+                    android:maxLines="1"
+                    android:textStyle="bold" />
             </android.support.design.widget.TextInputLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:gravity="center_horizontal"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/btn_login"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="40dp"
-                android:layout_marginTop="40dp"
-                android:layout_weight="1"
-                android:background="@drawable/buttons"
-                android:onClick="btnLogin"
-                android:text="@string/login_btn_text"
-                android:textColor="@color/colorIcons"
-                android:textStyle="bold" />
+                android:layout_marginBottom="40dip"
+                android:layout_marginTop="40dip"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/btnResetPassword"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="40dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="40dp"
-                android:layout_weight="1"
-                android:background="@drawable/buttons"
-                android:onClick="btnResetPassword"
-                android:text="@string/btn_reset_password"
-                android:textColor="@color/colorIcons"
-                android:textStyle="bold" />
-        </LinearLayout>
+                <Button
+                    android:id="@+id/btn_login"
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dip"
+                    android:layout_weight="1"
+                    android:background="@drawable/buttons"
+                    android:onClick="btnLogin"
+                    android:text="@string/login_btn_text"
+                    android:textColor="@color/colorIcons"
+                    android:textStyle="bold" />
 
-
-        <View
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-            android:layout_weight="1" />
-
+                <Button
+                    android:id="@+id/btnResetPassword"
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dip"
+                    android:layout_weight="1"
+                    android:background="@drawable/buttons"
+                    android:onClick="btnResetPassword"
+                    android:text="@string/btn_reset_password"
+                    android:textColor="@color/colorIcons"
+                    android:textStyle="bold" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/tv_talk_to_me"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:gravity="center_horizontal"
+                android:layout_gravity="center_horizontal"
                 android:text="@string/login_tv_talk_to_me"
                 android:textColor="@color/colorPrimaryText"
                 android:textStyle="bold" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
 
-    </LinearLayout>
-</ScrollView>
 
 
 
