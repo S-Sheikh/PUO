@@ -50,7 +50,6 @@
         <activity
             android:name=".GameHome"
             android:parentActivityName=".HomeMenu" />
-        <activity android:name=".ContactList" />
         <activity android:name=".Splash" />
         <activity
             android:name=".WordTreasureActivity"
