@@ -1,7 +1,6 @@
 package za.ac.cut.puo;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 
 public class GameFillInTheBlank extends AppCompatActivity {
@@ -10,8 +9,7 @@ public class GameFillInTheBlank extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_fill_in_the_blank);
-        ActionBar actionbar = getSupportActionBar();
-        actionbar.setDisplayHomeAsUpEnabled(true);
+        PUOHelper.setAppBar(this,R.drawable.logo_puo,getResources().getString(R.string.app_name));
     }
 
 }
