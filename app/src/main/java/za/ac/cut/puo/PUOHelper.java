@@ -49,9 +49,8 @@ public class PUOHelper {
      * Add <include layout="@layout/puo_toolbar"/> in your activity's layout then call this
      * method in your activity's onCreate.
      */
-    public static ActionBar setAppBar(AppCompatActivity activity, int iconId, String title) {
+    public static ActionBar setAppBar(AppCompatActivity activity, String title) {
         Toolbar appBar = (Toolbar) activity.findViewById(R.id.puo_toolbar);
-        appBar.setLogo(iconId);
         appBar.setTitle(" " + title);
         activity.setSupportActionBar(appBar);
         return activity.getSupportActionBar();

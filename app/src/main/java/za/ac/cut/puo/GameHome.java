@@ -15,6 +15,10 @@ public class GameHome extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_home);
+
+        PUOHelper.setAppBar(this,getResources().getString(R.string.app_name))
+        .setDisplayHomeAsUpEnabled(true);
+
         ivWhatLanguage = (ImageView) findViewById(R.id.iv_whatLanguage);
         ivPartsOfSpeech = (ImageView) findViewById(R.id.iv_partsOfSpeech);
         ivMatchDefinition = (ImageView) findViewById(R.id.iv_matchDefinition);
