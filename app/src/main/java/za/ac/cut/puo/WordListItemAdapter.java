@@ -19,7 +19,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class WordListItemAdapter extends RecyclerView.Adapter<WordListItemAdapter.ViewHolder> {
 
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public CircleImageView wordDescImg;
         public TextView wordText, wordStatus, wordAuthor, wordLexicon;
@@ -79,7 +79,12 @@ public class WordListItemAdapter extends RecyclerView.Adapter<WordListItemAdapte
         holder.wordAuthor.setText(word.getAuthor());
         holder.wordLexicon.setText(word.getLexicon());
         holder.wordRating.setRating(word.getRating());
-        holder.wordDescImg.setImageBitmap(word.getDescImage());
+        holder.wordDescImg.setImageResource(R.drawable.dp);
+
+        if (word.isSupported()) {
+            holder.wordStatus.setTextColor(getContext().getResources()
+                    .getColor(R.color.gColorTime));
+        }
     }
 
     @Override

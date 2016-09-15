@@ -15,8 +15,8 @@ public class Word {
     private String name;
     private String surname;
     private String sentence;
-    private String lexicon;
     private boolean supported;
+    private boolean blocked;
     private boolean repeatFlag;
     private String objectId;
     private Date created;
@@ -26,15 +26,15 @@ public class Word {
     private Bitmap descImage;
 
     public Word() {
-        this.word = null;
-        this.language = null;
-        this.definition = null;
-        this.partOfSpeech = null;
-        this.email = null;
-        this.name = null;
-        this.surname = null;
-        this.supported = false;
-        this.repeatFlag = false;
+//        this.word = null;
+//        this.language = null;
+//        this.definition = null;
+//        this.partOfSpeech = null;
+//        this.email = null;
+//        this.name = null;
+//        this.surname = null;
+//        this.supported = false;
+//        this.repeatFlag = false;
     }
 
     //For the word Game
@@ -43,6 +43,16 @@ public class Word {
         this.language = language;
         this.definition = definition;
         this.partOfSpeech = partOfSpeech;
+        repeatFlag = false;
+    }
+
+    //For Word Treasure {testing}
+    public Word(String word, String language, String definition, String partOfSpeech, Boolean supported) {
+        this.word = word;
+        this.language = language;
+        this.definition = definition;
+        this.partOfSpeech = partOfSpeech;
+        this.supported = supported;
         repeatFlag = false;
     }
 
@@ -118,6 +128,14 @@ public class Word {
         this.supported = supported;
     }
 
+    public boolean isBlocked() {
+        return blocked;
+    }
+
+    public void setBlocked(boolean blocked) {
+        this.blocked = blocked;
+    }
+
     public String getObjectId() {
         return objectId;
     }
@@ -176,18 +194,14 @@ public class Word {
     }
 
     public String getLexicon() {
-        return lexicon;
-    }
-
-    public void setLexicon(String lexicon) {
-        this.lexicon = lexicon;
+        return partOfSpeech + ", " + language;
     }
 
     public String getStatus() {
-        return supported ? "supported" : "not supported";
+        return supported ? "supported" : "unsupported";
     }
 
-    public String getAuthor(){
+    public String getAuthor() {
         return name + " " + surname;
     }
 }

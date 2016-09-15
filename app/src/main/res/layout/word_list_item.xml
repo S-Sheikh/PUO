@@ -42,9 +42,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_word_text"
             android:layout_toRightOf="@id/civ_word_pic"
-            android:text="supported"
+            android:text="unsupported"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            android:textColor="@color/gColorTime"
+            android:textColor="@color/colorPrimaryText"
             android:textSize="12sp" />
 
         <TextView
@@ -79,7 +79,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_below="@+id/tv_word_lexicon"
-            android:layout_marginRight="24dip"
+            android:layout_marginRight="36dip"
             android:layout_marginTop="8dip"
             android:isIndicator="true"
             android:rating="4.5"
