@@ -324,17 +324,11 @@ public class Update extends AppCompatActivity {
 
     public void btnUpdateSubmit(View v) {
         if (connectionAvailable()) {
-            if (etName.getText().toString().trim().isEmpty() && etSurname.getText().toString().trim().isEmpty() &&
-                    etEmail.getText().toString().trim().isEmpty() &&
-                    etPassword.getText().toString().trim().isEmpty() && etRePassword.getText().toString().trim().isEmpty()) {
-                nameInput.setError(getString(R.string.txt_input_layout));
-                surnameInput.setError(getString(R.string.txt_input_layout));
-                emailInput.setError(getString(R.string.txt_input_layout));
-                passwordInput.setError(getString(R.string.txt_input_layout));
-                rePasswordInput.setError(getString(R.string.txt_input_layout));
-                cellInput.setError(getString(R.string.txt_input_layout));
+            if (etName.getText().toString().trim().isEmpty() || etSurname.getText().toString().trim().isEmpty() ||
+                    etEmail.getText().toString().trim().isEmpty()
+                    || etCellPhone.getText().toString().trim().isEmpty()) {
+                Toast.makeText(Update.this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
             } else {
-                if (etPassword.getText().toString().trim().equals(etRePassword.getText().toString().trim())) {
                     progressDialog = new SpotsDialog(Update.this, R.style.Custom);
                     progressDialog.show();
                     BackendlessUser user = Backendless.UserService.CurrentUser();
@@ -350,14 +344,13 @@ public class Update extends AppCompatActivity {
                         public void handleResponse(BackendlessUser backendlessUser) {
                             Toast.makeText(Update.this, etName.getText().toString().trim() + " " +
                                     etSurname.getText().toString().trim() +
-                                    " successfully updated!", Toast.LENGTH_SHORT).show();
+                                    " successfully updated :)", Toast.LENGTH_LONG).show();
                             progressDialog.dismiss();
                             startActivity(new Intent(Update.this, HomeMenu.class));
                             BackendlessUser user = Backendless.UserService.CurrentUser();
                             Intent intent = new Intent(Update.this, HomeMenu.class);
                             intent.putExtra("user", user.getEmail());
                             intent.putExtra("objectId", user.getObjectId());
-                            intent.putExtra("password", user.getPassword());
                             intent.putExtra("name", user.getProperty("name").toString().trim());
                             intent.putExtra("surname", user.getProperty("surname").toString().trim());
                             intent.putExtra("role", user.getProperty("role").toString().trim());
@@ -372,10 +365,6 @@ public class Update extends AppCompatActivity {
                             progressDialog.dismiss();
                         }
                     });
-                } else {
-                    Toast.makeText(Update.this, "Please make sure passwords match!", Toast.LENGTH_SHORT).show();
-                }
-
             }
         } else {
             Toast.makeText(Update.this, "No internet connection!", Toast.LENGTH_SHORT).show();
@@ -390,7 +379,8 @@ public class Update extends AppCompatActivity {
         rePasswordInput.setVisibility(View.GONE);
         etRePassword.setVisibility(View.GONE);
         etCellPhone.setEnabled(true);
-        spRoles.setEnabled(true);
+        spRoles.setEnabled(false);
+        spRoles.setVisibility(View.GONE);
         spLocation.setEnabled(true);
         etPassword.setHint(getString(R.string.change_password));
         etPassword.setVisibility(View.VISIBLE);
@@ -420,8 +410,8 @@ public class Update extends AppCompatActivity {
                     Backendless.UserService.update(user, new AsyncCallback<BackendlessUser>() {
                         @Override
                         public void handleResponse(BackendlessUser backendlessUser) {
-                            Toast.makeText(Update.this, "Password changed successfully!" + " \n" +
-                                    "Please login", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Update.this, "Password changed successfully!" + " \n" + "\t" +
+                                    "Please login to apply changes :)", Toast.LENGTH_SHORT).show();
                             progressDialog.dismiss();
                             startActivity(new Intent(Update.this, Login.class));
                         }
