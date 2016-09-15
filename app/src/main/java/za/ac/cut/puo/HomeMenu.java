@@ -223,7 +223,10 @@ public class HomeMenu extends AppCompatActivity {
                                     }
                                 }
                                 if (wordExists == false) {
+                                    BackendlessUser user = Backendless.UserService.CurrentUser();
                                     AddWord word = new AddWord();
+                                    word.setName(user.getProperty("name").toString().trim());
+                                    word.setSurname(user.getProperty("surname").toString().trim());
                                     word.setWord(etAddWord.getText().toString().trim());
                                     word.setDefinition(etDefinition.getText().toString().trim());
                                     word.setSentence(etSentence.getText().toString().trim());
