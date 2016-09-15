@@ -14,17 +14,21 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.backendless.Backendless;
+import com.backendless.BackendlessCollection;
 import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
+import com.backendless.persistence.BackendlessDataQuery;
 
 import java.util.List;
 
@@ -32,14 +36,14 @@ import dmax.dialog.SpotsDialog;
 
 public class HomeMenu extends AppCompatActivity {
     Toolbar home_toolBar;
-    TextView tvUsernameHome, tvUserType, tvWordCount;
+    TextView tvUsernameHome, tvUserType, tvWordCount, tvWordInfo;
     ListView lvWords;
-    List<Word> words;
+    List<AddWord> words;
     EditText etAddWord, etDefinition, etSentence;
     Spinner spLanguage, spPartOfSpeech;
     ImageView ivAddImage, ivAddSound;
     SpotsDialog progressDialog;
-
+    ProgressBar circularBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,11 +53,24 @@ public class HomeMenu extends AppCompatActivity {
         tvUsernameHome = (TextView) findViewById(R.id.tvUsernameHome);
         tvUserType = (TextView) findViewById(R.id.tvUserType);
         tvWordCount = (TextView) findViewById(R.id.tvWordCount);
+        tvWordInfo = (TextView) findViewById(R.id.tvWordInfo);
         lvWords = (ListView) findViewById(R.id.lv_words);
+        circularBar = (ProgressBar) findViewById(R.id.progressBarCircular);
         setSupportActionBar(home_toolBar);
+        home_toolBar.setTitleTextColor(getResources().getColor(R.color.colorIcons));
         BackendlessUser user = Backendless.UserService.CurrentUser();
         tvUsernameHome.setText(user.getProperty("name").toString().trim() + " " + user.getProperty("surname").toString().trim());
         tvUserType.setText(user.getProperty("role").toString().trim());
+        loadData();
+        lvWords.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                lvWords.setBackgroundColor(getResources().getColor(R.color.colorPrimaryLight));
+                String value = words.get(position).getDefinition().trim();
+                tvWordInfo.setText(value);
+            }
+        });
+
     }
 
     @Override
@@ -70,7 +87,6 @@ public class HomeMenu extends AppCompatActivity {
                 AddWord();
                 return true;
             case R.id.home_menu_profile:
-                //go to profile
                 updateProfileData();
                 return true;
             case R.id.word_treasure:
@@ -87,6 +103,7 @@ public class HomeMenu extends AppCompatActivity {
             case R.id.word_highscore:
                 return true;
             case R.id.logout:
+                logout();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -94,7 +111,7 @@ public class HomeMenu extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        //loadData();
+        loadData();
         super.onResume();
     }
 
@@ -115,29 +132,34 @@ public class HomeMenu extends AppCompatActivity {
 
     }
 
-    /**
-     * public void loadData(){
-     * if(words != null){
-     * words.clear();
-     * }
-     * BackendlessUser user = Backendless.UserService.CurrentUser();
-     * BackendlessDataQuery dataQuery = new BackendlessDataQuery();
-     * dataQuery.setWhereClause("user = '" + user.getEmail() + "'");
-     * Backendless.Persistence.of(Word.class).find(dataQuery, new AsyncCallback<BackendlessCollection<Word>>() {
-     *
-     * @Override public void handleResponse(BackendlessCollection<Word> wordBackendlessCollection) {
-     * words = wordBackendlessCollection.getData();
-     * WordHomeAdapter wordHomeAdapter = new WordHomeAdapter(HomeMenu.this,words);
-     * lvWords.setAdapter(wordHomeAdapter);
-     * <p/>
-     * }
-     * @Override public void handleFault(BackendlessFault backendlessFault) {
-     * Toast.makeText(HomeMenu.this,backendlessFault.getMessage(),Toast.LENGTH_SHORT).show();
-     * }
-     * });
-     * <p/>
-     * }
-     **/
+    public void loadData() {
+        circularBar.setVisibility(View.VISIBLE);
+        if (words != null) {
+            words.clear();
+        }
+
+        BackendlessUser user = Backendless.UserService.CurrentUser();
+        String whereClause = "email = '" + user.getEmail() + "'";
+        BackendlessDataQuery dataQuery = new BackendlessDataQuery();
+        dataQuery.setWhereClause(whereClause);
+
+        Backendless.Persistence.of(AddWord.class).find(dataQuery, new AsyncCallback<BackendlessCollection<AddWord>>() {
+            @Override
+            public void handleResponse(BackendlessCollection<AddWord> addWordBackendlessCollection) {
+                words = addWordBackendlessCollection.getData();
+                AddWordAdapter adapter = new AddWordAdapter(HomeMenu.this, words);
+                lvWords.setAdapter(adapter);
+                circularBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void handleFault(BackendlessFault backendlessFault) {
+                Toast.makeText(HomeMenu.this, backendlessFault.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
     public void AddWord() {
         LayoutInflater inflater = getLayoutInflater();
         final View view = inflater.inflate(R.layout.home_add_word, null);
@@ -153,26 +175,27 @@ public class HomeMenu extends AppCompatActivity {
         dialog.setPositiveButton("Add", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                progressDialog = new SpotsDialog(HomeMenu.this, R.style.Custom);
-                BackendlessUser user = Backendless.UserService.CurrentUser();
+
                 if (connectionAvailable()) {
                     if (!(etAddWord.getText().toString().trim().isEmpty() || etSentence.getText().toString().trim().isEmpty() ||
                             etDefinition.getText().toString().trim().isEmpty())) {
-                        progressDialog.show();
-                        Word word = new Word();
-                        word.setEmail(user.getEmail());
-                        word.setObjectId(user.getObjectId());
+
+                        AddWord word = new AddWord();
+                        word.setEmail(getIntent().getStringExtra("user"));
+                        word.setName(getIntent().getStringExtra("name"));
+                        word.setSurname(getIntent().getStringExtra("surname"));
                         word.setWord(etAddWord.getText().toString().trim());
                         word.setDefinition(etDefinition.getText().toString().trim());
                         word.setSentence(etSentence.getText().toString().trim());
-                        if (spLanguage.getSelectedItemPosition() < 0) {
-                            word.setLanguage(spLanguage.getSelectedItem().toString().trim());
-                        } else if (spPartOfSpeech.getSelectedItemPosition() < 0) {
-                            word.setPartOfSpeech(spPartOfSpeech.getSelectedItem().toString().trim());
-                        }
-                        Backendless.Persistence.save(word, new AsyncCallback<Word>() {
+                        word.setLanguage(spLanguage.getSelectedItem().toString().trim());
+                        word.setPartOfSpeech(spPartOfSpeech.getSelectedItem().toString().trim());
+                        word.setCount(word.getCount() + 1);
+                        progressDialog = new SpotsDialog(HomeMenu.this, R.style.Custom);
+                        progressDialog.show();
+                        Backendless.Persistence.save(word, new AsyncCallback<AddWord>() {
                             @Override
-                            public void handleResponse(Word word) {
+                            public void handleResponse(AddWord word) {
+                                loadData();
                                 Toast.makeText(HomeMenu.this, word.getWord() + " saved successfully!", Toast.LENGTH_SHORT).show();
                                 progressDialog.dismiss();
                             }
@@ -215,5 +238,25 @@ public class HomeMenu extends AppCompatActivity {
             connected = false;//no internet connection
         }
         return connected;
+    }
+
+    public void logout() {
+        progressDialog = new SpotsDialog(HomeMenu.this, R.style.Custom);
+        progressDialog.show();
+        Backendless.UserService.logout(new AsyncCallback<Void>() {
+            @Override
+            public void handleResponse(Void aVoid) {
+                Toast.makeText(HomeMenu.this, "Successfully logged out!", Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
+                HomeMenu.this.finish();
+                startActivity(new Intent(HomeMenu.this, Login.class));
+            }
+
+            @Override
+            public void handleFault(BackendlessFault backendlessFault) {
+                Toast.makeText(HomeMenu.this, backendlessFault.getMessage(), Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
+            }
+        });
     }
 }

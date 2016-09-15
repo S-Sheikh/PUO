@@ -1,17 +1,23 @@
 package za.ac.cut.puo;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,28 +35,45 @@ import dmax.dialog.SpotsDialog;
 
 public class Update extends AppCompatActivity {
     Spinner spRoles,spLocation;
-    EditText etName, etSurname, etEmail, etCellPhone, etPassword, etRePassword;
+    EditText etName, etSurname, etEmail, etCellPhone, etPassword, etRePassword, etNewPass, etRePass;
     TextView tvAddPic;
     ImageView ivProfilePic;
     TextInputLayout nameInput, surnameInput, emailInput, passwordInput, rePasswordInput, cellInput;
     SpotsDialog progressDialog;
     Toolbar update_toolBar;
-    Button btn_update_submit;
+    Button btn_update_submit, btnResetPass;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.update_profile);
         initViews();
         errorMsg();
+        update_toolBar.setTitleTextColor(getResources().getColor(R.color.colorIcons));
         BackendlessUser user = Backendless.UserService.CurrentUser();
         if (user != null) {
             if (user.getProperty("isUpdated").equals(false)) {
                 etName.setText(user.getProperty("name").toString().trim());
                 etSurname.setText(user.getProperty("surname").toString().trim());
                 etEmail.setText(user.getEmail());
-                etPassword.setText(user.getPassword());
-                etRePassword.setText(user.getPassword());
+                passwordInput.setVisibility(View.GONE);
+                rePasswordInput.setVisibility(View.GONE);
+                etPassword.setVisibility(View.GONE);
+                etRePassword.setVisibility(View.GONE);
+                btnResetPass.setVisibility(View.GONE);
             } else {
+                etName.setEnabled(false);
+                etSurname.setEnabled(false);
+                etEmail.setEnabled(false);
+                etPassword.setEnabled(false);
+                btnResetPass.setVisibility(View.GONE);
+                etPassword.setVisibility(View.GONE);
+                passwordInput.setVisibility(View.GONE);
+                rePasswordInput.setVisibility(View.GONE);
+                etRePassword.setVisibility(View.GONE);
+                etCellPhone.setEnabled(false);
+                spRoles.setEnabled(false);
+                spLocation.setEnabled(false);
+                btn_update_submit.setVisibility(View.GONE);
                 etName.setText(user.getProperty("name").toString().trim());
                 etSurname.setText(user.getProperty("surname").toString().trim());
                 etEmail.setText(user.getEmail());
@@ -64,6 +87,21 @@ public class Update extends AppCompatActivity {
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.update_edit, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.update_edit__menu_item:
+                btnEdit();
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     public void initViews(){
         spRoles = (Spinner)findViewById(R.id.spRoles);
@@ -84,6 +122,7 @@ public class Update extends AppCompatActivity {
         cellInput = (TextInputLayout)findViewById(R.id.cell_input);
         update_toolBar = (Toolbar)findViewById(R.id.update_toolBar);
         btn_update_submit = (Button) findViewById(R.id.btn_update_submit);
+        btnResetPass = (Button) findViewById(R.id.btnResetPass);
         setSupportActionBar(update_toolBar);
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
@@ -297,11 +336,9 @@ public class Update extends AppCompatActivity {
             } else {
                 if (etPassword.getText().toString().trim().equals(etRePassword.getText().toString().trim())) {
                     progressDialog = new SpotsDialog(Update.this, R.style.Custom);
-                    progressDialog.setTitle("Updating");
                     progressDialog.show();
                     BackendlessUser user = Backendless.UserService.CurrentUser();
                     user.setProperty("objectId", getIntent().getStringExtra("objectId"));
-                    user.setPassword(etPassword.getText().toString().trim());
                     user.setProperty("name", etName.getText().toString().trim());
                     user.setProperty("surname", etSurname.getText().toString().trim());
                     user.setProperty("cell", etCellPhone.getText().toString().trim());
@@ -344,6 +381,72 @@ public class Update extends AppCompatActivity {
             Toast.makeText(Update.this, "No internet connection!", Toast.LENGTH_SHORT).show();
         }
     }
+
+    public void btnEdit() {
+        etName.setEnabled(true);
+        etSurname.setEnabled(true);
+        etEmail.setEnabled(true);
+        passwordInput.setVisibility(View.GONE);
+        rePasswordInput.setVisibility(View.GONE);
+        etRePassword.setVisibility(View.GONE);
+        etCellPhone.setEnabled(true);
+        spRoles.setEnabled(true);
+        spLocation.setEnabled(true);
+        etPassword.setHint(getString(R.string.change_password));
+        etPassword.setVisibility(View.VISIBLE);
+        etPassword.setEnabled(true);
+        btnResetPass.setVisibility(View.VISIBLE);
+        btn_update_submit.setVisibility(View.VISIBLE);
+
+    }
+
+    public void ChangePassword(View v) {
+        LayoutInflater inflater = getLayoutInflater();
+        final View view = inflater.inflate(R.layout.change_password, null);
+        etNewPass = (EditText) view.findViewById(R.id.etNewPass);
+        etRePass = (EditText) view.findViewById(R.id.etRePass);
+        progressDialog = new SpotsDialog(Update.this, R.style.Custom);
+        AlertDialog.Builder dlg = new AlertDialog.Builder(this);
+        dlg.setTitle("Change Password");
+        dlg.setView(view);
+        dlg.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                BackendlessUser user = Backendless.UserService.CurrentUser();
+                progressDialog.show();
+                if (etNewPass.getText().toString().trim().equals(etRePass.getText().toString().trim())) {
+                    user.setProperty("objectId", getIntent().getStringExtra("objectId"));
+                    user.setPassword(etNewPass.getText().toString().trim());
+                    Backendless.UserService.update(user, new AsyncCallback<BackendlessUser>() {
+                        @Override
+                        public void handleResponse(BackendlessUser backendlessUser) {
+                            Toast.makeText(Update.this, "Password changed successfully!" + " \n" +
+                                    "Please login", Toast.LENGTH_SHORT).show();
+                            progressDialog.dismiss();
+                            startActivity(new Intent(Update.this, Login.class));
+                        }
+
+                        @Override
+                        public void handleFault(BackendlessFault backendlessFault) {
+                            Toast.makeText(Update.this, backendlessFault.getMessage(), Toast.LENGTH_SHORT).show();
+                            progressDialog.dismiss();
+                        }
+                    });
+                } else {
+                    Toast.makeText(Update.this, "Please make sure passwords match!", Toast.LENGTH_SHORT).show();
+                    progressDialog.dismiss();
+                }
+            }
+        });
+        dlg.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        dlg.show();
+    }
+
 
 
 }

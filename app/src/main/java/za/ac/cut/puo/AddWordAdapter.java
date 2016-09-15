@@ -10,13 +10,13 @@ import android.widget.TextView;
 
 import java.util.List;
 
-public class WordHomeAdapter extends ArrayAdapter {
+public class AddWordAdapter extends ArrayAdapter<AddWord> {
     private final Context context;
-    private final List<Word> values;
-    TextView tv_word_title, tv_word_status, tv_word_author;
+    private final List<AddWord> values;
+    TextView tv_word_title, tv_word_status, tv_word_author, tvLanguage;
 
-    public WordHomeAdapter(Context context, List<Word> list) {
-        super(context, R.layout.word_list_item);
+    public AddWordAdapter(Context context, List<AddWord> list) {
+        super(context, R.layout.home_word_row, list);
         this.context = context;
         this.values = list;
     }
@@ -24,17 +24,19 @@ public class WordHomeAdapter extends ArrayAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View rowView = inflater.inflate(R.layout.word_list_item, parent, false);
-        tv_word_title = (TextView) rowView.findViewById(R.id.tv_word_text);
-        tv_word_status = (TextView) rowView.findViewById(R.id.tv_word_status);
-        tv_word_author = (TextView) rowView.findViewById(R.id.tv_word_author);
+        View rowView = inflater.inflate(R.layout.home_word_row, parent, false);
+        tv_word_title = (TextView) rowView.findViewById(R.id.tvWord);
+        tv_word_status = (TextView) rowView.findViewById(R.id.tvStatus);
+        tv_word_author = (TextView) rowView.findViewById(R.id.tvAuthor);
+        tvLanguage = (TextView) rowView.findViewById(R.id.tvLanguage);
         tv_word_title.setText(values.get(position).getWord());
+        tvLanguage.setText(values.get(position).getLanguage());
         if (values.get(position).isSupported()) {
             tv_word_status.setText(getContext().getString(R.string.supported));
         } else {
             tv_word_status.setText(getContext().getString(R.string.not_supported));
         }
-        tv_word_author.setText(values.get(position).getName().substring(0, 1) + "." + values.get(position).getSurname());
+        tv_word_author.setText(values.get(position).getName() + " " + values.get(position).getSurname());
 
         return rowView;
     }

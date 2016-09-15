@@ -41,9 +41,13 @@
         android:orderInCategory="108"
         android:title="@string/word_highscore"
         app:showAsAction="never" />
+
     <item
         android:id="@+id/logout"
+        android:icon="@drawable/ic_logout"
         android:orderInCategory="109"
         android:title="@string/logout"
         app:showAsAction="never" />
+
+
 </menu>

@@ -60,6 +60,8 @@
     <string name="enter_word">Enter a word</string>
     <string name="definition">Enter a definition</string>
     <string name="sentence_example">Enter sentence with word</string>
+    <string name="change_password">Change Password</string>
+    <string name="edit">Edit</string>
 
     <!-- sort_filter_bar spinner entries -->
     <string-array name="entries_ordering">
@@ -68,7 +70,7 @@
     </string-array>
 
     <string-array name="entries_part_of_speech">
-        <item>All</item>
+        <item>Parts of Speech</item>
         <item>Noun</item>
         <item>Pronoun</item>
         <item>Verb</item>
@@ -80,7 +82,9 @@
     </string-array>
 
     <string-array name="entries_language">
-        <item>All</item>
+        <item>Language</item>
+        <item>English</item>
+        <item>Afrikaans</item>
         <item>isiXhosa</item>
         <item>isiZulu</item>
         <item>isiNdebele</item>
@@ -93,6 +97,8 @@
     </string-array>
 
     <string name="action_settings">Settings</string>
+    <string name="add_image">Add Image</string>
+    <string name="add_sound_clip">Add Sound Clip</string>
     <array name="role_items">
         <item>Collector</item>
         <item>Specialist</item>
