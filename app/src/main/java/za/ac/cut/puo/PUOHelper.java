@@ -1,5 +1,9 @@
 package za.ac.cut.puo;
 
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,8 +40,21 @@ public class PUOHelper {
         words.add(new Word("Dudula", "Xhosa", "an act of exerting force on someone or something", "verb"));
         words.add(new Word("umzabalazo", "Xhosa", "a forceful or violent effort to get free of restraint or resist attack", "noun"));
         words.add(new Word("thetha", "Xhosa", "conversation; discussion", "noun"));
-       
+
         return words;
+    }
+
+    /**
+     * Sets up the action bar for an activity using the toolbar puo_toolbar.xml layout.
+     * Add <include layout="@layout/puo_toolbar"/> in your activity's layout then call this
+     * method in your activity's onCreate.
+     */
+    public static ActionBar setAppBar(AppCompatActivity activity, int iconId, String title) {
+        Toolbar appBar = (Toolbar) activity.findViewById(R.id.puo_toolbar);
+        appBar.setLogo(iconId);
+        appBar.setTitle(" " + title);
+        activity.setSupportActionBar(appBar);
+        return activity.getSupportActionBar();
     }
 
 }
