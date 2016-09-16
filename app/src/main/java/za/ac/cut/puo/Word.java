@@ -1,5 +1,9 @@
 package za.ac.cut.puo;
 
+import android.graphics.Bitmap;
+
+import com.backendless.media.audio.AudioStream;
+
 import java.util.Date;
 
 public class Word {
@@ -8,13 +12,14 @@ public class Word {
     private String language;
     private String definition;
     private String partOfSpeech;
-    private String email;
     private String name;
     private String surname;
     private String sentence;
-    private int count;
-    private String rating;
     private boolean supported;
+    private AudioStream pronunciation;
+    private float rating;
+    private Bitmap descImage;
+    private boolean blocked;
     private String objectId;
     private Date created;
     private Date updated;
@@ -24,13 +29,15 @@ public class Word {
         this.language = null;
         this.definition = null;
         this.partOfSpeech = null;
-        this.email = null;
         this.name = null;
         this.surname = null;
         this.sentence = null;
         this.supported = false;
-        this.setCount(0);
-        this.setRating(null);
+        this.descImage = null;
+        this.pronunciation = null;
+        this.blocked = false;
+        this.repeatFlag = false;
+        this.setRating(0);
     }
 
     //Game Word
@@ -92,14 +99,6 @@ public class Word {
         this.partOfSpeech = partOfSpeech;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public String getName() {
         return name;
     }
@@ -156,19 +155,48 @@ public class Word {
         this.updated = updated;
     }
 
-    public String getRating() {
+
+    public AudioStream getPronunciation() {
+        return pronunciation;
+    }
+
+    public void setPronunciation(AudioStream pronunciation) {
+        this.pronunciation = pronunciation;
+    }
+
+    public float getRating() {
         return rating;
     }
 
-    public void setRating(String rating) {
+    public void setRating(float rating) {
         this.rating = rating;
     }
 
-    public int getCount() {
-        return count;
+    public Bitmap getDescImage() {
+        return descImage;
     }
 
-    public void setCount(int count) {
-        this.count = count;
+    public void setDescImage(Bitmap descImage) {
+        this.descImage = descImage;
+    }
+
+    public boolean isBlocked() {
+        return blocked;
+    }
+
+    public void setBlocked(boolean blocked) {
+        this.blocked = blocked;
+    }
+
+    public String getLexicon() {
+        return partOfSpeech + ", " + language;
+    }
+
+    public String getStatus() {
+        return supported ? "supported" : "unsupported";
+    }
+
+    public String getAuthor() {
+        return name + " " + surname;
     }
 }
