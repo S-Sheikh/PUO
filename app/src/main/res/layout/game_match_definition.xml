@@ -109,7 +109,7 @@
                 android:layout_marginRight="15dp"
                 android:allowUndo="false"
                 android:background="@drawable/game_button_bg_score"
-                android:text="001"
+                android:text="000"
                 android:textColor="@color/gColorScore"
                 android:textStyle="bold" />
 

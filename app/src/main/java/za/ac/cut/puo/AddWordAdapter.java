@@ -13,13 +13,13 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class AddWordAdapter extends ArrayAdapter<AddWord> {
+public class AddWordAdapter extends ArrayAdapter<Word> {
     private final Context context;
-    private final List<AddWord> values;
+    private final List<Word> values;
     TextView tv_word_title, tv_word_status, tv_word_author, tvLanguage;
     ImageView wordDescImg;
 
-    public AddWordAdapter(Context context, List<AddWord> list) {
+    public AddWordAdapter(Context context, List<Word> list) {
         super(context, R.layout.word_list_item, list);
         this.context = context;
         this.values = list;
