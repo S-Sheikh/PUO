@@ -197,6 +197,6 @@ public class Word {
     }
 
     public String getAuthor() {
-        return name + " " + surname;
+        return name.substring(0, 1) + ". " + surname;
     }
 }

@@ -35,14 +35,9 @@ public class AddWordAdapter extends ArrayAdapter<Word> {
         tv_word_author = (TextView) rowView.findViewById(R.id.tv_word_author);
         tvLanguage = (TextView) rowView.findViewById(R.id.tv_word_lexicon);
         tv_word_title.setText(values.get(position).getWord());
-        tvLanguage.setText(values.get(position).getLanguage() + "," + values.get(position).getPartOfSpeech());
-        if (values.get(position).isSupported()) {
-            tv_word_status.setText(getContext().getString(R.string.supported));
-        } else {
-            tv_word_status.setText(getContext().getString(R.string.not_supported));
-        }
-        tv_word_author.setText(values.get(position).getName() + " " + values.get(position).getSurname());
-
+        tvLanguage.setText(values.get(position).getLexicon());
+        tv_word_status.setText(values.get(position).getStatus());
+        tv_word_author.setText(values.get(position).getAuthor());
         return rowView;
     }
 }
