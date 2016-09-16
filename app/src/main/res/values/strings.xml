@@ -69,7 +69,7 @@
     </string-array>
 
     <string-array name="entries_part_of_speech">
-        <item>All</item>
+        <item>Part of Speech</item>
         <item>Noun</item>
         <item>Pronoun</item>
         <item>Verb</item>
@@ -81,7 +81,9 @@
     </string-array>
 
     <string-array name="entries_language">
-        <item>All</item>
+        <item>Language</item>
+        <item>English</item>
+        <item>Afrikaans</item>
         <item>isiXhosa</item>
         <item>isiZulu</item>
         <item>isiNdebele</item>

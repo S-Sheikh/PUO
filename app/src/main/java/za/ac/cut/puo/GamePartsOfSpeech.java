@@ -116,7 +116,8 @@ public class GamePartsOfSpeech extends AppCompatActivity {
 
         score = 001;
         mHandler.sendEmptyMessage(MSG_START_TIMER);
-
+        PUOHelper.setAppBar(this, getResources().getString(R.string.app_name))
+                .setDisplayHomeAsUpEnabled(true);
 //        ActionBar actionbar = getSupportActionBar();
 //        actionbar.setDisplayHomeAsUpEnabled(true);
     }
