@@ -39,7 +39,7 @@ public class HomeMenu extends AppCompatActivity {
     Toolbar home_toolBar;
     TextView tvUsernameHome, tvUserType, tvWordCount, tvWordInfo;
     ListView lvWords;
-    List<AddWord> words;
+    List<Word> words;
     EditText etAddWord, etDefinition, etSentence;
     Spinner spLanguage, spPartOfSpeech;
     ImageView ivAddImage, ivAddSound;
@@ -145,9 +145,9 @@ public class HomeMenu extends AppCompatActivity {
         String whereClause = "email = '" + user.getEmail() + "'";
         BackendlessDataQuery dataQuery = new BackendlessDataQuery();
         dataQuery.setWhereClause(whereClause);
-        Backendless.Persistence.of(AddWord.class).find(dataQuery, new AsyncCallback<BackendlessCollection<AddWord>>() {
+        Backendless.Persistence.of(Word.class).find(dataQuery, new AsyncCallback<BackendlessCollection<Word>>() {
             @Override
-            public void handleResponse(BackendlessCollection<AddWord> addWordBackendlessCollection) {
+            public void handleResponse(BackendlessCollection<Word> addWordBackendlessCollection) {
                 words = addWordBackendlessCollection.getData();
                 AddWordAdapter adapter = new AddWordAdapter(HomeMenu.this, words);
                 lvWords.setAdapter(adapter);
@@ -168,9 +168,9 @@ public class HomeMenu extends AppCompatActivity {
             words.clear();
         }
 
-        Backendless.Persistence.of(AddWord.class).find(new AsyncCallback<BackendlessCollection<AddWord>>() {
+        Backendless.Persistence.of(Word.class).find(new AsyncCallback<BackendlessCollection<Word>>() {
             @Override
-            public void handleResponse(BackendlessCollection<AddWord> addWordBackendlessCollection) {
+            public void handleResponse(BackendlessCollection<Word> addWordBackendlessCollection) {
                 words = addWordBackendlessCollection.getData();
                 AddWordAdapter adapter = new AddWordAdapter(HomeMenu.this, words);
                 lvWords.setAdapter(adapter);
@@ -206,10 +206,10 @@ public class HomeMenu extends AppCompatActivity {
                     progressDialog.show();
                     if (!(etAddWord.getText().toString().trim().isEmpty() || etSentence.getText().toString().trim().isEmpty() ||
                             etDefinition.getText().toString().trim().isEmpty())) {
-                        Backendless.Persistence.of(AddWord.class).find(new AsyncCallback<BackendlessCollection<AddWord>>() {
+                        Backendless.Persistence.of(Word.class).find(new AsyncCallback<BackendlessCollection<Word>>() {
                             boolean wordExists = false;
                             @Override
-                            public void handleResponse(BackendlessCollection<AddWord> addWordBackendlessCollection) {
+                            public void handleResponse(BackendlessCollection<Word> addWordBackendlessCollection) {
                                 words = addWordBackendlessCollection.getData();
                                 for (int i = 0; i < words.size(); i++) {
                                     if (words.get(i).getWord().trim().equalsIgnoreCase(etAddWord.getText().toString().trim())) {
@@ -224,7 +224,7 @@ public class HomeMenu extends AppCompatActivity {
                                 }
                                 if (wordExists == false) {
                                     BackendlessUser user = Backendless.UserService.CurrentUser();
-                                    AddWord word = new AddWord();
+                                    Word word = new Word();
                                     word.setName(user.getProperty("name").toString().trim());
                                     word.setSurname(user.getProperty("surname").toString().trim());
                                     word.setWord(etAddWord.getText().toString().trim());
@@ -233,9 +233,9 @@ public class HomeMenu extends AppCompatActivity {
                                     word.setLanguage(spLanguage.getSelectedItem().toString().trim());
                                     word.setPartOfSpeech(spPartOfSpeech.getSelectedItem().toString().trim());
                                     word.setCount(word.getCount() + 1);
-                                    Backendless.Persistence.save(word, new AsyncCallback<AddWord>() {
+                                    Backendless.Persistence.save(word, new AsyncCallback<Word>() {
                                         @Override
-                                        public void handleResponse(AddWord word) {
+                                        public void handleResponse(Word word) {
                                             Toast.makeText(HomeMenu.this, word.getWord() + " saved successfully!", Toast.LENGTH_SHORT).show();
                                             loadData();
                                             progressDialog.dismiss();
@@ -252,15 +252,15 @@ public class HomeMenu extends AppCompatActivity {
                                  Toast.makeText(HomeMenu.this, "Word already exists!Please enter a new word :)", Toast.LENGTH_SHORT).show();
                                  progressDialog.dismiss();
                                  }else if(wordExists == false){
-                                 AddWord word = new AddWord();
+                                 Word word = new Word();
                                  word.setWord(etAddWord.getText().toString().trim());
                                  word.setDefinition(etDefinition.getText().toString().trim());
                                  word.setSentence(etSentence.getText().toString().trim());
                                  word.setLanguage(spLanguage.getSelectedItem().toString().trim());
                                  word.setPartOfSpeech(spPartOfSpeech.getSelectedItem().toString().trim());
                                  word.setCount(word.getCount() + 1);
-                                 Backendless.Persistence.save(word, new AsyncCallback<AddWord>() {
-                                @Override public void handleResponse(AddWord word) {
+                                 Backendless.Persistence.save(word, new AsyncCallback<Word>() {
+                                @Override public void handleResponse(Word word) {
                                 Toast.makeText(HomeMenu.this, word.getWord() + " saved successfully!", Toast.LENGTH_SHORT).show();
                                 loadData();
                                 progressDialog.dismiss();

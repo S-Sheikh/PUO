@@ -1,12 +1,9 @@
 package za.ac.cut.puo;
 
-import android.graphics.Bitmap;
-
-import com.backendless.media.audio.AudioStream;
-
 import java.util.Date;
 
 public class Word {
+    private boolean repeatFlag;
     private String word;
     private String language;
     private String definition;
@@ -15,29 +12,28 @@ public class Word {
     private String name;
     private String surname;
     private String sentence;
+    private int count;
+    private String rating;
     private boolean supported;
-    private boolean blocked;
-    private boolean repeatFlag;
     private String objectId;
     private Date created;
     private Date updated;
-    private AudioStream pronunciation;
-    private float rating;
-    private Bitmap descImage;
 
     public Word() {
-//        this.word = null;
-//        this.language = null;
-//        this.definition = null;
-//        this.partOfSpeech = null;
-//        this.email = null;
-//        this.name = null;
-//        this.surname = null;
-//        this.supported = false;
-//        this.repeatFlag = false;
+        this.word = null;
+        this.language = null;
+        this.definition = null;
+        this.partOfSpeech = null;
+        this.email = null;
+        this.name = null;
+        this.surname = null;
+        this.sentence = null;
+        this.supported = false;
+        this.setCount(0);
+        this.setRating(null);
     }
 
-    //For the word Game
+    //Game Word
     public Word(String word, String language, String definition, String partOfSpeech) {
         this.word = word;
         this.language = language;
@@ -64,20 +60,20 @@ public class Word {
         this.repeatFlag = repeatFlag;
     }
 
-    public String getLanguage() {
-        return language;
-    }
-
-    public void setLanguage(String language) {
-        this.language = language;
-    }
-
     public String getWord() {
         return word;
     }
 
     public void setWord(String word) {
         this.word = word;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
     }
 
     public String getDefinition() {
@@ -120,20 +116,20 @@ public class Word {
         this.surname = surname;
     }
 
+    public String getSentence() {
+        return sentence;
+    }
+
+    public void setSentence(String sentence) {
+        this.sentence = sentence;
+    }
+
     public boolean isSupported() {
         return supported;
     }
 
     public void setSupported(boolean supported) {
         this.supported = supported;
-    }
-
-    public boolean isBlocked() {
-        return blocked;
-    }
-
-    public void setBlocked(boolean blocked) {
-        this.blocked = blocked;
     }
 
     public String getObjectId() {
@@ -160,48 +156,19 @@ public class Word {
         this.updated = updated;
     }
 
-    public String getSentence() {
-        return sentence;
-    }
-
-    public void setSentence(String sentence) {
-        this.sentence = sentence;
-    }
-
-
-    public AudioStream getPronunciation() {
-        return pronunciation;
-    }
-
-    public void setPronunciation(AudioStream pronunciation) {
-        this.pronunciation = pronunciation;
-    }
-
-    public float getRating() {
+    public String getRating() {
         return rating;
     }
 
-    public void setRating(float rating) {
+    public void setRating(String rating) {
         this.rating = rating;
     }
 
-    public Bitmap getDescImage() {
-        return descImage;
+    public int getCount() {
+        return count;
     }
 
-    public void setDescImage(Bitmap descImage) {
-        this.descImage = descImage;
-    }
-
-    public String getLexicon() {
-        return partOfSpeech + ", " + language;
-    }
-
-    public String getStatus() {
-        return supported ? "supported" : "unsupported";
-    }
-
-    public String getAuthor() {
-        return name + " " + surname;
+    public void setCount(int count) {
+        this.count = count;
     }
 }
