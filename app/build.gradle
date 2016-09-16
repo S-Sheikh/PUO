@@ -34,4 +34,6 @@ dependencies {
     compile 'com.github.d-max:spots-dialog:0.4@aar'
     compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'hanks.xyz:smallbang-library:0.1.2'
+    compile 'jp.wasabeef:recyclerview-animators:2.2.4'
 }
+

@@ -50,6 +50,8 @@ public class WordListItemAdapter extends RecyclerView.Adapter<WordListItemAdapte
 
     private Context mContext;
 
+
+
     public WordListItemAdapter(List<Word> mWords, Context mContext) {
         this.mWords = mWords;
         this.mContext = mContext;
@@ -81,6 +83,7 @@ public class WordListItemAdapter extends RecyclerView.Adapter<WordListItemAdapte
         holder.wordRating.setRating(word.getRating());
         holder.wordDescImg.setImageResource(R.drawable.dp);
 
+        //change text color to green in word is supported.
         if (word.isSupported()) {
             holder.wordStatus.setTextColor(getContext().getResources()
                     .getColor(R.color.gColorTime));

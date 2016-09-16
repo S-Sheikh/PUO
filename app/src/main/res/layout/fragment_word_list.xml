@@ -8,13 +8,7 @@
 
     <include layout="@layout/sort_filter_bar" />
 
-    <!--<include layout="@layout/word_list_item" />-->
-    <!--<include layout="@layout/word_list_item" />-->
-    <!--<include layout="@layout/word_list_item" />-->
-    <!--<include layout="@layout/word_list_item" />-->
-    <!--<include layout="@layout/word_list_item" />-->
-    <!--<include layout="@layout/word_list_item" />-->
-    <!--<include layout="@layout/word_list_item" />-->
+    <include layout="@layout/progress_bar_circular" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_word_list"

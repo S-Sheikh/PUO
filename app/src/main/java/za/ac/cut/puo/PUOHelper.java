@@ -13,6 +13,9 @@ import java.util.List;
 
 public class PUOHelper {
 
+    public  static final int HOME_SCREEN_LIST_ITEM = 401;
+    public  static final int WORD_TREASURE_LIST_ITEM = 402;
+
     //Word List BoilerPlate
     public static List<Word> populateWordList() {
         List<Word> words = new ArrayList<>();

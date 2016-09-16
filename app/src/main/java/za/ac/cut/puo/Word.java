@@ -193,7 +193,7 @@ public class Word {
     }
 
     public String getStatus() {
-        return supported ? "supported" : "unsupported";
+        return supported ? "Supported" : "Unsupported";
     }
 
     public String getAuthor() {

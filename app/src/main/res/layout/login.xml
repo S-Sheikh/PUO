@@ -50,8 +50,9 @@
                 app:hintTextAppearance="?attr/hintTextAppearance"
                 app:theme="@style/Widget.Design.TextInputLayout">
 
-                <EditText
+                <android.support.design.widget.TextInputEditText
                     android:id="@+id/edt_email"
+                    android:focusableInTouchMode="true"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/login_email_hint"

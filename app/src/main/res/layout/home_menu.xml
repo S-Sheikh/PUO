@@ -70,15 +70,7 @@
 
     </LinearLayout>
 
-    <ProgressBar
-        android:id="@+id/progressBarCircular"
-        style="@style/Widget.AppCompat.ProgressBar"
-        android:layout_width="40dp"
-        android:layout_height="30dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="5dp"
-        android:indeterminate="true"
-        android:theme="@style/CircularProgress" />
+    <include layout="@layout/progress_bar_circular" />
 
     <TextView
         android:id="@+id/tvRecentWords"
