@@ -17,7 +17,7 @@ public class AddWordAdapter extends ArrayAdapter<Word> {
     private final Context context;
     private final List<Word> values;
     TextView tv_word_title, tv_word_status, tv_word_author, tvLanguage;
-    ImageView wordDescImg;
+    ImageView wordDescImg, iv_ic_popup;
 
     public AddWordAdapter(Context context, List<Word> list) {
         super(context, R.layout.word_list_item, list);
@@ -29,6 +29,8 @@ public class AddWordAdapter extends ArrayAdapter<Word> {
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(R.layout.word_list_item, parent, false);
+        iv_ic_popup = (ImageView) rowView.findViewById(R.id.iv_ic_popup_menu);
+        iv_ic_popup.setVisibility(View.GONE);
         wordDescImg = (CircleImageView) rowView.findViewById(R.id.civ_word_pic);
         tv_word_title = (TextView) rowView.findViewById(R.id.tv_word_text);
         tv_word_status = (TextView) rowView.findViewById(R.id.tv_word_status);
