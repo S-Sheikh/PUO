@@ -232,7 +232,6 @@ public class HomeMenu extends AppCompatActivity {
                                     word.setSentence(etSentence.getText().toString().trim());
                                     word.setLanguage(spLanguage.getSelectedItem().toString().trim());
                                     word.setPartOfSpeech(spPartOfSpeech.getSelectedItem().toString().trim());
-                                    word.setCount(word.getCount() + 1);
                                     Backendless.Persistence.save(word, new AsyncCallback<Word>() {
                                         @Override
                                         public void handleResponse(Word word) {
