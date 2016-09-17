@@ -193,7 +193,11 @@ public class Word {
     }
 
     public String getStatus() {
-        return supported ? "Supported" : "Unsupported";
+        /**
+         * @return status "Blocked" if word is blocked, else if word is supported return
+         * "Supported" else "Unsupported".
+         * */
+        return blocked ? "Blocked" : (supported ? "Supported" : "Unsupported");
     }
 
     public String getAuthor() {
