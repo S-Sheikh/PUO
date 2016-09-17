@@ -105,7 +105,8 @@ public class Login extends AppCompatActivity {
 
                     @Override
                     public void handleFault(BackendlessFault backendlessFault) {
-                        Toast.makeText(Login.this, backendlessFault.getMessage(), Toast.LENGTH_SHORT).show();
+                        email_txt_input_login.setError(backendlessFault.getMessage());
+                        pass_txt_input_login.setError(backendlessFault.getMessage());
                         progressDialog.dismiss();
                     }
                 }, true);

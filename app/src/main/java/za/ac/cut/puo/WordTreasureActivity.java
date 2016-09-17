@@ -2,10 +2,11 @@ package za.ac.cut.puo;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.view.View;
 
 public class WordTreasureActivity extends AppCompatActivity implements
-        WordListFragment.OnWordListItemListener {
+        WordListItemAdapter.OnItemClickListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -16,14 +17,27 @@ public class WordTreasureActivity extends AppCompatActivity implements
 
     }
 
-
     @Override
-    public void onWordListItemSelected(View v) {
+    public void onWordSelected(View itemView) {
 
     }
 
     @Override
-    public void onOverFlowClicked(View v) {
+    public boolean onMenuItemClick(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.support:
+                return true;
+            case R.id.block:
+                return true;
+            case R.id.rate:
+                return true;
+            case R.id.add_to_word_chest:
+                return true;
+            case R.id.share:
+                return true;
+            default:
+                return false;
+        }
 
     }
 }

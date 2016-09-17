@@ -26,7 +26,7 @@ import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link OnWordListItemListener} interface
+ * {@link OnWordListItemClickListener} interface
  * to handle interaction events.
  * Use the {@link WordListFragment#newInstance} factory method to
  * create an instance of this fragment.
@@ -77,12 +77,12 @@ public class WordListFragment extends Fragment {
         mRecyclerView.getItemAnimator().setAddDuration(300);
     }
 
-    private OnWordListItemListener mListener;
+    private OnWordListItemClickListener mListener;
 
-    public void setWordListItemListener(OnWordListItemListener mListener) {
-        this.mListener = mListener;
+    public void setWordListItemListener(OnWordListItemClickListener mListener) {
+      this.mListener = mListener;
 //        if (mListener != null) {
-//            mListener.onWordListItemSelected(WordListItemAdapter.ViewHolder);
+//            mListener.(mAdapter.getOnItemClickListenerCallBack());
 //        }
     }
 
@@ -114,12 +114,12 @@ public class WordListFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnWordListItemListener) {
-            mListener = (OnWordListItemListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnWordListItemListener");
-        }
+//        if (context instanceof OnWordListItemClickListener) {
+//            mListener = (OnWordListItemClickListener) context;
+//        } else {
+//            throw new RuntimeException(context.toString()
+//                    + " must implement OnWordListItemClickListener");
+//        }
     }
 
     @Override
@@ -134,11 +134,6 @@ public class WordListFragment extends Fragment {
      * to the activity and potentially other fragments contained in that
      * activity.
      */
-    public interface OnWordListItemListener {
-        // TODO: Update argument type and name
-        void onWordListItemSelected(View v);
-        void onOverFlowClicked(View v);
-    }
-
+    public interface OnWordListItemClickListener extends WordListItemAdapter.OnItemClickListener{ }
 
 }

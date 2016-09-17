@@ -67,7 +67,7 @@ public class HomeMenu extends AppCompatActivity {
         lvWords.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                lvWords.setBackgroundColor(getResources().getColor(R.color.colorPrimaryLight));
+                view.setBackgroundColor(getResources().getColor(R.color.colorPrimaryLight));
                 String value = words.get(position).getDefinition().trim();
                 tvWordInfo.setText(value);
             }
@@ -322,7 +322,7 @@ public class HomeMenu extends AppCompatActivity {
                 Toast.makeText(HomeMenu.this, "Successfully logged out!", Toast.LENGTH_SHORT).show();
                 progressDialog.dismiss();
                 HomeMenu.this.finish();
-                startActivity(new Intent(HomeMenu.this, Login.class));
+                //startActivity(new Intent(HomeMenu.this, Login.class));
             }
 
             @Override

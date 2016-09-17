@@ -9,24 +9,25 @@
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/register_toolBar"
-        android:elevation="4dp"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
+        android:elevation="4dp"
         android:theme="@style/AppTheme.AppBarOverlay"
         app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-    <ScrollView
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="9"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
-            android:padding="16dip"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="16dip">
 
             <ImageView
                 android:id="@+id/iv_register_puo_logo"
@@ -44,13 +45,12 @@
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textStyle="bold" />
 
-
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/name_txt_input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <EditText
+                <android.support.design.widget.TextInputEditText
                     android:id="@+id/edt_register_name"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
@@ -58,13 +58,12 @@
                     android:inputType="textPersonName" />
             </android.support.design.widget.TextInputLayout>
 
-
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/surname_txt_input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <EditText
+                <android.support.design.widget.TextInputEditText
                     android:id="@+id/edt_register_surname"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -77,7 +76,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <EditText
+                <android.support.design.widget.TextInputEditText
                     android:id="@+id/edt_register_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -92,7 +91,7 @@
                 app:passwordToggleEnabled="true"
                 app:passwordToggleTint="@color/colorPrimary">
 
-                <EditText
+                <android.support.design.widget.TextInputEditText
                     android:id="@+id/edt_register_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -107,7 +106,7 @@
                 app:passwordToggleEnabled="true"
                 app:passwordToggleTint="@color/colorPrimary">
 
-                <EditText
+                <android.support.design.widget.TextInputEditText
                     android:id="@+id/edt_register_rePassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -119,22 +118,13 @@
                 android:id="@+id/btn_submit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="40dp"
                 android:layout_marginTop="40dp"
                 android:background="@drawable/buttons"
                 android:onClick="btnSubmit"
                 android:text="@string/register_btn_submit"
                 android:textColor="@color/colorIcons" />
-
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="@string/login_tv_talk_to_me"
-                android:textColor="@color/colorPrimaryText"
-                android:textStyle="bold" />
         </LinearLayout>
-    </ScrollView>
+    </android.support.v4.widget.NestedScrollView>
 
+    <include layout="@layout/app_footer" />
 </LinearLayout>
