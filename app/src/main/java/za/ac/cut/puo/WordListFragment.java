@@ -2,14 +2,17 @@ package za.ac.cut.puo;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.backendless.Backendless;
@@ -20,6 +23,7 @@ import com.backendless.exceptions.BackendlessFault;
 import java.util.ArrayList;
 import java.util.List;
 
+import jp.wasabeef.recyclerview.adapters.SlideInBottomAnimationAdapter;
 import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
 
 
@@ -36,7 +40,8 @@ public class WordListFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private List<Word> mWords;
     private WordListItemAdapter mAdapter;
-    View rootView;
+    private View rootView;
+    private OnWordListItemClickListener mListener;
 
     public WordListFragment() {
         // Required empty public constructor
@@ -61,32 +66,71 @@ public class WordListFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_word_list, container, false);
+
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.rv_word_list);
         mWords = new ArrayList<>();
-        mAdapter = new WordListItemAdapter(mWords,getContext());
-        loadData(mAdapter,mWords);
-        return rootView;
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mRecyclerView.setAdapter(mAdapter);
+        mAdapter = new WordListItemAdapter(mWords, getContext());
+        mRecyclerView.setAdapter(new SlideInBottomAnimationAdapter(mAdapter));
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setItemAnimator(new SlideInLeftAnimator());
         mRecyclerView.getItemAnimator().setAddDuration(300);
+        loadData(mWords);
+
+        //set adapter click listener
+        mAdapter.setOnItemClickListener(new WordListItemAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClicked(View itemView) {
+                mListener.onWordSelected(mRecyclerView.getChildLayoutPosition(itemView));
+                setSnackBar(rootView, "Word at position: " +
+                        mRecyclerView.getChildLayoutPosition(itemView) + " selected.",
+                        Snackbar.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onOverflowClicked(ImageView v) {
+                PopupMenu wordOptions = new PopupMenu(getContext(), v);
+                MenuInflater inflater = wordOptions.getMenuInflater();
+                inflater.inflate(R.menu.popup_menu, wordOptions.getMenu());
+                wordOptions.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.support:
+                                mListener.onMenuOptionSelected(R.id.support);
+                                setSnackBar(rootView,"I support this word",
+                                        Snackbar.LENGTH_SHORT).show();
+                                return true;
+                            case R.id.block:
+                                mListener.onMenuOptionSelected(R.id.block);
+                                return true;
+                            case R.id.rate:
+                                mListener.onMenuOptionSelected(R.id.rate);
+                                return true;
+                            case R.id.add_to_word_chest:
+                                mListener.onMenuOptionSelected(R.id.add_to_word_chest);
+                                return true;
+                            case R.id.share:
+                                mListener.onMenuOptionSelected(R.id.share);
+                                return true;
+                            default:
+                                return false;
+                        }
+                    }
+                });
+                wordOptions.show();
+            }
+        });
+
+        return rootView;
     }
 
-    private OnWordListItemClickListener mListener;
-
+    // Allows the parent activity or fragment to define the listener
     public void setWordListItemListener(OnWordListItemClickListener mListener) {
-      this.mListener = mListener;
-//        if (mListener != null) {
-//            mListener.(mAdapter.getOnItemClickListenerCallBack());
-//        }
+        this.mListener = mListener;
     }
 
-    public void loadData(final WordListItemAdapter adapter, final List<Word> wordList) {
+    //load words from cloud
+    public void loadData(final List<Word> wordList) {
         final ProgressBar circularBar = (ProgressBar) rootView.findViewById(R.id.progressBarCircular);
         circularBar.setVisibility(View.VISIBLE);
         if (wordList != null) {
@@ -96,30 +140,36 @@ public class WordListFragment extends Fragment {
         Backendless.Persistence.of(Word.class).find(new AsyncCallback<BackendlessCollection<Word>>() {
             @Override
             public void handleResponse(BackendlessCollection<Word> puoWordList) {
-                int curSize = adapter.getItemCount();
+                int curSize = mRecyclerView.getAdapter().getItemCount();
                 wordList.addAll(puoWordList.getData());
-                adapter.notifyItemRangeInserted(curSize, wordList.size());
+                mRecyclerView.getAdapter().notifyItemRangeInserted(curSize, wordList.size());
                 circularBar.setVisibility(View.GONE);
             }
 
             @Override
             public void handleFault(BackendlessFault backendlessFault) {
-                Snackbar sb = Snackbar.make(rootView.findViewById(R.id.container),
-                        backendlessFault.getMessage(),Snackbar.LENGTH_LONG);
-                sb.getView().setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                sb.show();
+                setSnackBar(rootView.findViewById(R.id.container),
+                        backendlessFault.getMessage(),
+                        Snackbar.LENGTH_LONG).show();
             }
         });
     }
+
+    public Snackbar setSnackBar(View v, String message, int length) {
+        Snackbar sb = Snackbar.make(v, message, length);
+        sb.getView().setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        return sb;
+    }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-//        if (context instanceof OnWordListItemClickListener) {
-//            mListener = (OnWordListItemClickListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnWordListItemClickListener");
-//        }
+        if (context instanceof OnWordListItemClickListener) {
+            mListener = (OnWordListItemClickListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnWordListItemClickListener");
+        }
     }
 
     @Override
@@ -134,6 +184,10 @@ public class WordListFragment extends Fragment {
      * to the activity and potentially other fragments contained in that
      * activity.
      */
-    public interface OnWordListItemClickListener extends WordListItemAdapter.OnItemClickListener{ }
+    public interface OnWordListItemClickListener {
+        void onMenuOptionSelected(int id);
+
+        void onWordSelected(int position);
+    }
 
 }

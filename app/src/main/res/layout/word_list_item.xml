@@ -4,6 +4,7 @@
     android:id="@+id/cv_word_list_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:clickable="true"
     android:foreground="?android:attr/selectableItemBackground"
     cardView:cardBackgroundColor="@color/cardview_light_background"
     cardView:cardCornerRadius="4dip"

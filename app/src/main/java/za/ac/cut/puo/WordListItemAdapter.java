@@ -1,10 +1,8 @@
 package za.ac.cut.puo;
 
 import android.content.Context;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -22,12 +20,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class WordListItemAdapter extends RecyclerView.Adapter<WordListItemAdapter.ViewHolder> {
 
     private List<Word> mWords;
-    private static Context mContext;
-    private static OnItemClickListener onItemClickListenerCallBack;
-
-    public OnItemClickListener getOnItemClickListenerCallBack() {
-        return onItemClickListenerCallBack;
-    }
+    private Context mContext;
+    private static OnItemClickListener onItemClickCallBack;
 
     public WordListItemAdapter(List<Word> mWords, Context mContext) {
         this.mWords = mWords;
@@ -35,16 +29,18 @@ public class WordListItemAdapter extends RecyclerView.Adapter<WordListItemAdapte
     }
 
     // Define the listener interface
-    public interface OnItemClickListener extends PopupMenu.OnMenuItemClickListener {
-        void onWordSelected(View itemView);
+    public interface OnItemClickListener {
+        void onItemClicked(View itemView);
+
+        void onOverflowClicked(ImageView v);
     }
 
-    // Define the method that allows the parent activity or fragment to define the listener
-    public void setOnItemClickListenerCallBack(OnItemClickListener listener) {
-        onItemClickListenerCallBack = listener;
+    // Allows the parent activity or fragment to define the listener
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        onItemClickCallBack = listener;
     }
 
-    private static Context getContext() {
+    private Context getContext() {
         return mContext;
     }
 
@@ -72,16 +68,11 @@ public class WordListItemAdapter extends RecyclerView.Adapter<WordListItemAdapte
 
         @Override
         public void onClick(View v) {
-            WordListItemAdapter.ViewHolder holder = new WordListItemAdapter.ViewHolder(v);
-            if (onItemClickListenerCallBack != null) {
+            if (onItemClickCallBack != null) {
                 if (v instanceof ImageView) {
-                    PopupMenu wordPopupMenu = new PopupMenu(getContext(), v);
-                    MenuInflater inflater = wordPopupMenu.getMenuInflater();
-                    inflater.inflate(R.menu.popup_menu, wordPopupMenu.getMenu());
-                    wordPopupMenu.setOnMenuItemClickListener(onItemClickListenerCallBack);
-                    wordPopupMenu.show();
+                    onItemClickCallBack.onOverflowClicked((ImageView) v);
                 } else {
-                    onItemClickListenerCallBack.onWordSelected(holder.itemView);
+                    onItemClickCallBack.onItemClicked(v);
                 }
             }
         }
@@ -93,7 +84,6 @@ public class WordListItemAdapter extends RecyclerView.Adapter<WordListItemAdapte
         View wordListItemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.word_list_item, parent, false);
 
-        // Return a new view holder instance
         return new ViewHolder(wordListItemView);
     }
 
@@ -114,6 +104,7 @@ public class WordListItemAdapter extends RecyclerView.Adapter<WordListItemAdapte
             holder.wordStatus.setTextColor(getContext().getResources()
                     .getColor(R.color.gColorTime));
         }
+
     }
 
     @Override
