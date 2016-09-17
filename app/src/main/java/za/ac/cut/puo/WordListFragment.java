@@ -50,9 +50,27 @@ public class WordListFragment extends Fragment {
     /**
      * @return A new instance of fragment WordListFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static WordListFragment newInstance() {
         return new WordListFragment();
+    }
+
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     */
+    public interface OnWordListItemClickListener {
+        void onMenuOptionSelected(int id);
+
+        void onWordSelected(int position);
+    }
+
+    /**
+     * Allows the parent activity or fragment to define the listener.
+     */
+    public void setWordListItemListener(OnWordListItemClickListener mListener) {
+        this.mListener = mListener;
     }
 
     @Override
@@ -82,23 +100,23 @@ public class WordListFragment extends Fragment {
             public void onItemClicked(View itemView) {
                 mListener.onWordSelected(mRecyclerView.getChildLayoutPosition(itemView));
                 setSnackBar(rootView, "Word at position: " +
-                        mRecyclerView.getChildLayoutPosition(itemView) + " selected.",
+                                mRecyclerView.getChildLayoutPosition(itemView) + " selected.",
                         Snackbar.LENGTH_SHORT).show();
             }
 
             @Override
-            public void onOverflowClicked(ImageView v) {
+            public void onOverflowClicked(final ImageView v) {
                 PopupMenu wordOptions = new PopupMenu(getContext(), v);
                 MenuInflater inflater = wordOptions.getMenuInflater();
                 inflater.inflate(R.menu.popup_menu, wordOptions.getMenu());
                 wordOptions.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
+                        int position = (mRecyclerView.findContainingViewHolder(v).getAdapterPosition());
                         switch (item.getItemId()) {
                             case R.id.support:
                                 mListener.onMenuOptionSelected(R.id.support);
-                                setSnackBar(rootView,"I support this word",
-                                        Snackbar.LENGTH_SHORT).show();
+                                supportWord(position);
                                 return true;
                             case R.id.block:
                                 mListener.onMenuOptionSelected(R.id.block);
@@ -122,11 +140,6 @@ public class WordListFragment extends Fragment {
         });
 
         return rootView;
-    }
-
-    // Allows the parent activity or fragment to define the listener
-    public void setWordListItemListener(OnWordListItemClickListener mListener) {
-        this.mListener = mListener;
     }
 
     //load words from cloud
@@ -155,6 +168,37 @@ public class WordListFragment extends Fragment {
         });
     }
 
+    public void supportWord(final int position){
+
+        Backendless.Data.of(Word.class).findById(mWords.get(position), new AsyncCallback<Word>() {
+            @Override
+            public void handleResponse(Word word) {
+                word.setSupported(true);
+                Backendless.Persistence.save(word, new AsyncCallback<Word>() {
+                    @Override
+                    public void handleResponse(Word word) {
+                        mWords.get(position).setSupported(true);
+                        mAdapter.notifyItemChanged(position);
+                        setSnackBar(rootView, "I support this word",
+                                Snackbar.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void handleFault(BackendlessFault backendlessFault) {
+                        setSnackBar(rootView, backendlessFault.getMessage(),
+                                Snackbar.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            @Override
+            public void handleFault(BackendlessFault backendlessFault) {
+                setSnackBar(rootView, backendlessFault.getMessage(),
+                        Snackbar.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     public Snackbar setSnackBar(View v, String message, int length) {
         Snackbar sb = Snackbar.make(v, message, length);
         sb.getView().setBackgroundColor(getResources().getColor(R.color.colorPrimary));
@@ -177,17 +221,4 @@ public class WordListFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     */
-    public interface OnWordListItemClickListener {
-        void onMenuOptionSelected(int id);
-
-        void onWordSelected(int position);
-    }
-
 }
