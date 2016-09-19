@@ -28,16 +28,14 @@ public class AddWordAdapter extends ArrayAdapter<Word> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        convertView = inflater.inflate(R.layout.word_list_item, parent, false);
-
-        iv_ic_popup = (ImageView) convertView.findViewById(R.id.iv_ic_popup_menu);
+        View rowView = inflater.inflate(R.layout.word_list_item, parent, false);
+        iv_ic_popup = (ImageView) rowView.findViewById(R.id.iv_ic_popup_menu);
         iv_ic_popup.setVisibility(View.GONE);
-        wordDescImg = (CircleImageView) convertView.findViewById(R.id.civ_word_pic);
-        tv_word_title = (TextView) convertView.findViewById(R.id.tv_word_text);
-        tv_word_status = (TextView) convertView.findViewById(R.id.tv_word_status);
-        tv_word_author = (TextView) convertView.findViewById(R.id.tv_word_author);
-        tvLanguage = (TextView) convertView.findViewById(R.id.tv_word_lexicon);
-
+        wordDescImg = (CircleImageView) rowView.findViewById(R.id.civ_word_pic);
+        tv_word_title = (TextView) rowView.findViewById(R.id.tv_word_text);
+        tv_word_status = (TextView) rowView.findViewById(R.id.tv_word_status);
+        tv_word_author = (TextView) rowView.findViewById(R.id.tv_word_author);
+        tvLanguage = (TextView) rowView.findViewById(R.id.tv_word_lexicon);
         tv_word_title.setText(values.get(position).getWord());
         tvLanguage.setText(values.get(position).getLexicon());
         tv_word_status.setText(values.get(position).getStatus());
@@ -48,6 +46,6 @@ public class AddWordAdapter extends ArrayAdapter<Word> {
             tv_word_status.setTextColor(getContext().getResources()
                     .getColor(R.color.gColorTime));
         }
-        return convertView;
+        return rowView;
     }
 }

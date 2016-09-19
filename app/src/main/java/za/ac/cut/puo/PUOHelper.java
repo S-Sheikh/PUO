@@ -16,6 +16,8 @@ import com.backendless.BackendlessUser;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,6 +72,7 @@ public class PUOHelper {
         return activity.getSupportActionBar();
     }
 
+    //Reads an image from device storage and sets it as background
     public static void readImage(CircleImageView view) {
         BackendlessUser user = Backendless.UserService.CurrentUser();
         String filename = user.getEmail() + ".png";
@@ -89,6 +92,7 @@ public class PUOHelper {
         }
     }
 
+
     /**
      * Check if there is an internet connection available.
      */
@@ -105,6 +109,19 @@ public class PUOHelper {
                 connected = true;
         }
         return connected;
+    }
+
+    public static void getImageOnline(DownloadTask task) {
+        BackendlessUser user = Backendless.UserService.CurrentUser();
+        String imageLocation = user.getEmail() + "_.png";
+        try {
+            URL url = new URL("https://api.backendless.com/D200A885-7EED-CB51-FFAC-228F87E55D00/v1/files/UserProfilePics/" + imageLocation);
+            System.out.println(url);
+            task.execute(url);
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
     }
 
 }

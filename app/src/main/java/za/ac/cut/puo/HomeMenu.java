@@ -61,12 +61,11 @@ public class HomeMenu extends AppCompatActivity {
         circularBar = (ProgressBar) findViewById(R.id.progressBarCircular);
         setSupportActionBar(home_toolBar);
         loadData();
+        PUOHelper.getImageOnline(new DownloadTask(civ_profile_Pic));
         PUOHelper.readImage(civ_profile_Pic);
         BackendlessUser user = Backendless.UserService.CurrentUser();
-
         tvUsernameHome.setText(user.getProperty("name").toString().trim() + " " + user.getProperty("surname").toString().trim());
         tvUserType.setText(user.getProperty("role").toString().trim());
-
         lvWords.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -257,29 +256,6 @@ public class HomeMenu extends AppCompatActivity {
                                         }
                                     });
                                 }
-                                /**if(wordExists == true){
-                                 Toast.makeText(HomeMenu.this, "Word already exists!Please enter a new word :)", Toast.LENGTH_SHORT).show();
-                                 progressDialog.dismiss();
-                                 }else if(wordExists == false){
-                                 Word word = new Word();
-                                 word.setWord(etAddWord.getText().toString().trim());
-                                 word.setDefinition(etDefinition.getText().toString().trim());
-                                 word.setSentence(etSentence.getText().toString().trim());
-                                 word.setLanguage(spLanguage.getSelectedItem().toString().trim());
-                                 word.setPartOfSpeech(spPartOfSpeech.getSelectedItem().toString().trim());
-                                 word.setCount(word.getCount() + 1);
-                                 Backendless.Persistence.save(word, new AsyncCallback<Word>() {
-                                @Override public void handleResponse(Word word) {
-                                Toast.makeText(HomeMenu.this, word.getWord() + " saved successfully!", Toast.LENGTH_SHORT).show();
-                                loadData();
-                                progressDialog.dismiss();
-                                }
-                                @Override public void handleFault(BackendlessFault backendlessFault) {
-                                Toast.makeText(HomeMenu.this, backendlessFault.getMessage(), Toast.LENGTH_LONG).show();
-                                progressDialog.dismiss();
-                                }
-                                });
-                                 }**/
                             }
 
                             @Override
