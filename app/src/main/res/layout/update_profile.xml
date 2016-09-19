@@ -25,9 +25,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:focusableInTouchMode="true"
             android:gravity="center_horizontal"
             android:orientation="vertical"
-            android:focusableInTouchMode="true"
             android:padding="16dip">
 
             <LinearLayout
@@ -41,6 +41,8 @@
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:layout_marginTop="20dp"
+                    android:clickable="true"
+                    android:onClick="ivProfilePickClicked"
                     android:src="@drawable/logo_puo"
                     app:civ_border_color="@color/colorAccent"
                     app:civ_border_overlay="true"
@@ -191,8 +193,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
                 android:layout_marginBottom="40dp"
+                android:layout_marginTop="10dp"
                 android:gravity="center_horizontal"
                 android:orientation="horizontal">
 

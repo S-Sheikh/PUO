@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/update_edit__menu_item"
+        android:orderInCategory="100"
         android:title="@string/edit"
         app:showAsAction="always" />
 </menu>

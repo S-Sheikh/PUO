@@ -1,11 +1,18 @@
 package za.ac.cut.puo;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -30,10 +37,23 @@ import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
+import com.backendless.files.BackendlessFile;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import dmax.dialog.SpotsDialog;
 
 public class Update extends AppCompatActivity {
+    public static final int REQUEST_CODE_CHOOSE_PHOTO = 1;
     Spinner spRoles,spLocation;
     EditText etName, etSurname, etEmail, etCellPhone, etPassword, etRePassword, etNewPass, etRePass;
     TextView tvAddPic;
@@ -42,6 +62,10 @@ public class Update extends AppCompatActivity {
     SpotsDialog progressDialog;
     Toolbar update_toolBar;
     Button btn_update_submit, btnResetPass;
+    Menu update_edit__menu_item;
+    Bitmap bitmap = null;
+    Uri uri = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,11 +84,13 @@ public class Update extends AppCompatActivity {
                 etPassword.setVisibility(View.GONE);
                 etRePassword.setVisibility(View.GONE);
                 btnResetPass.setVisibility(View.GONE);
+                readImage();
             } else {
                 etName.setEnabled(false);
                 etSurname.setEnabled(false);
                 etEmail.setEnabled(false);
                 etPassword.setEnabled(false);
+                ivProfilePic.setEnabled(false);
                 btnResetPass.setVisibility(View.GONE);
                 etPassword.setVisibility(View.GONE);
                 passwordInput.setVisibility(View.GONE);
@@ -76,6 +102,10 @@ public class Update extends AppCompatActivity {
                 btn_update_submit.setVisibility(View.GONE);
                 etName.setText(user.getProperty("name").toString().trim());
                 etSurname.setText(user.getProperty("surname").toString().trim());
+                //readImageFromFile();
+                readImage();
+                //ivProfilePic.setImageBitmap(bitmap);
+                //getImageOnline();
                 etEmail.setText(user.getEmail());
                 etPassword.setText(user.getPassword());
                 etRePassword.setText(user.getPassword());
@@ -103,6 +133,74 @@ public class Update extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onResume() {
+        //readImageFromFile();
+        //readImage();
+        super.onResume();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_CHOOSE_PHOTO) {
+            if (resultCode == Activity.RESULT_OK) {
+                /**Uri uri = data.getData();
+                 String[] projection = {MediaStore.Images.Media.DATA};
+                 Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
+                 cursor.moveToFirst();
+                 int columnIndex = cursor.getColumnIndex(projection[0]);
+                 String filePath = cursor.getString(columnIndex);
+                 cursor.close();
+                 Bitmap image = BitmapFactory.decodeFile(filePath);
+                 ivProfilePic.setImageBitmap(image);**/
+                uri = data.getData();
+                try {
+                    bitmap = MediaStore.Images.Media.getBitmap(Update.this.getContentResolver(), uri);
+                    ivProfilePic.setImageBitmap(bitmap);
+                } catch (IOException e) {
+                    Toast.makeText(Update.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
+
+    public void writeImageToFile(Bitmap bitmap) throws IOException {
+        BackendlessUser user = Backendless.UserService.CurrentUser();
+        String path = Environment.getExternalStorageDirectory().toString();
+        OutputStream fOut = null;
+        String filename = user.getEmail();
+        File file = new File(path, filename + ".png"); // the File to save , append increasing numeric counter to prevent files from getting overwritten.
+        fOut = new FileOutputStream(file);
+
+        //Bitmap pictureBitmap = getImageBitmap(myurl); // obtaining the Bitmap
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, fOut); // saving the Bitmap to a file compressed as a PNG with 100% compression rate
+        fOut.flush(); // Not really required
+        fOut.close(); // do not forget to close the stream
+        MediaStore.Images.Media.insertImage(getContentResolver(), file.getAbsolutePath(), file.getName(), file.getName());
+    }
+
+
+    public void readImage() {
+        BackendlessUser user = Backendless.UserService.CurrentUser();
+        String filename = user.getEmail() + ".png";
+        String filepath = Environment.getExternalStorageDirectory().toString() + "/" + filename;
+        File imagefile = new File(filepath);
+        if (imagefile.exists()) {
+            FileInputStream fis = null;
+            try {
+                fis = new FileInputStream(imagefile);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            Bitmap bitmap = BitmapFactory.decodeStream(fis);
+            ivProfilePic.setImageBitmap(bitmap);
+        } else {
+            ivProfilePic.setImageResource(R.drawable.logo_puo);
+        }
+    }
+
+
     public void initViews(){
         spRoles = (Spinner)findViewById(R.id.spRoles);
         spLocation = (Spinner)findViewById(R.id.spLocation);
@@ -123,9 +221,19 @@ public class Update extends AppCompatActivity {
         update_toolBar = (Toolbar)findViewById(R.id.update_toolBar);
         btn_update_submit = (Button) findViewById(R.id.btn_update_submit);
         btnResetPass = (Button) findViewById(R.id.btnResetPass);
+        update_edit__menu_item = (Menu) findViewById(R.id.update_edit__menu_item);
         setSupportActionBar(update_toolBar);
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
+    }
+
+    public void AddImage() {
+        Intent choosePhotoIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        choosePhotoIntent.setType("image/*");
+        if (choosePhotoIntent.resolveActivity(Update.this.getPackageManager()) != null) {
+            choosePhotoIntent.putExtra("imageUri", choosePhotoIntent.getData());
+            startActivityForResult(choosePhotoIntent, REQUEST_CODE_CHOOSE_PHOTO);
+        }
     }
     private boolean connectionAvailable(){
         boolean connected = false;
@@ -322,7 +430,43 @@ public class Update extends AppCompatActivity {
         }
     }
 
+    public void ivProfilePickClicked(View v) throws IOException {
+        switch (v.getId()) {
+            case R.id.ivProfilePic: {
+                AddImage();
+            }
+        }
+    }
+
+    private void getImageOnline() {
+        String loggenInUser = Backendless.UserService.loggedInUser();
+        Backendless.Persistence.of(BackendlessUser.class).findById(loggenInUser, new AsyncCallback<BackendlessUser>() {
+            @Override
+            public void handleResponse(BackendlessUser backendlessUser) {
+                UserProfilePictures userProfilePictures = new UserProfilePictures();
+                if (backendlessUser.getEmail().equals(userProfilePictures.getUserMail())) {
+                    String imageLocation = userProfilePictures.getImageLocation();
+                    try {
+                        URL url = new URL("https://api.backendless.com/D200A885-7EED-CB51-FFAC-228F87E55D00/v1/files" + imageLocation);
+                        DownloadTask task = new DownloadTask();
+                        task.execute(url);
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void handleFault(BackendlessFault backendlessFault) {
+
+            }
+        });
+
+    }
+
     public void btnUpdateSubmit(View v) {
+        final BackendlessUser user = Backendless.UserService.CurrentUser();
+        String filename = user.getEmail() + "_.png";
         if (connectionAvailable()) {
             if (etName.getText().toString().trim().isEmpty() || etSurname.getText().toString().trim().isEmpty() ||
                     etEmail.getText().toString().trim().isEmpty()
@@ -331,7 +475,6 @@ public class Update extends AppCompatActivity {
             } else {
                     progressDialog = new SpotsDialog(Update.this, R.style.Custom);
                     progressDialog.show();
-                    BackendlessUser user = Backendless.UserService.CurrentUser();
                     user.setProperty("objectId", getIntent().getStringExtra("objectId"));
                     user.setProperty("name", etName.getText().toString().trim());
                     user.setProperty("surname", etSurname.getText().toString().trim());
@@ -339,6 +482,40 @@ public class Update extends AppCompatActivity {
                     user.setProperty("role", spRoles.getSelectedItem().toString().trim());
                     user.setProperty("location", spLocation.getSelectedItem().toString().trim());
                     user.setProperty("isUpdated", true);
+                final UserProfilePictures userProfilePictures = new UserProfilePictures();
+                userProfilePictures.setUserMail(user.getEmail());
+                userProfilePictures.setImageLocation("UserProfilePics/" + filename);
+                Backendless.Files.Android.upload(bitmap,
+                        Bitmap.CompressFormat.PNG,
+                        100,
+                        filename + user.getEmail(),
+                        "UserProfilePics",
+                        true,
+                        new AsyncCallback<BackendlessFile>() {
+                            @Override
+                            public void handleResponse(BackendlessFile backendlessFile) {
+                                Backendless.Persistence.save(userProfilePictures, new AsyncCallback<UserProfilePictures>() {
+                                    @Override
+                                    public void handleResponse(UserProfilePictures userProfilePictures) {
+                                        try {
+                                            writeImageToFile(bitmap);
+                                            readImage();
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void handleFault(BackendlessFault backendlessFault) {
+                                    }
+                                });
+                            }
+
+                            @Override
+                            public void handleFault(BackendlessFault backendlessFault) {
+                                Toast.makeText(Update.this, backendlessFault.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     Backendless.UserService.update(user, new AsyncCallback<BackendlessUser>() {
                         @Override
                         public void handleResponse(BackendlessUser backendlessUser) {
@@ -380,13 +557,15 @@ public class Update extends AppCompatActivity {
         etRePassword.setVisibility(View.GONE);
         etCellPhone.setEnabled(true);
         spRoles.setEnabled(false);
-        spRoles.setVisibility(View.GONE);
+        //spRoles.setVisibility(View.GONE);
         spLocation.setEnabled(true);
+        //update_edit__menu_item.setGroupVisible(0,false);
         etPassword.setHint(getString(R.string.change_password));
-        etPassword.setVisibility(View.VISIBLE);
-        etPassword.setEnabled(true);
+        //etPassword.setVisibility(View.VISIBLE);
+        //etPassword.setEnabled(true);
         btnResetPass.setVisibility(View.VISIBLE);
         btn_update_submit.setVisibility(View.VISIBLE);
+        ivProfilePic.setEnabled(true);
 
     }
 
@@ -436,6 +615,39 @@ public class Update extends AppCompatActivity {
         });
         dlg.show();
     }
+
+    private void displayDownloadedImage(Bitmap bitmap) {
+        ivProfilePic.setImageBitmap(bitmap);
+    }
+
+    private class DownloadTask extends AsyncTask<URL, Void, Bitmap> {
+
+        @Override
+        protected Bitmap doInBackground(URL... params) {
+            for (URL url : params) {
+                try {
+                    HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                    int responseCode = httpURLConnection.getResponseCode();
+                    if (responseCode == HttpURLConnection.HTTP_OK) {
+                        InputStream inputStream = httpURLConnection.getInputStream();
+                        Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                        inputStream.close();
+                        return bitmap;
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
+
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            displayDownloadedImage(bitmap);
+        }
+    }
+
 
 
 

@@ -1,23 +1,31 @@
 package za.ac.cut.puo;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Environment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
+import com.backendless.Backendless;
+import com.backendless.BackendlessUser;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by hodielisrael on 2016/09/14.
  */
 
 public class PUOHelper {
-
-    public static final int HOME_SCREEN_LIST_ITEM = 401;
-    public static final int WORD_TREASURE_LIST_ITEM = 402;
 
     //Word List BoilerPlate
     public static List<Word> populateWordList() {
@@ -57,9 +65,28 @@ public class PUOHelper {
      */
     public static ActionBar setAppBar(AppCompatActivity activity, String title) {
         Toolbar appBar = (Toolbar) activity.findViewById(R.id.puo_toolbar);
-        appBar.setTitle(title);
+        appBar.setTitle(" " + title);
         activity.setSupportActionBar(appBar);
         return activity.getSupportActionBar();
+    }
+
+    public static void readImage(CircleImageView view) {
+        BackendlessUser user = Backendless.UserService.CurrentUser();
+        String filename = user.getEmail() + ".png";
+        String filepath = Environment.getExternalStorageDirectory().toString() + "/" + filename;
+        File imagefile = new File(filepath);
+        FileInputStream fis = null;
+        if (imagefile.exists()) {
+            try {
+                fis = new FileInputStream(imagefile);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            Bitmap bitmap = BitmapFactory.decodeStream(fis);
+            view.setImageBitmap(bitmap);
+        } else {
+            view.setImageResource((R.drawable.logo_puo));
+        }
     }
 
     /**

@@ -8,7 +8,6 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -33,6 +32,7 @@ import com.backendless.persistence.BackendlessDataQuery;
 
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import dmax.dialog.SpotsDialog;
 
 public class HomeMenu extends AppCompatActivity {
@@ -43,9 +43,9 @@ public class HomeMenu extends AppCompatActivity {
     EditText etAddWord, etDefinition, etSentence;
     Spinner spLanguage, spPartOfSpeech;
     ImageView ivAddImage, ivAddSound;
+    CircleImageView civ_profile_Pic;
     SpotsDialog progressDialog;
     ProgressBar circularBar;
-    CardView cv_word_list_item;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +57,7 @@ public class HomeMenu extends AppCompatActivity {
         tvWordCount = (TextView) findViewById(R.id.tvWordCount);
         tvWordInfo = (TextView) findViewById(R.id.tvWordInfo);
         lvWords = (ListView) findViewById(R.id.lv_words);
+        civ_profile_Pic = (CircleImageView) findViewById(R.id.civ_profile_pic);
         circularBar = (ProgressBar) findViewById(R.id.progressBarCircular);
         setSupportActionBar(home_toolBar);
         BackendlessUser user = Backendless.UserService.CurrentUser();
@@ -64,6 +65,7 @@ public class HomeMenu extends AppCompatActivity {
         tvUsernameHome.setText(user.getProperty("name").toString().trim() + " " + user.getProperty("surname").toString().trim());
         tvUserType.setText(user.getProperty("role").toString().trim());
         loadData();
+        PUOHelper.readImage(civ_profile_Pic);
         lvWords.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -116,6 +118,13 @@ public class HomeMenu extends AppCompatActivity {
         loadData();
         super.onResume();
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+    }
+
 
     public void updateProfileData() {
 
