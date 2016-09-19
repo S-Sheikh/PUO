@@ -20,12 +20,6 @@
     <style name="CircularProgress" parent="Theme.AppCompat.Light">
         <item name="colorAccent">@color/colorAccent</item>
     </style>
-    <style name="RatingBar" parent="@android:style/Widget.RatingBar">
-        <item name="android:progressDrawable">@drawable/ratingstar</item>
-        <item name="android:minHeight">22dip</item>
-        <item name="android:maxHeight">22dip</item>
-    </style>
-
     <style name="toolBarText" parent="AppTheme">
         <!-- android:textColorPrimary is the  color of the title text
       in the Toolbar, in the Theme.AppCompat theme:  -->
