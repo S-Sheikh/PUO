@@ -26,65 +26,7 @@
             cardView:civ_border_color="@color/colorPrimary"
             cardView:civ_border_width="0.5dip" />
 
-        <TextView
-            android:id="@+id/tv_word_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/civ_word_pic"
-            android:text="Inkwenkwe"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@color/colorPrimaryText"
-            android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/tv_word_status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tv_word_text"
-            android:layout_toRightOf="@id/civ_word_pic"
-            android:text="unsupported"
-            android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            android:textColor="@color/colorPrimaryText"
-            android:textSize="12sp" />
-
-        <TextView
-            android:id="@+id/tv_word_author"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tv_word_status"
-            android:layout_toRightOf="@id/civ_word_pic"
-            android:text="added by: N. Mcebisi"
-            android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            android:textSize="12sp"
-            android:textStyle="normal|italic" />
-
-        <TextView
-            android:id="@+id/tv_word_lexicon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/rtb_word_rating"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="4dip"
-            android:text="Noun, Xhosa"
-            android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            android:textColor="@color/colorAccent"
-            android:textSize="12sp" />
-
-        <RatingBar
-            android:id="@+id/rtb_word_rating"
-            style="?attr/ratingBarStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_below="@+id/tv_word_lexicon"
-            android:layout_marginRight="36dip"
-            android:layout_marginTop="8dip"
-            android:isIndicator="true"
-            android:rating="4.5"
-            android:scaleX="1.25"
-            android:scaleY="1.25"
-            android:stepSize="0.5"
-            android:transformPivotX="20dip" />
+        <include layout="@layout/word_details" />
 
         <ImageView
             android:id="@+id/iv_ic_popup_menu"

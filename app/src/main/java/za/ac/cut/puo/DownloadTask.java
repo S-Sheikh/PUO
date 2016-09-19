@@ -3,7 +3,6 @@ package za.ac.cut.puo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 
 import java.io.IOException;
@@ -12,7 +11,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class DownloadTask extends AsyncTask<URL, Void, Bitmap> {
-    AppCompatActivity activity;
     ImageView view;
 
     public DownloadTask(ImageView view) {
@@ -41,6 +39,5 @@ public class DownloadTask extends AsyncTask<URL, Void, Bitmap> {
     @Override
     protected void onPostExecute(Bitmap bitmap) {
         view.setImageBitmap(bitmap);
-        //super.onPostExecute(bitmap);
     }
 }

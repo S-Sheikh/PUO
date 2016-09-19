@@ -46,6 +46,7 @@ public class WordListFragment extends Fragment {
     private View rootView;
     private OnWordListItemClickListener mListener;
     private SwipeRefreshLayout swipeRefreshWordList;
+    private ProgressBar circularBar;
 
     public WordListFragment() {
         // Required empty public constructor
@@ -88,7 +89,8 @@ public class WordListFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_word_list, container, false);
-
+        circularBar = (ProgressBar) rootView.findViewById(R.id.progressBarCircular);
+        swipeRefreshWordList = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_word_list);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.rv_word_list);
         mWords = new ArrayList<>();
         mAdapter = new WordListItemAdapter(mWords, getContext());
@@ -110,9 +112,17 @@ public class WordListFragment extends Fragment {
 
             @Override
             public void onOverflowClicked(final ImageView v) {
-                PopupMenu wordOptions = new PopupMenu(getContext(), v);
+                final PopupMenu wordOptions = new PopupMenu(getContext(), v);
                 MenuInflater inflater = wordOptions.getMenuInflater();
                 inflater.inflate(R.menu.popup_menu, wordOptions.getMenu());
+
+                /**Check if word is supported or not and remove menu options accordingly.*/
+                if (!mWords.get((mRecyclerView.findContainingViewHolder(v)
+                        .getAdapterPosition())).isSupported())
+                    wordOptions.getMenu().removeItem(R.id.unsupport);
+                else
+                    wordOptions.getMenu().removeItem(R.id.support);
+
                 wordOptions.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
@@ -121,6 +131,10 @@ public class WordListFragment extends Fragment {
                             case R.id.support:
                                 mListener.onMenuOptionSelected(R.id.support);
                                 supportWord(position);
+                                return true;
+                            case R.id.unsupport:
+                                mListener.onMenuOptionSelected(R.id.unsupport);
+                                unSupportWord(position);
                                 return true;
                             case R.id.block:
                                 mListener.onMenuOptionSelected(R.id.block);
@@ -144,7 +158,6 @@ public class WordListFragment extends Fragment {
         });
 
         /*Set pull to refresh.*/
-        swipeRefreshWordList = (SwipeRefreshLayout)rootView.findViewById(R.id.swipe_refresh_word_list);
         swipeRefreshWordList.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -153,6 +166,7 @@ public class WordListFragment extends Fragment {
         });
 
         swipeRefreshWordList.setColorSchemeResources(R.color.colorAccent);
+
         return rootView;
     }
 
@@ -160,8 +174,6 @@ public class WordListFragment extends Fragment {
      * load words from Backendless.
      */
     public void loadData(final List<Word> wordList) {
-        final ProgressBar circularBar = (ProgressBar) rootView.findViewById(R.id.progressBarCircular);
-        circularBar.setVisibility(View.VISIBLE);
         if (wordList != null) {
             wordList.clear();
         }
@@ -174,6 +186,8 @@ public class WordListFragment extends Fragment {
 
         BackendlessDataQuery dataQuery = new BackendlessDataQuery();
         dataQuery.setQueryOptions(queryOptions);
+
+        circularBar.setVisibility(View.VISIBLE);
         Backendless.Persistence.of(Word.class).find(dataQuery, new AsyncCallback<BackendlessCollection<Word>>() {
             @Override
             public void handleResponse(BackendlessCollection<Word> puoWordList) {
@@ -195,7 +209,7 @@ public class WordListFragment extends Fragment {
     /**
      * Updates a word status to supported.
      */
-    public void supportWord(int position) {
+    public void supportWord(final int position) {
         if (PUOHelper.connectionAvailable(getContext())) {
             if (!mWords.get(position).isSupported()) {
                 mWords.get(position).setSupported(true);
@@ -205,6 +219,7 @@ public class WordListFragment extends Fragment {
                     public void handleResponse(Word word) {
                         if (!word.isSupported()) {
                             word.setSupported(true);
+                            mAdapter.notifyItemChanged(position);
                             Backendless.Persistence.save(word, new AsyncCallback<Word>() {
                                 @Override
                                 public void handleResponse(Word word) {
@@ -231,6 +246,52 @@ public class WordListFragment extends Fragment {
                 });
             } else
                 setSnackBar(getView(), mWords.get(position).getWord() + ": is already supported!",
+                        Snackbar.LENGTH_SHORT).show();
+        } else
+            setSnackBar(getView(), "No internet available! Please check connection.",
+                    Snackbar.LENGTH_LONG).show();
+    }
+
+    /**
+     * Updates a word status to unsupported.
+     */
+    public void unSupportWord(final int position) {
+        if (PUOHelper.connectionAvailable(getContext())) {
+            if (mWords.get(position).isSupported()) {
+                mWords.get(position).setSupported(false);
+                mAdapter.notifyItemChanged(position);
+                Backendless.Persistence.of(Word.class).findById(mWords.get(position), new AsyncCallback<Word>() {
+                    @Override
+                    public void handleResponse(Word word) {
+                        if (word.isSupported()) {
+                            word.setSupported(false);
+                            mAdapter.notifyItemChanged(position);
+                            Backendless.Persistence.save(word, new AsyncCallback<Word>() {
+                                @Override
+                                public void handleResponse(Word word) {
+                                    setSnackBar(getView(), word.getWord() + ": is now unsupported!",
+                                            Snackbar.LENGTH_SHORT).show();
+                                }
+
+                                @Override
+                                public void handleFault(BackendlessFault backendlessFault) {
+                                    setSnackBar(getView(), backendlessFault.getMessage(),
+                                            Snackbar.LENGTH_SHORT).show();
+                                }
+                            });
+                        } else
+                            setSnackBar(getView(), word.getWord() + ": is already unsupported!",
+                                    Snackbar.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void handleFault(BackendlessFault backendlessFault) {
+                        setSnackBar(rootView, backendlessFault.getMessage(),
+                                Snackbar.LENGTH_SHORT).show();
+                    }
+                });
+            } else
+                setSnackBar(getView(), mWords.get(position).getWord() + ": is already unsupported!",
                         Snackbar.LENGTH_SHORT).show();
         } else
             setSnackBar(getView(), "No internet available! Please check connection.",

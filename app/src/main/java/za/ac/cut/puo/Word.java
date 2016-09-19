@@ -25,19 +25,19 @@ public class Word {
     private Date updated;
 
     public Word() {
-        this.word = null;
-        this.language = null;
-        this.definition = null;
-        this.partOfSpeech = null;
-        this.name = null;
-        this.surname = null;
-        this.sentence = null;
-        this.supported = false;
-        this.descImage = null;
-        this.pronunciation = null;
-        this.blocked = false;
-        this.repeatFlag = false;
-        this.setRating(0);
+//        this.word = null;
+//        this.language = null;
+//        this.definition = null;
+//        this.partOfSpeech = null;
+//        this.name = null;
+//        this.surname = null;
+//        this.sentence = null;
+//        this.supported = false;
+//        this.descImage = null;
+//        this.pronunciation = null;
+//        this.blocked = false;
+//        this.repeatFlag = false;
+//        this.setRating(0);
     }
 
     //Game Word
