@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -44,6 +45,7 @@ public class WordListFragment extends Fragment {
     private WordListItemAdapter mAdapter;
     private View rootView;
     private OnWordListItemClickListener mListener;
+    private SwipeRefreshLayout swipeRefreshWordList;
 
     public WordListFragment() {
         // Required empty public constructor
@@ -141,10 +143,22 @@ public class WordListFragment extends Fragment {
             }
         });
 
+        /*Set pull to refresh.*/
+        swipeRefreshWordList = (SwipeRefreshLayout)rootView.findViewById(R.id.swipe_refresh_word_list);
+        swipeRefreshWordList.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                loadData(mWords);
+            }
+        });
+
+        swipeRefreshWordList.setColorSchemeResources(R.color.colorAccent);
         return rootView;
     }
 
-    //load words from cloud
+    /**
+     * load words from Backendless.
+     */
     public void loadData(final List<Word> wordList) {
         final ProgressBar circularBar = (ProgressBar) rootView.findViewById(R.id.progressBarCircular);
         circularBar.setVisibility(View.VISIBLE);
@@ -157,6 +171,7 @@ public class WordListFragment extends Fragment {
         sortBy.add("created DESC");
         //Calendar.getInstance().getTime();
         queryOptions.setSortBy(sortBy);
+
         BackendlessDataQuery dataQuery = new BackendlessDataQuery();
         dataQuery.setQueryOptions(queryOptions);
         Backendless.Persistence.of(Word.class).find(dataQuery, new AsyncCallback<BackendlessCollection<Word>>() {
@@ -166,6 +181,7 @@ public class WordListFragment extends Fragment {
                 wordList.addAll(puoWordList.getData());
                 mRecyclerView.getAdapter().notifyItemRangeInserted(curSize, wordList.size());
                 circularBar.setVisibility(View.GONE);
+                swipeRefreshWordList.setRefreshing(false);
             }
 
             @Override
