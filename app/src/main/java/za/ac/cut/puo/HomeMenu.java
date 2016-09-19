@@ -60,12 +60,13 @@ public class HomeMenu extends AppCompatActivity {
         civ_profile_Pic = (CircleImageView) findViewById(R.id.civ_profile_pic);
         circularBar = (ProgressBar) findViewById(R.id.progressBarCircular);
         setSupportActionBar(home_toolBar);
+        loadData();
+        PUOHelper.readImage(civ_profile_Pic);
         BackendlessUser user = Backendless.UserService.CurrentUser();
 
         tvUsernameHome.setText(user.getProperty("name").toString().trim() + " " + user.getProperty("surname").toString().trim());
         tvUserType.setText(user.getProperty("role").toString().trim());
-        loadData();
-        PUOHelper.readImage(civ_profile_Pic);
+
         lvWords.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
