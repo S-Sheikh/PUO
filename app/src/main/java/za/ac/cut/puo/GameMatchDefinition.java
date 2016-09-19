@@ -4,7 +4,9 @@ import android.animation.ObjectAnimator;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.BounceInterpolator;
 import android.widget.Button;
@@ -26,6 +28,7 @@ public class GameMatchDefinition extends AppCompatActivity {
     TextView tv_multiplier;
     Stopwatch timer = new Stopwatch();
     Word correctWord;
+    Vibrator vibe;
     ArrayList<Word> wordArrayList = new ArrayList<>();
     ArrayList<Word> questionArray = new ArrayList<>();
     ArrayList<WordGameAdapter> buttonAdapter = new ArrayList<>();
@@ -132,6 +135,11 @@ public class GameMatchDefinition extends AppCompatActivity {
         mHandler.sendEmptyMessage(MSG_START_TIMER);
         PUOHelper.setAppBar(this, getResources().getString(R.string.app_name))
                 .setDisplayHomeAsUpEnabled(true);
+
+        btn_question.setHorizontallyScrolling(true);
+        btn_question.setMaxLines(2);
+        btn_question.setEllipsize(TextUtils.TruncateAt.END);
+        vibe = (Vibrator) getSystemService(this.VIBRATOR_SERVICE);
 //        ActionBar actionbar = getSupportActionBar();
 //        actionbar.setDisplayHomeAsUpEnabled(true);
     }
@@ -183,6 +191,7 @@ public class GameMatchDefinition extends AppCompatActivity {
         mSmallBang.bang(v);
         populateButtonTxt();
         attemptCount++;
+        vibe.vibrate(50); // 50 ms
 //        if(attemptCount == 5){
 //            this.finish();
 //        }else{
