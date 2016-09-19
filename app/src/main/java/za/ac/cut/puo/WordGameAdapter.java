@@ -15,6 +15,22 @@ public class WordGameAdapter {
         flag = false;
     }
 
+    public Button getAnswer() {
+        return Answer;
+    }
+
+    public void setAnswer(Button answer) {
+        Answer = answer;
+    }
+
+    public int getBtnColor() {
+        return btnColor;
+    }
+
+    public void setBtnColor(int btnColor) {
+        this.btnColor = btnColor;
+    }
+
     public boolean isFlag() {
         return flag;
     }
