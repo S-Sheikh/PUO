@@ -8,7 +8,7 @@ android {
         applicationId "za.ac.cut.puo"
         minSdkVersion 16
         targetSdkVersion 24
-        vectorDrawables.useSupportLibrary = true
+        vectorDrawables.useSupportLibrary = false
         versionCode 1
         versionName "1.0"
     }

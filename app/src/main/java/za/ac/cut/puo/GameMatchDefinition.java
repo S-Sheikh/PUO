@@ -8,7 +8,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.animation.BounceInterpolator;
 import android.widget.Button;
+import android.widget.TextView;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -19,14 +22,19 @@ public class GameMatchDefinition extends AppCompatActivity {
     final int MSG_STOP_TIMER = 1;
     final int MSG_UPDATE_TIMER = 2;
     final int REFRESH_RATE = 100;
-    Button btn_question, btn_ans_topLeft, btn_ans_topRight, btn_ans_bottomLeft, btn_ans_bottomRight, btn_circleScore, btn_timer;
+    Button btn_question, btn_ans_topLeft, btn_ans_topRight, btn_ans_bottomLeft, btn_ans_bottomRight, btn_circleScore, btn_timer, btn_attempts;
+    TextView tv_multiplier;
     Stopwatch timer = new Stopwatch();
     Word correctWord;
     ArrayList<Word> wordArrayList = new ArrayList<>();
     ArrayList<Word> questionArray = new ArrayList<>();
     ArrayList<WordGameAdapter> buttonAdapter = new ArrayList<>();
     ObjectAnimator animY;
-    int score, answerAttempts;
+    double score;
+    double scoreMulitplier;
+    int answerAttempts;
+    boolean scoreStreak = false;
+    int attemptCount = 0;
     Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -75,6 +83,8 @@ public class GameMatchDefinition extends AppCompatActivity {
         btn_ans_bottomRight = (Button) findViewById(R.id.btn_ans_bottomRight);
         btn_circleScore = (Button) findViewById(R.id.btn_circleScore);
         btn_timer = (Button) findViewById(R.id.btn_timer);
+        btn_attempts = (Button) findViewById(R.id.btn_attempts);
+        tv_multiplier = (TextView) findViewById(R.id.tv_multiplier);
         //Init small bang
         mSmallBang = SmallBang.attach2Window(GameMatchDefinition.this);
 
@@ -117,9 +127,9 @@ public class GameMatchDefinition extends AppCompatActivity {
 
         score = 001;
         answerAttempts = 0;
+        scoreMulitplier = 1.00;
 
         mHandler.sendEmptyMessage(MSG_START_TIMER);
-
         PUOHelper.setAppBar(this, getResources().getString(R.string.app_name))
                 .setDisplayHomeAsUpEnabled(true);
 //        ActionBar actionbar = getSupportActionBar();
@@ -131,16 +141,56 @@ public class GameMatchDefinition extends AppCompatActivity {
         //If Answer is correct
         if (correctWord.getWord().toString().trim().equals(btn.getText().toString())) {//Absolutley Necessary kek
             mSmallBang.setColors(GameMatchDefinition.this.getResources().getIntArray(R.array.gBangCorrect));
-            btn_circleScore.setText(Integer.toString(score++));
-            bounce();
+            scoreStreak = true;
         } else {
             mSmallBang.setColors(GameMatchDefinition.this.getResources().getIntArray(R.array.gBangWrong));
+            scoreStreak = false;
+        }
+        if (scoreStreak) {
+            score += 1 * scoreMulitplier;
+            switch (Double.toString(round(scoreMulitplier, 2))) {
+                case "1.0":
+                    scoreMulitplier = 1.05;
+                    break;
+                case "1.05":
+                    scoreMulitplier = 1.20;
+                    break;
+                case "1.2":
+                    scoreMulitplier = 1.45;
+                    break;
+                case "1.45":
+                    scoreMulitplier = 1.80;
+                    break;
+                case "1.8":
+                    scoreMulitplier = 2.25;
+                    break;
+                case "2.25":
+                    scoreMulitplier = 2.80;
+                    break;
+                case "2.8":
+                    scoreMulitplier = 3.00;
+                    break;
+                default:
+                    scoreMulitplier = 3.00;
+            }
+            btn_circleScore.setText(Double.toString(round(score, 2)));
+            tv_multiplier.setText("X " + Double.toString(scoreMulitplier));
+            bounce();
+        } else {
+            scoreMulitplier = 1.00;
+            tv_multiplier.setText("X " + Double.toString(scoreMulitplier));
         }
         mSmallBang.bang(v);
         populateButtonTxt();
+        attemptCount++;
+//        if(attemptCount == 5){
+//            this.finish();
+//        }else{
+        btn_attempts.setText("Words:  " + attemptCount + "/20");
+//        }
     }
 
-    //Set Random Buttons with Random(non Repeating words) Words
+    //Set Random Buttons with Random(non Repeating) Words
     public void populateButtonTxt() {
         //ReSet all Flags to False
         for (Word word : wordArrayList) {
@@ -154,7 +204,7 @@ public class GameMatchDefinition extends AppCompatActivity {
         questionArray.clear();//resets question array
 
         for (WordGameAdapter btn : buttonAdapter) {
-            if (!btn.flag) {// if it's true, it has already been given a Word
+            if (!btn.isFlag()) {// if it's true, it has already been given a Word
                 btn.setFlag(true);
                 Word randWord = anyWord();
                 while (randWord.isRepeatFlag()) {//if it's true , it has been used
@@ -166,8 +216,8 @@ public class GameMatchDefinition extends AppCompatActivity {
                             allWords.setRepeatFlag(true);//set it to true( Used )
                         }
                     }
-                    btn.Answer.setText(randWord.getWord());
-                    btn.Answer.setBackgroundColor(getColor());
+                    btn.getAnswer().setText(randWord.getWord());
+                    btn.getAnswer().setBackgroundColor(getColor());
 
                     questionArray.add(randWord);
                 }
@@ -205,4 +255,11 @@ public class GameMatchDefinition extends AppCompatActivity {
         return randItem;
     }
 
+    public double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+
+        BigDecimal bd = new BigDecimal(value);
+        bd = bd.setScale(places, RoundingMode.HALF_UP);
+        return bd.doubleValue();
+    }
 }
