@@ -104,6 +104,7 @@
     <string name="add_image">Add Image</string>
     <string name="add_sound_clip">Add Sound Clip</string>
     <string name="edit">Edit</string>
+    <string name="word_centers">Word Centers</string>
     <array name="role_items">
         <item>Collector</item>
         <item>Specialist</item>

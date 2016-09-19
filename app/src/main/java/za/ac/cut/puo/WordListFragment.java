@@ -19,6 +19,8 @@ import com.backendless.Backendless;
 import com.backendless.BackendlessCollection;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
+import com.backendless.persistence.BackendlessDataQuery;
+import com.backendless.persistence.QueryOptions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -98,9 +100,9 @@ public class WordListFragment extends Fragment {
         mAdapter.setOnItemClickListener(new WordListItemAdapter.OnItemClickListener() {
             @Override
             public void onItemClicked(View itemView) {
-                mListener.onWordSelected(mRecyclerView.getChildLayoutPosition(itemView));
-                setSnackBar(rootView, "Word at position: " +
-                                mRecyclerView.getChildLayoutPosition(itemView) + " selected.",
+                int position = mRecyclerView.getChildAdapterPosition(itemView);
+                mListener.onWordSelected(position);
+                setSnackBar(rootView, mWords.get(position).getWord() + ": selected.",
                         Snackbar.LENGTH_SHORT).show();
             }
 
@@ -150,7 +152,14 @@ public class WordListFragment extends Fragment {
             wordList.clear();
         }
 
-        Backendless.Persistence.of(Word.class).find(new AsyncCallback<BackendlessCollection<Word>>() {
+        QueryOptions queryOptions = new QueryOptions();
+        List<String> sortBy = new ArrayList<>();
+        sortBy.add("created DESC");
+        //Calendar.getInstance().getTime();
+        queryOptions.setSortBy(sortBy);
+        BackendlessDataQuery dataQuery = new BackendlessDataQuery();
+        dataQuery.setQueryOptions(queryOptions);
+        Backendless.Persistence.of(Word.class).find(dataQuery, new AsyncCallback<BackendlessCollection<Word>>() {
             @Override
             public void handleResponse(BackendlessCollection<Word> puoWordList) {
                 int curSize = mRecyclerView.getAdapter().getItemCount();
@@ -161,49 +170,55 @@ public class WordListFragment extends Fragment {
 
             @Override
             public void handleFault(BackendlessFault backendlessFault) {
-                setSnackBar(rootView.findViewById(R.id.container),
-                        backendlessFault.getMessage(),
+                setSnackBar(getView(), backendlessFault.getMessage(),
                         Snackbar.LENGTH_LONG).show();
             }
         });
     }
 
+    /**
+     * Updates a word status to supported.
+     */
     public void supportWord(int position) {
-        if (!mWords.get(position).isSupported()) {
-            mWords.get(position).setSupported(true);
-            mAdapter.notifyItemChanged(position);
-            Backendless.Data.of(Word.class).findById(mWords.get(position), new AsyncCallback<Word>() {
-                @Override
-                public void handleResponse(Word word) {
-                    if (!word.isSupported()) {
-                        word.setSupported(true);
-                        Backendless.Persistence.save(word, new AsyncCallback<Word>() {
-                            @Override
-                            public void handleResponse(Word word) {
-                                setSnackBar(rootView, word.getWord() + ": is now supported!",
-                                        Snackbar.LENGTH_SHORT).show();
-                            }
+        if (PUOHelper.connectionAvailable(getContext())) {
+            if (!mWords.get(position).isSupported()) {
+                mWords.get(position).setSupported(true);
+                mAdapter.notifyItemChanged(position);
+                Backendless.Persistence.of(Word.class).findById(mWords.get(position), new AsyncCallback<Word>() {
+                    @Override
+                    public void handleResponse(Word word) {
+                        if (!word.isSupported()) {
+                            word.setSupported(true);
+                            Backendless.Persistence.save(word, new AsyncCallback<Word>() {
+                                @Override
+                                public void handleResponse(Word word) {
+                                    setSnackBar(getView(), word.getWord() + ": is now supported!",
+                                            Snackbar.LENGTH_SHORT).show();
+                                }
 
-                            @Override
-                            public void handleFault(BackendlessFault backendlessFault) {
-                                setSnackBar(rootView, backendlessFault.getMessage(),
-                                        Snackbar.LENGTH_SHORT).show();
-                            }
-                        });
-                    } else
-                        setSnackBar(rootView, word.getWord() + ": is already supported!",
+                                @Override
+                                public void handleFault(BackendlessFault backendlessFault) {
+                                    setSnackBar(getView(), backendlessFault.getMessage(),
+                                            Snackbar.LENGTH_SHORT).show();
+                                }
+                            });
+                        } else
+                            setSnackBar(getView(), word.getWord() + ": is already supported!",
+                                    Snackbar.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void handleFault(BackendlessFault backendlessFault) {
+                        setSnackBar(rootView, backendlessFault.getMessage(),
                                 Snackbar.LENGTH_SHORT).show();
-                }
-
-                @Override
-                public void handleFault(BackendlessFault backendlessFault) {
-                    setSnackBar(rootView, backendlessFault.getMessage(),
-                            Snackbar.LENGTH_SHORT).show();
-                }
-            });
+                    }
+                });
+            } else
+                setSnackBar(getView(), mWords.get(position).getWord() + ": is already supported!",
+                        Snackbar.LENGTH_SHORT).show();
         } else
-            setSnackBar(rootView, mWords.get(position).getWord() + ": is already supported!",
-                    Snackbar.LENGTH_SHORT).show();
+            setSnackBar(getView(), "No internet available! Please check connection.",
+                    Snackbar.LENGTH_LONG).show();
     }
 
     public Snackbar setSnackBar(View v, String message, int length) {

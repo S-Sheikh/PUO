@@ -15,12 +15,12 @@ public class Word {
     private String name;
     private String surname;
     private String sentence;
-    private boolean supported;
-    private AudioStream pronunciation;
-    private float rating;
-    private Bitmap descImage;
-    private boolean blocked;
     private String objectId;
+    private boolean supported;
+    private boolean blocked;
+    private float rating;
+    private AudioStream pronunciation;
+    private Bitmap descImage;
     private Date created;
     private Date updated;
 
@@ -46,16 +46,6 @@ public class Word {
         this.language = language;
         this.definition = definition;
         this.partOfSpeech = partOfSpeech;
-        repeatFlag = false;
-    }
-
-    //For Word Treasure {testing}
-    public Word(String word, String language, String definition, String partOfSpeech, Boolean supported) {
-        this.word = word;
-        this.language = language;
-        this.definition = definition;
-        this.partOfSpeech = partOfSpeech;
-        this.supported = supported;
         repeatFlag = false;
     }
 
@@ -201,6 +191,6 @@ public class Word {
     }
 
     public String getAuthor() {
-        return name.substring(0, 1) + ". " + surname;
+        return "Added by: " + name.substring(0, 1) + ". " + surname;
     }
 }

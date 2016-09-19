@@ -34,7 +34,7 @@ public class Splash extends AppCompatActivity {
                 } else {
                     progressBar.setVisibility(View.VISIBLE);
                     tvLoading.setText(getString(R.string.tvLoading));
-                    String userObjectId = UserIdStorageFactory.instance().getStorage().get();//gets user id of specific user that is loggen in
+                    String userObjectId = UserIdStorageFactory.instance().getStorage().get();//gets user id of specific user that is logged in
                     Backendless.Data.of(BackendlessUser.class).findById(userObjectId, new AsyncCallback<BackendlessUser>() {
                         @Override
                         public void handleResponse(BackendlessUser backendlessUser) {
@@ -71,8 +71,6 @@ public class Splash extends AppCompatActivity {
             }
         });
     }
-
-
-    }
+}
 
 

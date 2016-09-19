@@ -22,7 +22,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/card_view_stroke"
+            android:background="@drawable/card_view_background"
             android:padding="4dip">
 
             <de.hdodenhof.circleimageview.CircleImageView

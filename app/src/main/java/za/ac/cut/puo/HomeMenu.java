@@ -51,7 +51,7 @@ public class HomeMenu extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_menu);
-        home_toolBar = (Toolbar)findViewById(R.id.home_toolBar);
+        home_toolBar = (Toolbar) findViewById(R.id.home_toolBar);
         tvUsernameHome = (TextView) findViewById(R.id.tvUsernameHome);
         tvUserType = (TextView) findViewById(R.id.tvUserType);
         tvWordCount = (TextView) findViewById(R.id.tvWordCount);
@@ -59,15 +59,14 @@ public class HomeMenu extends AppCompatActivity {
         lvWords = (ListView) findViewById(R.id.lv_words);
         circularBar = (ProgressBar) findViewById(R.id.progressBarCircular);
         setSupportActionBar(home_toolBar);
-        home_toolBar.setTitleTextColor(getResources().getColor(R.color.colorIcons));
         BackendlessUser user = Backendless.UserService.CurrentUser();
+
         tvUsernameHome.setText(user.getProperty("name").toString().trim() + " " + user.getProperty("surname").toString().trim());
         tvUserType.setText(user.getProperty("role").toString().trim());
         loadData();
         lvWords.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                view.setBackgroundColor(getResources().getColor(R.color.colorPrimaryLight));
                 String value = words.get(position).getDefinition().trim();
                 tvWordInfo.setText(value);
             }
@@ -84,7 +83,7 @@ public class HomeMenu extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.home_menu_addWord:
                 AddWord();
                 return true;
@@ -208,6 +207,7 @@ public class HomeMenu extends AppCompatActivity {
                             etDefinition.getText().toString().trim().isEmpty())) {
                         Backendless.Persistence.of(Word.class).find(new AsyncCallback<BackendlessCollection<Word>>() {
                             boolean wordExists = false;
+
                             @Override
                             public void handleResponse(BackendlessCollection<Word> addWordBackendlessCollection) {
                                 words = addWordBackendlessCollection.getData();
@@ -297,7 +297,8 @@ public class HomeMenu extends AppCompatActivity {
         });
         dialog.show();
     }
-    private boolean connectionAvailable(){
+
+    private boolean connectionAvailable() {
         boolean connected = false;
         ConnectivityManager cm = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();

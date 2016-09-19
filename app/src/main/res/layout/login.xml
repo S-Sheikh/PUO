@@ -25,37 +25,32 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:focusableInTouchMode="true"
             android:padding="@dimen/activity_vertical_margin">
-
 
             <ImageView
                 android:id="@+id/iv_puo_logo"
                 android:layout_width="@dimen/login_iv_puo_width"
                 android:layout_height="@dimen/login_iv_puo_height"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="60dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="24dp"
                 android:src="@drawable/logo_puo" />
 
-            <LinearLayout
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/email_txt_input_login"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:focusableInTouchMode="true">
+                android:layout_height="wrap_content">
 
-                <android.support.design.widget.TextInputLayout
-                    android:id="@+id/email_txt_input_login"
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/edt_email"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <android.support.design.widget.TextInputEditText
-                        android:id="@+id/edt_email"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:focusableInTouchMode="true"
-                        android:hint="@string/login_email_hint"
-                        android:inputType="textEmailAddress"
-                        android:maxLines="1" />
-                </android.support.design.widget.TextInputLayout>
-            </LinearLayout>
+                    android:layout_height="wrap_content"
+                    android:focusableInTouchMode="true"
+                    android:hint="@string/login_email_hint"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="1" />
+            </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/pass_txt_input_login"
@@ -73,38 +68,31 @@
                     android:maxLines="1" />
             </android.support.design.widget.TextInputLayout>
 
-            <LinearLayout
+
+            <Button
+                android:id="@+id/btn_login"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="40dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="96dp"
+                android:layout_marginRight="96dp"
                 android:layout_marginTop="40dp"
-                android:gravity="center_horizontal"
-                android:orientation="horizontal">
+                android:background="@drawable/buttons"
+                android:onClick="btnLogin"
+                android:text="@string/login_btn_text"
+                android:textColor="@color/colorIcons"
+                android:textStyle="bold" />
 
-                <Button
-                    android:id="@+id/btn_login"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/buttons"
-                    android:onClick="btnLogin"
-                    android:text="@string/login_btn_text"
-                    android:textColor="@color/colorIcons"
-                    android:textStyle="bold" />
-
-                <Button
-                    android:id="@+id/btnResetPassword"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/buttons"
-                    android:onClick="btnResetPassword"
-                    android:text="@string/btn_reset_password"
-                    android:textColor="@color/colorIcons"
-                    android:textStyle="bold" />
-            </LinearLayout>
+            <Button
+                android:id="@+id/btnResetPassword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="24dp"
+                android:background="@null"
+                android:onClick="btnResetPassword"
+                android:text="@string/btn_reset_password"
+                android:textColor="@color/colorAccent"/>
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 

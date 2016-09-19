@@ -4,7 +4,6 @@
     android:id="@+id/cv_word_list_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:clickable="true"
     android:foreground="?android:attr/selectableItemBackground"
     cardView:cardBackgroundColor="@color/cardview_light_background"
     cardView:cardCornerRadius="4dip"
@@ -12,9 +11,10 @@
     cardView:cardUseCompatPadding="true">
 
     <RelativeLayout
+        android:id="@+id/cv_word_list_item_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/card_view_stroke"
+        android:background="@drawable/card_view_background"
         android:padding="4dip">
 
         <de.hdodenhof.circleimageview.CircleImageView
@@ -92,7 +92,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:src="@drawable/ic_more_vert_24dp" />
+            cardView:srcCompat="@drawable/ic_more_vert_24dp" />
     </RelativeLayout>
 </android.support.v7.widget.CardView>
 
