@@ -4,11 +4,15 @@ import android.animation.ObjectAnimator;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.animation.BounceInterpolator;
 import android.widget.Button;
+import android.widget.TextView;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -19,14 +23,20 @@ public class GamePartsOfSpeech extends AppCompatActivity {
     final int MSG_STOP_TIMER = 1;
     final int MSG_UPDATE_TIMER = 2;
     final int REFRESH_RATE = 100;
-    Button btn_question, btn_ans_topLeft, btn_ans_topRight, btn_ans_bottomLeft, btn_ans_bottomRight, btn_circleScore, btn_timer;
+    Button btn_question, btn_ans_topLeft, btn_ans_topRight, btn_ans_bottomLeft, btn_ans_bottomRight, btn_circleScore, btn_timer, btn_attempts;
+    TextView tv_multiplier;
     Stopwatch timer = new Stopwatch();
     Word correctWord;
+    Vibrator vibe;
     ArrayList<Word> wordArrayList = new ArrayList<>();
     ArrayList<Word> questionArray = new ArrayList<>();
     ArrayList<WordGameAdapter> buttonAdapter = new ArrayList<>();
     ObjectAnimator animY;
-    int score;
+    double score;
+    double scoreMulitplier;
+    int answerAttempts;
+    boolean scoreStreak = false;
+    int attemptCount = 0;
     Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -74,6 +84,8 @@ public class GamePartsOfSpeech extends AppCompatActivity {
         btn_ans_bottomRight = (Button) findViewById(R.id.btn_ans_bottomRight);
         btn_circleScore = (Button)findViewById(R.id.btn_circleScore);
         btn_timer = (Button) findViewById(R.id.btn_timer);
+        btn_attempts = (Button) findViewById(R.id.btn_attempts);
+        tv_multiplier = (TextView) findViewById(R.id.tv_multiplier);
         //Init small bang
         mSmallBang = SmallBang.attach2Window(GamePartsOfSpeech.this);
 
@@ -115,9 +127,17 @@ public class GamePartsOfSpeech extends AppCompatActivity {
         populateButtonTxt();
 
         score = 001;
+        answerAttempts = 0;
+        scoreMulitplier = 1.00;
+
         mHandler.sendEmptyMessage(MSG_START_TIMER);
         PUOHelper.setAppBar(this, getResources().getString(R.string.app_name))
                 .setDisplayHomeAsUpEnabled(true);
+
+//        btn_question.setHorizontallyScrolling(true);
+//        btn_question.setMaxLines(2);
+//        btn_question.setEllipsize(TextUtils.TruncateAt.END);
+        vibe = (Vibrator) getSystemService(this.VIBRATOR_SERVICE);
 //        ActionBar actionbar = getSupportActionBar();
 //        actionbar.setDisplayHomeAsUpEnabled(true);
     }
@@ -125,9 +145,43 @@ public class GamePartsOfSpeech extends AppCompatActivity {
     public void onBang(View v) {
         Button btn = (Button)v;
         //If Answer is correct
-        if(correctWord.getPartOfSpeech().toString().trim().equals(btn.getText().toString())){//Absolutley Necessary kek
+        if (correctWord.getPartOfSpeech().toString().trim().equals(btn.getText().toString())) {//Absolutley Necessary kek
             mSmallBang.setColors(GamePartsOfSpeech.this.getResources().getIntArray(R.array.gBangCorrect));
-            btn_circleScore.setText(Integer.toString(score++));
+            scoreStreak = true;
+        } else {
+            mSmallBang.setColors(GamePartsOfSpeech.this.getResources().getIntArray(R.array.gBangWrong));
+            vibe.vibrate(50); // 50 ms
+            scoreStreak = false;
+        }
+        if (scoreStreak) {
+            score += 1 * scoreMulitplier;
+            switch (Double.toString(round(scoreMulitplier, 2))) {
+                case "1.0":
+                    scoreMulitplier = 1.05;
+                    break;
+                case "1.05":
+                    scoreMulitplier = 1.20;
+                    break;
+                case "1.2":
+                    scoreMulitplier = 1.45;
+                    break;
+                case "1.45":
+                    scoreMulitplier = 1.80;
+                    break;
+                case "1.8":
+                    scoreMulitplier = 2.25;
+                    break;
+                case "2.25":
+                    scoreMulitplier = 2.80;
+                    break;
+                case "2.8":
+                    scoreMulitplier = 3.00;
+                    break;
+                default:
+                    scoreMulitplier = 3.00;
+            }
+            btn_circleScore.setText(Double.toString(round(score, 2)));
+            tv_multiplier.setText("X " + Double.toString(scoreMulitplier));
             bounce();
         }else{
             mSmallBang.setColors(GamePartsOfSpeech.this.getResources().getIntArray(R.array.gBangWrong));
@@ -161,8 +215,9 @@ public class GamePartsOfSpeech extends AppCompatActivity {
                             allWords.setRepeatFlag(true);//set it to true( Used )
                         }
                     }
-                    btn.Answer.setText(randWord.getPartOfSpeech());
-                    btn.Answer.setBackgroundColor(getColor());
+                    btn.getAnswer().setText(randWord.getPartOfSpeech());
+                    btn.getAnswer().setBackgroundColor(getColor());
+
                     questionArray.add(randWord);
                 }
                 randWord.setRepeatFlag(true);
@@ -184,7 +239,8 @@ public class GamePartsOfSpeech extends AppCompatActivity {
         return randItem;
     }
 
-    public void bounce(){
+
+    public void bounce() {
         animY = ObjectAnimator.ofFloat(btn_circleScore, "translationY", -100f, 0f);
         animY.setDuration(700);//0.7sec
         animY.setInterpolator(new BounceInterpolator());
@@ -199,4 +255,11 @@ public class GamePartsOfSpeech extends AppCompatActivity {
         return randItem;
     }
 
+    public double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+
+        BigDecimal bd = new BigDecimal(value);
+        bd = bd.setScale(places, RoundingMode.HALF_UP);
+        return bd.doubleValue();
+    }
 }

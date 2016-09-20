@@ -61,6 +61,7 @@
     <string name="definition">Enter a definition</string>
     <string name="sentence_example">Enter sentence with word</string>
     <string name="change_password">Change Password</string>
+    <string name="game_no_score">000</string>
 
     <!-- sort_filter_bar spinner entries -->
     <string-array name="entries_ordering">

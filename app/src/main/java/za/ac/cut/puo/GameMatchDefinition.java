@@ -152,6 +152,7 @@ public class GameMatchDefinition extends AppCompatActivity {
             scoreStreak = true;
         } else {
             mSmallBang.setColors(GameMatchDefinition.this.getResources().getIntArray(R.array.gBangWrong));
+            vibe.vibrate(50); // 50 ms
             scoreStreak = false;
         }
         if (scoreStreak) {
@@ -191,7 +192,6 @@ public class GameMatchDefinition extends AppCompatActivity {
         mSmallBang.bang(v);
         populateButtonTxt();
         attemptCount++;
-        vibe.vibrate(50); // 50 ms
 //        if(attemptCount == 5){
 //            this.finish();
 //        }else{
@@ -248,6 +248,7 @@ public class GameMatchDefinition extends AppCompatActivity {
         Word randItem = questionArray.get(index);
         return randItem;
     }
+
 
     public void bounce() {
         animY = ObjectAnimator.ofFloat(btn_circleScore, "translationY", -100f, 0f);
