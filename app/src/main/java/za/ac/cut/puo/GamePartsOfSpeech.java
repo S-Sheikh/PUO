@@ -185,9 +185,12 @@ public class GamePartsOfSpeech extends AppCompatActivity {
             bounce();
         }else{
             mSmallBang.setColors(GamePartsOfSpeech.this.getResources().getIntArray(R.array.gBangWrong));
+            tv_multiplier.setText("X " + Double.toString(scoreMulitplier));
         }
         mSmallBang.bang(v);
         populateButtonTxt();
+        attemptCount++;
+        btn_attempts.setText("Words:  " + attemptCount + "/20");
     }
 
     public void populateButtonTxt() {

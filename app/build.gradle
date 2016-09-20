@@ -36,4 +36,5 @@ dependencies {
     compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'hanks.xyz:smallbang-library:0.1.2'
     compile 'jp.wasabeef:recyclerview-animators:2.2.4'
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha1'
 }

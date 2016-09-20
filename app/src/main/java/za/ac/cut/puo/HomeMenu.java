@@ -149,6 +149,7 @@ public class HomeMenu extends AppCompatActivity {
 
     private void refresh() {
               /*Set pull to refresh.*/
+
         swipe_refresh_word_list_home = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_word_list_home);
         swipe_refresh_word_list_home.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -191,25 +192,31 @@ public class HomeMenu extends AppCompatActivity {
 
     public void loadData() {
         //circularBar.setVisibility(View.VISIBLE);
-        if (words != null) {
-            words.clear();
+        try {
+            if (words != null) {
+                words.clear();
+            }
+
+            Backendless.Persistence.of(Word.class).find(new AsyncCallback<BackendlessCollection<Word>>() {
+                @Override
+                public void handleResponse(BackendlessCollection<Word> addWordBackendlessCollection) {
+                    words = addWordBackendlessCollection.getData();
+                    AddWordAdapter adapter = new AddWordAdapter(HomeMenu.this, words);
+                    lvWords.setAdapter(adapter);
+                    circularBar.setVisibility(View.GONE);
+                    swipe_refresh_word_list_home.setRefreshing(false);
+                    adapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void handleFault(BackendlessFault backendlessFault) {
+                    Toast.makeText(HomeMenu.this, backendlessFault.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        } catch (Exception e) {
+
         }
 
-        Backendless.Persistence.of(Word.class).find(new AsyncCallback<BackendlessCollection<Word>>() {
-            @Override
-            public void handleResponse(BackendlessCollection<Word> addWordBackendlessCollection) {
-                words = addWordBackendlessCollection.getData();
-                AddWordAdapter adapter = new AddWordAdapter(HomeMenu.this, words);
-                lvWords.setAdapter(adapter);
-                circularBar.setVisibility(View.GONE);
-                swipe_refresh_word_list_home.setRefreshing(false);
-            }
-
-            @Override
-            public void handleFault(BackendlessFault backendlessFault) {
-                Toast.makeText(HomeMenu.this, backendlessFault.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     public void AddWord() {
@@ -251,7 +258,7 @@ public class HomeMenu extends AppCompatActivity {
                                     }
                                 }
                                 if (wordExists == false) {
-                                    BackendlessUser user = Backendless.UserService.CurrentUser();
+                                    final BackendlessUser user = Backendless.UserService.CurrentUser();
                                     Word word = new Word();
                                     word.setName(user.getProperty("name").toString().trim());
                                     word.setSurname(user.getProperty("surname").toString().trim());
@@ -261,9 +268,11 @@ public class HomeMenu extends AppCompatActivity {
                                     word.setLanguage(spLanguage.getSelectedItem().toString().trim());
                                     word.setPartOfSpeech(spPartOfSpeech.getSelectedItem().toString().trim());
                                     word.setCount(word.getCount() + 1);
+
                                     Backendless.Persistence.save(word, new AsyncCallback<Word>() {
                                         @Override
                                         public void handleResponse(Word word) {
+
                                             Toast.makeText(HomeMenu.this, word.getWord() + " saved successfully!", Toast.LENGTH_SHORT).show();
                                             loadData();
                                             progressDialog.dismiss();

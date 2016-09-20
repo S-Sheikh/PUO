@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -48,7 +49,7 @@
                 android:layout_centerVertical="true"
                 android:layout_toLeftOf="@+id/textView3"
                 android:layout_toStartOf="@+id/textView3"
-                android:src="@drawable/ic_word_game" />
+                app:srcCompat="@drawable/ic_word_game" />
 
             <ImageView
                 android:id="@+id/imageView10"
@@ -57,7 +58,7 @@
                 android:layout_centerVertical="true"
                 android:layout_toEndOf="@+id/textView3"
                 android:layout_toRightOf="@+id/textView3"
-                android:src="@drawable/ic_word_game" />
+                app:srcCompat="@drawable/ic_word_game" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -75,7 +76,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="15dp"
                 android:background="@drawable/game_button_bg_words"
-                android:text="Words: 0/30"
+                android:text="Words: 0/20"
                 android:textColor="@color/gColorWords"
                 android:textSize="20dp"
                 android:textStyle="bold" />
@@ -223,6 +224,8 @@
                 android:onClick="onBang"
                 android:text="New Button" />
         </LinearLayout>
+
+
     </LinearLayout>
 
 

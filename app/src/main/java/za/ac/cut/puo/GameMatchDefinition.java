@@ -190,6 +190,7 @@ public class GameMatchDefinition extends AppCompatActivity {
             tv_multiplier.setText("X " + Double.toString(scoreMulitplier));
         }
         mSmallBang.bang(v);
+        ;
         populateButtonTxt();
         attemptCount++;
 //        if(attemptCount == 5){
