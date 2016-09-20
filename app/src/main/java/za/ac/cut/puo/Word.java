@@ -8,6 +8,7 @@ import java.util.Date;
 
 public class Word {
     private boolean repeatFlag;
+    private String email;
     private String word;
     private String language;
     private String definition;
@@ -202,5 +203,13 @@ public class Word {
 
     public void setCount(int count) {
         this.count = count;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

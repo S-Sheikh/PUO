@@ -47,6 +47,7 @@ public class HomeMenu extends AppCompatActivity {
     CircleImageView civ_profile_Pic;
     SpotsDialog progressDialog;
     ProgressBar circularBar;
+    int sum = 0;
     private SwipeRefreshLayout swipe_refresh_word_list_home;
 
     @Override
@@ -63,12 +64,19 @@ public class HomeMenu extends AppCompatActivity {
         circularBar = (ProgressBar) findViewById(R.id.progressBarCircular);
         setSupportActionBar(home_toolBar);
         loadData();
+        countWords();
         refresh();
         PUOHelper.getImageOnline(new DownloadTask(civ_profile_Pic));
         PUOHelper.readImage(civ_profile_Pic);
         BackendlessUser user = Backendless.UserService.CurrentUser();
         tvUsernameHome.setText(user.getProperty("name").toString().trim() + " " + user.getProperty("surname").toString().trim());
         tvUserType.setText(user.getProperty("role").toString().trim());
+        tvWordCount.setText(user.getProperty("count").toString() + " " + "Words Added");
+//        try{
+//            tvWordCount.setText(user.getProperty("count").toString());
+//        }catch (Exception e){
+//            Toast.makeText(HomeMenu.this, "No words added.Please add a word!", Toast.LENGTH_SHORT).show();
+//        }
         lvWords.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -76,7 +84,6 @@ public class HomeMenu extends AppCompatActivity {
                 tvWordInfo.setText(value);
             }
         });
-
     }
 
     @Override
@@ -91,7 +98,6 @@ public class HomeMenu extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.home_menu_addWord:
                 AddWord();
-                refresh();
                 return true;
             case R.id.home_menu_profile:
                 updateProfileData();
@@ -119,7 +125,6 @@ public class HomeMenu extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        refresh();
         super.onResume();
     }
 
@@ -149,12 +154,14 @@ public class HomeMenu extends AppCompatActivity {
 
     private void refresh() {
               /*Set pull to refresh.*/
-
+        final BackendlessUser user = Backendless.UserService.CurrentUser();
         swipe_refresh_word_list_home = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_word_list_home);
         swipe_refresh_word_list_home.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 loadData();
+                countWords();
+                tvWordCount.setText(user.getProperty("count").toString() + " " + "Words Added");
             }
         });
         swipe_refresh_word_list_home.setColorSchemeResources(R.color.colorAccent,
@@ -191,36 +198,63 @@ public class HomeMenu extends AppCompatActivity {
     }
 
     public void loadData() {
-        //circularBar.setVisibility(View.VISIBLE);
-        try {
-            if (words != null) {
-                words.clear();
-            }
-
-            Backendless.Persistence.of(Word.class).find(new AsyncCallback<BackendlessCollection<Word>>() {
-                @Override
-                public void handleResponse(BackendlessCollection<Word> addWordBackendlessCollection) {
-                    words = addWordBackendlessCollection.getData();
-                    AddWordAdapter adapter = new AddWordAdapter(HomeMenu.this, words);
-                    lvWords.setAdapter(adapter);
-                    circularBar.setVisibility(View.GONE);
-                    swipe_refresh_word_list_home.setRefreshing(false);
-                    adapter.notifyDataSetChanged();
-                }
-
-                @Override
-                public void handleFault(BackendlessFault backendlessFault) {
-                    Toast.makeText(HomeMenu.this, backendlessFault.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
-        } catch (Exception e) {
-
+        circularBar.setVisibility(View.VISIBLE);
+        if (words != null) {
+            words.clear();
         }
 
+        Backendless.Persistence.of(Word.class).find(new AsyncCallback<BackendlessCollection<Word>>() {
+            @Override
+            public void handleResponse(BackendlessCollection<Word> addWordBackendlessCollection) {
+                words = addWordBackendlessCollection.getData();
+                AddWordAdapter adapter = new AddWordAdapter(HomeMenu.this, words);
+                lvWords.setAdapter(adapter);
+                circularBar.setVisibility(View.GONE);
+                swipe_refresh_word_list_home.setRefreshing(false);
+            }
+
+            @Override
+            public void handleFault(BackendlessFault backendlessFault) {
+                Toast.makeText(HomeMenu.this, backendlessFault.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void countWords() {
+        final BackendlessUser user = Backendless.UserService.CurrentUser();
+        Backendless.Persistence.of(Word.class).find(new AsyncCallback<BackendlessCollection<Word>>() {
+            @Override
+            public void handleResponse(BackendlessCollection<Word> wordBackendlessCollection) {
+                int count = 0;
+                List<Word> words_ = wordBackendlessCollection.getData();
+                for (Word word : words_) {
+                    if (user.getEmail().equals(word.getEmail())) {
+                        count = word.getCount();
+                        sum += count;
+                    }
+                }
+                user.setProperty("count", sum);
+                Backendless.UserService.update(user, new AsyncCallback<BackendlessUser>() {
+                    @Override
+                    public void handleResponse(BackendlessUser backendlessUser) {
+                    }
+
+                    @Override
+                    public void handleFault(BackendlessFault backendlessFault) {
+                    }
+                });
+
+            }
+
+            @Override
+            public void handleFault(BackendlessFault backendlessFault) {
+
+            }
+        });
+        sum = 0;
     }
 
     public void AddWord() {
-        //loadData();
         LayoutInflater inflater = getLayoutInflater();
         final View view = inflater.inflate(R.layout.home_add_word, null);
         etAddWord = (EditText) view.findViewById(R.id.etAddWord);
@@ -258,7 +292,7 @@ public class HomeMenu extends AppCompatActivity {
                                     }
                                 }
                                 if (wordExists == false) {
-                                    final BackendlessUser user = Backendless.UserService.CurrentUser();
+                                    BackendlessUser user = Backendless.UserService.CurrentUser();
                                     Word word = new Word();
                                     word.setName(user.getProperty("name").toString().trim());
                                     word.setSurname(user.getProperty("surname").toString().trim());
@@ -267,14 +301,14 @@ public class HomeMenu extends AppCompatActivity {
                                     word.setSentence(etSentence.getText().toString().trim());
                                     word.setLanguage(spLanguage.getSelectedItem().toString().trim());
                                     word.setPartOfSpeech(spPartOfSpeech.getSelectedItem().toString().trim());
+                                    word.setEmail(user.getEmail());
                                     word.setCount(word.getCount() + 1);
-
                                     Backendless.Persistence.save(word, new AsyncCallback<Word>() {
                                         @Override
                                         public void handleResponse(Word word) {
-
                                             Toast.makeText(HomeMenu.this, word.getWord() + " saved successfully!", Toast.LENGTH_SHORT).show();
                                             loadData();
+                                            countWords();
                                             progressDialog.dismiss();
                                         }
 
@@ -293,7 +327,6 @@ public class HomeMenu extends AppCompatActivity {
                                 progressDialog.dismiss();
                             }
                         });
-
                     } else {
                         Toast.makeText(HomeMenu.this, "Please fill in all fields!!", Toast.LENGTH_SHORT).show();
                         progressDialog.dismiss();
