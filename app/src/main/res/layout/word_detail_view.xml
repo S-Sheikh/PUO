@@ -1,11 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/word_desc_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:adjustViewBounds="true"
+            android:scaleType="fitStart"
+            android:src="@drawable/dp" />
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/word_desc_image"
+            android:padding="8dp">
+
+            <include layout="@layout/word_details"
+                android:id="@+id/tv_word_text"/>
+
+            <ImageView
+                android:id="@+id/iv_ic_pronunciation"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="16dp"
+                android:layout_toRightOf="@id/tv_word_text"
+                app:srcCompat="@drawable/ic_add_sound" />
+
+            <View
+                android:id="@+id/divider"
+                style="@style/divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@id/tv_word_author"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp" />
+
+            <TextView
+                android:id="@+id/tv_word_definition"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/divider" />
+
+            <TextView
+                android:id="@+id/tv_word_sentence"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/divider" />
+
+
+        </RelativeLayout>
 
     </RelativeLayout>
 

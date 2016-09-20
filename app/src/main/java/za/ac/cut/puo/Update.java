@@ -9,7 +9,6 @@ import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -44,11 +43,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 import dmax.dialog.SpotsDialog;
 
@@ -64,7 +59,6 @@ public class Update extends AppCompatActivity {
     Button btn_update_submit, btnResetPass;
     Menu update_edit__menu_item;
     Bitmap bitmap = null;
-    Uri uri = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +78,8 @@ public class Update extends AppCompatActivity {
                 etPassword.setVisibility(View.GONE);
                 etRePassword.setVisibility(View.GONE);
                 btnResetPass.setVisibility(View.GONE);
-                readImage();
+                //readImage();
+                PUOHelper.getImageOnline(new DownloadTask(ivProfilePic));
             } else {
                 etName.setEnabled(false);
                 etSurname.setEnabled(false);
@@ -103,7 +98,8 @@ public class Update extends AppCompatActivity {
                 etName.setText(user.getProperty("name").toString().trim());
                 etSurname.setText(user.getProperty("surname").toString().trim());
                 //readImageFromFile();
-                readImage();
+                //readImage();
+                PUOHelper.getImageOnline(new DownloadTask(ivProfilePic));
                 //ivProfilePic.setImageBitmap(bitmap);
                 //getImageOnline();
                 etEmail.setText(user.getEmail());
@@ -154,7 +150,7 @@ public class Update extends AppCompatActivity {
                  cursor.close();
                  Bitmap image = BitmapFactory.decodeFile(filePath);
                  ivProfilePic.setImageBitmap(image);**/
-                uri = data.getData();
+                Uri uri = data.getData();
                 try {
                     bitmap = MediaStore.Images.Media.getBitmap(Update.this.getContentResolver(), uri);
                     ivProfilePic.setImageBitmap(bitmap);
@@ -249,19 +245,6 @@ public class Update extends AppCompatActivity {
             connected = false;//no internet connection
         }
         return connected;
-    }
-
-    //returns spinner index
-    private int getIndex(Spinner spinner, String myString) {
-        int index = 0;
-
-        for (int i = 0; i < spinner.getCount(); i++) {
-            if (spinner.getItemAtPosition(i).toString().equalsIgnoreCase(myString)) {
-                index = i;
-                break;
-            }
-        }
-        return index;
     }
 
     private void errorMsg() {
@@ -437,32 +420,23 @@ public class Update extends AppCompatActivity {
             }
         }
     }
+//
+//    private void getImageOnline() {
+//        BackendlessUser user = Backendless.UserService.CurrentUser();
+//        String imageLocation = user.getEmail() +"_.png";
+//        //String url ="https://api.backendless.com/D200A885-7EED-CB51-FFAC-228F87E55D00/v1/files/" + imageLocation;
+//        try {
+//            URL url = new URL("https://api.backendless.com/D200A885-7EED-CB51-FFAC-228F87E55D00/v1/files/UserProfilePics/" +imageLocation );
+//            System.out.println(url);
+//            DownloadTask task = new DownloadTask(this);
+//            task.execute(url);
+//
+//        } catch (MalformedURLException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
-    private void getImageOnline() {
-        String loggenInUser = Backendless.UserService.loggedInUser();
-        Backendless.Persistence.of(BackendlessUser.class).findById(loggenInUser, new AsyncCallback<BackendlessUser>() {
-            @Override
-            public void handleResponse(BackendlessUser backendlessUser) {
-                UserProfilePictures userProfilePictures = new UserProfilePictures();
-                if (backendlessUser.getEmail().equals(userProfilePictures.getUserMail())) {
-                    String imageLocation = userProfilePictures.getImageLocation();
-                    try {
-                        URL url = new URL("https://api.backendless.com/D200A885-7EED-CB51-FFAC-228F87E55D00/v1/files" + imageLocation);
-                        DownloadTask task = new DownloadTask();
-                        task.execute(url);
-                    } catch (MalformedURLException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
 
-            @Override
-            public void handleFault(BackendlessFault backendlessFault) {
-
-            }
-        });
-
-    }
 
     public void btnUpdateSubmit(View v) {
         final BackendlessUser user = Backendless.UserService.CurrentUser();
@@ -488,7 +462,7 @@ public class Update extends AppCompatActivity {
                 Backendless.Files.Android.upload(bitmap,
                         Bitmap.CompressFormat.PNG,
                         100,
-                        filename + user.getEmail(),
+                        filename,
                         "UserProfilePics",
                         true,
                         new AsyncCallback<BackendlessFile>() {
@@ -500,6 +474,7 @@ public class Update extends AppCompatActivity {
                                         try {
                                             writeImageToFile(bitmap);
                                             readImage();
+                                            // PUOHelper.getImageOnline(new DownloadTask(this));
                                         } catch (IOException e) {
                                             e.printStackTrace();
                                         }
@@ -616,37 +591,38 @@ public class Update extends AppCompatActivity {
         dlg.show();
     }
 
-    private void displayDownloadedImage(Bitmap bitmap) {
-        ivProfilePic.setImageBitmap(bitmap);
-    }
-
-    private class DownloadTask extends AsyncTask<URL, Void, Bitmap> {
-
-        @Override
-        protected Bitmap doInBackground(URL... params) {
-            for (URL url : params) {
-                try {
-                    HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-                    int responseCode = httpURLConnection.getResponseCode();
-                    if (responseCode == HttpURLConnection.HTTP_OK) {
-                        InputStream inputStream = httpURLConnection.getInputStream();
-                        Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                        inputStream.close();
-                        return bitmap;
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            return null;
-
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap bitmap) {
-            displayDownloadedImage(bitmap);
-        }
-    }
+//    private static class DownloadTask extends AsyncTask<URL, Void, Bitmap> {
+//        AppCompatActivity activity;
+//        public DownloadTask(AppCompatActivity activity){
+//            this.activity = activity;
+//        }
+//        @Override
+//        protected Bitmap doInBackground(URL... params) {
+//            for (URL url : params) {
+//                try {
+//                    HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+//                    int responseCode = httpURLConnection.getResponseCode();
+//                    if (responseCode == HttpURLConnection.HTTP_OK) {
+//                        InputStream inputStream = httpURLConnection.getInputStream();
+//                        Bitmap imageBitmap = BitmapFactory.decodeStream(inputStream);
+//                        inputStream.close();
+//                        return imageBitmap;
+//                    }
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//            return null;
+//
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Bitmap bitmap) {
+//            ImageView iv_pic = (ImageView)activity.findViewById(R.id.ivProfilePic);
+//            iv_pic.setImageBitmap(bitmap);
+//            super.onPostExecute(bitmap);
+//        }
+//    }
 
 
 

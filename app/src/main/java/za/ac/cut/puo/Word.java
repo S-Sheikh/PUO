@@ -18,6 +18,7 @@ public class Word {
     private String objectId;
     private boolean supported;
     private boolean blocked;
+    private int count;
     private float rating;
     private AudioStream pronunciation;
     private Bitmap descImage;
@@ -37,6 +38,7 @@ public class Word {
         this.pronunciation = null;
         this.blocked = false;
         this.repeatFlag = false;
+        this.setCount(0);
         this.setRating(0);
     }
 
@@ -191,6 +193,14 @@ public class Word {
     }
 
     public String getAuthor() {
-        return "Added by: " + name.substring(0, 1) + ". " + surname;
+        return "Added by: " + name.substring(0, 1).toUpperCase() + ". " + surname.substring(0, 1).toUpperCase() + surname.substring(1);
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
     }
 }

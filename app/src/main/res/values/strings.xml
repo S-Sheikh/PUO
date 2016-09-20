@@ -106,6 +106,8 @@
     <string name="add_sound_clip">Add Sound Clip</string>
     <string name="edit">Edit</string>
     <string name="word_centers">Word Centers</string>
+    <string name="game_no_score">000</string>
+    <string name="popup_menu_unsupport">Unsupport</string>
     <array name="role_items">
         <item>Collector</item>
         <item>Specialist</item>
@@ -117,5 +119,6 @@
         <item>Province</item>
         <item>Code</item>
     </array>
+
 
 </resources>
