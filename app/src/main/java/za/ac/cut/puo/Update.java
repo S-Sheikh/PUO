@@ -96,6 +96,7 @@ public class Update extends AppCompatActivity {
                 etPassword.setText(user.getPassword());
                 etRePassword.setText(user.getPassword());
                 etCellPhone.setText(user.getProperty("cell").toString().trim());
+                //TODO: DO validation when spinner is sElected or not!!
                 //spRoles.setSelection(getIndex(spRoles,user.getProperty("roles").toString().trim()));
                 //spLocation.setSelection(getIndex(spLocation,user.getProperty("location").toString().trim()));
             }
@@ -129,15 +130,6 @@ public class Update extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_CHOOSE_PHOTO) {
             if (resultCode == Activity.RESULT_OK) {
-                /**Uri uri = data.getData();
-                 String[] projection = {MediaStore.Images.Media.DATA};
-                 Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
-                 cursor.moveToFirst();
-                 int columnIndex = cursor.getColumnIndex(projection[0]);
-                 String filePath = cursor.getString(columnIndex);
-                 cursor.close();
-                 Bitmap image = BitmapFactory.decodeFile(filePath);
-                 ivProfilePic.setImageBitmap(image);**/
                 Uri uri = data.getData();
                 try {
                     bitmap = MediaStore.Images.Media.getBitmap(Update.this.getContentResolver(), uri);
@@ -357,6 +349,7 @@ public class Update extends AppCompatActivity {
             }
         }
     }
+
 
     public void btnUpdateSubmit(View v) {
         final BackendlessUser user = Backendless.UserService.CurrentUser();
