@@ -15,6 +15,7 @@ public class Word {
     private String surname;
     private String sentence;
     private String objectId;
+    private String imageLocation;
     private boolean supported;
     private boolean blocked;
     private int count;
@@ -199,5 +200,13 @@ public class Word {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getImageLocation() {
+        return imageLocation;
+    }
+
+    public void setImageLocation(String imageLocation) {
+        this.imageLocation = imageLocation;
     }
 }

@@ -50,15 +50,13 @@ public class HomeMenu extends AppCompatActivity {
     TextView tvUsernameHome, tvUserType, tvWordCount, tvWordInfo;
     ListView lvWords;
     List<Word> words;
-    List<WordPictures> pictures;
     EditText etAddWord, etDefinition, etSentence;
     Spinner spLanguage, spPartOfSpeech;
     ImageView ivAddImage, ivAddSound, wordImg;
     CircleImageView civ_profile_Pic;
     SpotsDialog progressDialog;
     ProgressBar circularBar;
-    int sum = 0,
-            pictureCount = 0;
+    int sum = 0, pictureCount = 0;
     QueryOptions queryOptions = new QueryOptions();
     Bitmap bitmap;
     private SwipeRefreshLayout swipe_refresh_word_list_home;
@@ -76,8 +74,7 @@ public class HomeMenu extends AppCompatActivity {
         civ_profile_Pic = (CircleImageView) findViewById(R.id.civ_profile_pic);
         circularBar = (ProgressBar) findViewById(R.id.progressBarCircular);
         setSupportActionBar(home_toolBar);
-        downloadImage();
-        //loadData();
+        loadData();
         countWordWithPaging();
         refresh();
         PUOHelper.getImageOnline(new DownloadTask(civ_profile_Pic));
@@ -182,7 +179,6 @@ public class HomeMenu extends AppCompatActivity {
             @Override
             public void onRefresh() {
                 loadData();
-                downloadImage();
                 countWordWithPaging();
                 tvWordCount.setText(user.getProperty("count").toString() + " " + "Words Added");
             }
@@ -190,26 +186,6 @@ public class HomeMenu extends AppCompatActivity {
         swipe_refresh_word_list_home.setColorSchemeResources(R.color.colorAccent,
                 R.color.colorPrimary,
                 R.color.colorPrimaryLight);
-    }
-
-    public void downloadImage() {
-        if (pictures != null) {
-            pictures.clear();
-        }
-        Backendless.Persistence.of(WordPictures.class).find(new AsyncCallback<BackendlessCollection<WordPictures>>() {
-            @Override
-            public void handleResponse(BackendlessCollection<WordPictures> picturesBackendlessCollection) {
-                pictures = picturesBackendlessCollection.getData();
-                WordPicturesAdapter adapter = new WordPicturesAdapter(HomeMenu.this, pictures);
-                lvWords.setAdapter(adapter);
-                swipe_refresh_word_list_home.setRefreshing(false);
-            }
-
-            @Override
-            public void handleFault(BackendlessFault backendlessFault) {
-                Toast.makeText(HomeMenu.this, backendlessFault.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     public void loadData() {
@@ -245,8 +221,6 @@ public class HomeMenu extends AppCompatActivity {
         Backendless.Data.of(Word.class).find(dataQuery, new AsyncCallback<BackendlessCollection<Word>>() {
             @Override
             public void handleResponse(BackendlessCollection<Word> wordBackendlessCollection) {
-
-
                 if (wordBackendlessCollection.getCurrentPage().size() > PAGE_SIZE) {
                     while (wordBackendlessCollection.getCurrentPage().size() > 0) {
                         int count = 0;
@@ -383,7 +357,7 @@ public class HomeMenu extends AppCompatActivity {
                                 }
                                 if (wordExists == false) {
                                     BackendlessUser user_ = Backendless.UserService.CurrentUser();
-                                    Word word = new Word();
+                                    final Word word = new Word();
                                     word.setName(user_.getProperty("name").toString().trim());
                                     word.setSurname(user_.getProperty("surname").toString().trim());
                                     word.setWord(etAddWord.getText().toString().trim());
@@ -394,11 +368,10 @@ public class HomeMenu extends AppCompatActivity {
                                     word.setEmail(user_.getEmail());
                                     word.setCount(word.getCount() + 1);
                                     final BackendlessUser user = Backendless.UserService.CurrentUser();
-                                    String filename = user.getEmail() + "_.png";
+                                    String filename = etAddWord.getText().toString().trim() + "_.png";
                                     pictureCount++;
-                                    final WordPictures wordPictures = new WordPictures();
-                                    wordPictures.setImageLocation(filename);
-                                    wordPictures.setEmail(user.getEmail());
+                                    word.setImageLocation(filename);
+                                    word.setEmail(user.getEmail());
                                     Backendless.Files.Android.upload(bitmap,
                                             Bitmap.CompressFormat.PNG,
                                             100,
@@ -408,9 +381,9 @@ public class HomeMenu extends AppCompatActivity {
                                             new AsyncCallback<BackendlessFile>() {
                                                 @Override
                                                 public void handleResponse(BackendlessFile backendlessFile) {
-                                                    Backendless.Persistence.save(wordPictures, new AsyncCallback<WordPictures>() {
+                                                    Backendless.Persistence.save(word, new AsyncCallback<Word>() {
                                                         @Override
-                                                        public void handleResponse(WordPictures wordPictures) {
+                                                        public void handleResponse(Word word) {
 
                                                         }
 

@@ -37,6 +37,7 @@ import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 import com.backendless.files.BackendlessFile;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -97,7 +98,9 @@ public class Update extends AppCompatActivity {
                 btn_update_submit.setVisibility(View.GONE);
                 etName.setText(user.getProperty("name").toString().trim());
                 etSurname.setText(user.getProperty("surname").toString().trim());
-                PUOHelper.getImageOnline(new DownloadTask(ivProfilePic));
+                //PUOHelper.getImageOnline(new DownloadTask(ivProfilePic));
+                String imageUri = "https://api.backendless.com/D200A885-7EED-CB51-FFAC-228F87E55D00/v1/files/UserProfilePics/" + user.getEmail() + "_.png";
+                Picasso.with(Update.this).load(imageUri).into(ivProfilePic);
                 etEmail.setText(user.getEmail());
                 etPassword.setText(user.getPassword());
                 etRePassword.setText(user.getPassword());

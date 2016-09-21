@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -45,9 +46,13 @@ public class AddWordAdapter extends ArrayAdapter<Word> {
         tv_word_author.setText(values.get(position).getAuthor());
         BackendlessUser user = Backendless.UserService.CurrentUser();
         //download the image from backendless;
-//        String imageUri = "https://api.backendless.com/D200A885-7EED-CB51-FFAC-228F87E55D00/v1/files/" + imageLocation;
-//        Picasso.with(context).load(imageUri).into(wordImg);
-//        System.out.print(imageUri);
+        String imageUri = "https://api.backendless.com/D200A885-7EED-CB51-FFAC-228F87E55D00/v1/files/WordPictures/" + values.get(position).getImageLocation();
+        if (!(imageUri.equals(""))) {
+            Picasso.with(context).load(imageUri).fit().into(wordImg);
+            System.out.println(imageUri);// for debugging purposes
+        } else {
+            wordImg.setBackground(getContext().getResources().getDrawable(R.drawable.logo_puo));
+        }
 
         //change text color to green in word is supported.
         if (values.get(position).isSupported()) {
