@@ -119,4 +119,21 @@
     </array>
 
 
+    <!-- messaging strings -->
+    <string name="loading_text">Loading...</string>
+    <string name="text_chat_title">Text Chat</string>
+    <string name="select_user_prompt">Select a user to chat with:</string>
+    <string name="previous_symbol"><![CDATA[<<]]></string>
+    <string name="next_symbol"><![CDATA[>>]]></string>
+    <string name="nickname_prompt">What is your name?</string>
+    <string name="start_chat_button_text">Start chat</string>
+    <string name="chat_invitation_message">Do you want to chat with %s?</string>
+    <string name="decline_button_text">Decline</string>
+    <string name="accept_button_text">Accept</string>
+    <string name="text_chat_with_smb_title">Text Chat with %s</string>
+    <string name="chat_invitation_default">Do you want to chat?</string>
+    <string name="list_row_arrow_description">list_row_arrow</string>
+    <string name="waiting_for_template">Waiting for %s to accept invitation...</string>
+    <!-- messaging strings -->
+
 </resources>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/dp16"
+    android:paddingRight="@dimen/dp16">
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/dp48"
+        android:layout_marginBottom="@dimen/dp4"
+        android:gravity="center"
+        android:text="@string/text_chat_title"
+        android:textSize="@dimen/text_large" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp48"
+        android:layout_marginBottom="@dimen/dp4"
+        android:layout_marginTop="@dimen/dp4"
+        android:gravity="center_vertical"
+        android:text="@string/nickname_prompt"
+        android:textSize="@dimen/text_medium" />
+
+    <EditText
+        android:id="@+id/nameBox"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp48"
+        android:layout_marginBottom="@dimen/dp4"
+        android:layout_marginTop="@dimen/dp4"
+        android:gravity="bottom|left" />
+
+    <Button
+        android:id="@+id/startButton"
+        android:layout_width="@dimen/dp144"
+        android:layout_height="@dimen/dp48"
+        android:layout_marginTop="@dimen/dp4"
+        android:text="@string/start_chat_button_text"
+        android:textSize="@dimen/text_medium" />
+</LinearLayout>
