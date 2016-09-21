@@ -9,6 +9,8 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.amulyakhare.textdrawable.TextDrawable;
+
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -91,6 +93,14 @@ public class WordListItemAdapter extends RecyclerView.Adapter<WordListItemAdapte
     public void onBindViewHolder(WordListItemAdapter.ViewHolder holder, int position) {
         Word word = mWords.get(position);
 
+        //Generate image for word image using first two letters of word.
+        String text = word.getWord().substring(0, 2);
+        TextDrawable textImage = TextDrawable.builder()
+                .beginConfig()
+                .width(60)
+                .height(60)
+                .endConfig().buildRound(text, getContext().getResources().getColor(R.color.colorPrimary));
+
         //change text color to green in word is supported.
         if (word.isSupported()) {
             holder.wordStatus.setTextColor(getContext().getResources()
@@ -103,9 +113,7 @@ public class WordListItemAdapter extends RecyclerView.Adapter<WordListItemAdapte
         holder.wordAuthor.setText(word.getAuthor());
         holder.wordLexicon.setText(word.getLexicon());
         holder.wordRating.setRating(word.getRating());
-        holder.wordDescImg.setImageResource(R.drawable.dp);
-
-
+        holder.wordDescImg.setImageDrawable(textImage);
 
     }
 

@@ -174,14 +174,10 @@ public class WordListFragment extends Fragment {
      * load words from Backendless.
      */
     public void loadData(final List<Word> wordList) {
-        if (wordList != null) {
-            wordList.clear();
-        }
 
         QueryOptions queryOptions = new QueryOptions();
         List<String> sortBy = new ArrayList<>();
         sortBy.add("created DESC");
-        //Calendar.getInstance().getTime();
         queryOptions.setSortBy(sortBy);
 
         BackendlessDataQuery dataQuery = new BackendlessDataQuery();
@@ -191,9 +187,15 @@ public class WordListFragment extends Fragment {
         Backendless.Persistence.of(Word.class).find(dataQuery, new AsyncCallback<BackendlessCollection<Word>>() {
             @Override
             public void handleResponse(BackendlessCollection<Word> puoWordList) {
+                List<Word> newWords = puoWordList.getData();
+                newWords.removeAll(wordList);
+                for (Word word:newWords) {
+                    System.out.println("newWords = " + word.getWord());
+                }
+                mWords.addAll(newWords);
+
                 int curSize = mRecyclerView.getAdapter().getItemCount();
-                wordList.addAll(puoWordList.getData());
-                mRecyclerView.getAdapter().notifyItemRangeInserted(curSize, wordList.size());
+                mRecyclerView.getAdapter().notifyItemRangeInserted(curSize, mWords.size());
                 circularBar.setVisibility(View.GONE);
                 swipeRefreshWordList.setRefreshing(false);
             }

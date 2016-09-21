@@ -6,9 +6,11 @@ import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.widget.ImageView;
 
 import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
@@ -16,18 +18,23 @@ import com.backendless.BackendlessUser;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by hodielisrael on 2016/09/14.
  */
 
 public class PUOHelper {
+
+    public static final String BASE_EXTERNAL_APP_DIRECTORY =
+            Environment.getExternalStorageDirectory().toString() + "/PUO/";
+    public static final String PROFILE_PIC_SUB_DIRECTORY = "Profile picture/";
 
     //Word List BoilerPlate
     public static List<Word> populateWordList() {
@@ -67,16 +74,37 @@ public class PUOHelper {
      */
     public static ActionBar setAppBar(AppCompatActivity activity, String title) {
         Toolbar appBar = (Toolbar) activity.findViewById(R.id.puo_toolbar);
-        appBar.setTitle(" " + title);
+        appBar.setTitle(title);
         activity.setSupportActionBar(appBar);
         return activity.getSupportActionBar();
     }
 
+    public static void writeImageToFile(Context context, Bitmap bitmap) {
+        BackendlessUser user = Backendless.UserService.CurrentUser();
+        String path = BASE_EXTERNAL_APP_DIRECTORY + PROFILE_PIC_SUB_DIRECTORY;
+        OutputStream fOut;
+        String filename = user.getEmail() + ".png";
+        File file = new File(path, filename); // the File to save , append increasing numeric counter to prevent files from getting overwritten.
+        System.out.println("file = " + file);
+        try {
+            fOut = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fOut); // saving the Bitmap to a file compressed as a PNG with 100% compression rate
+            fOut.flush(); // Not really required
+            fOut.close(); // do not forget to close the stream
+            MediaStore.Images.Media.insertImage(context.getContentResolver(), file.getAbsolutePath(), file.getName(), file.getName());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
     //Reads an image from device storage and sets it as background
-    public static void readImage(CircleImageView view) {
+    public static void readImage(ImageView view) {
         BackendlessUser user = Backendless.UserService.CurrentUser();
         String filename = user.getEmail() + ".png";
-        String filepath = Environment.getExternalStorageDirectory().toString() + "/" + filename;
+        String filepath = BASE_EXTERNAL_APP_DIRECTORY + PROFILE_PIC_SUB_DIRECTORY + filename;
+        System.out.println("filepath = " + filepath);
         File imagefile = new File(filepath);
         FileInputStream fis = null;
         if (imagefile.exists()) {
@@ -89,6 +117,7 @@ public class PUOHelper {
             view.setImageBitmap(bitmap);
         } else {
             view.setImageResource((R.drawable.logo_puo));
+            getImageOnline(new DownloadTask(view));
         }
     }
 
@@ -116,9 +145,7 @@ public class PUOHelper {
         String imageLocation = user.getEmail() + "_.png";
         try {
             URL url = new URL("https://api.backendless.com/D200A885-7EED-CB51-FFAC-228F87E55D00/v1/files/UserProfilePics/" + imageLocation);
-            System.out.println(url);
             task.execute(url);
-
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }

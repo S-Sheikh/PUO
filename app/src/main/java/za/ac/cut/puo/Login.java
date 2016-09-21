@@ -1,10 +1,7 @@
 package za.ac.cut.puo;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
@@ -68,35 +65,35 @@ public class Login extends AppCompatActivity {
             email_txt_input_login.setError(getString(R.string.txt_input_layout));
             pass_txt_input_login.setError(getString(R.string.txt_input_layout));
         } else {
-            if (connectionAvailable()) {
+            if (PUOHelper.connectionAvailable(this)) {
                 progressDialog = new SpotsDialog(Login.this, R.style.Custom);
                 progressDialog.show();
                 Backendless.UserService.login(etEmail, etPassword, new AsyncCallback<BackendlessUser>() {
                     @Override
                     public void handleResponse(BackendlessUser backendlessUser) {
-                        BackendlessUser user = Backendless.UserService.CurrentUser();
-                        if (user != null) {
-                            if (backendlessUser.getProperty("isUpdated").equals(false)) {
-                                Intent intent = new Intent(Login.this, Update.class);
-                                intent.putExtra("user", backendlessUser.getEmail());
-                                intent.putExtra("password", backendlessUser.getPassword());
-                                intent.putExtra("name", backendlessUser.getProperty("name").toString().trim());
-                                intent.putExtra("surname", backendlessUser.getProperty("surname").toString().trim());
-                                intent.putExtra("objectId", backendlessUser.getObjectId());
-                                startActivity(intent);
-                            } else {
-                                backendlessUser.setProperty("isUpdated", true);
-                                Intent intent1 = new Intent(Login.this, HomeMenu.class);
-                                intent1.putExtra("objectId", backendlessUser.getObjectId());
-                                intent1.putExtra("password", backendlessUser.getPassword());
-                                intent1.putExtra("user", user.getEmail());
-                                intent1.putExtra("name", backendlessUser.getProperty("name").toString().trim());
-                                intent1.putExtra("surname", backendlessUser.getProperty("surname").toString().trim());
-                                intent1.putExtra("role", backendlessUser.getProperty("role").toString().trim());
-                                intent1.putExtra("cell", backendlessUser.getProperty("cell").toString().trim());
-                                intent1.putExtra("isUpdated", backendlessUser.getProperty("isUpdated").toString().trim());
-                                startActivity(intent1);
-                            }
+
+                        if (backendlessUser.getProperty("isUpdated").equals(false)) {
+                            Intent intent = new Intent(Login.this, Update.class);
+                            intent.putExtra("user", backendlessUser.getEmail());
+                            intent.putExtra("password", backendlessUser.getPassword());
+                            intent.putExtra("name", backendlessUser.getProperty("name").toString().trim());
+                            intent.putExtra("surname", backendlessUser.getProperty("surname").toString().trim());
+                            intent.putExtra("objectId", backendlessUser.getObjectId());
+                            startActivity(intent);
+                        } else {
+                            /** Is this needed?
+                             backendlessUser.setProperty("isUpdated", true);
+                             Intent intent1 = new Intent(Login.this, HomeMenu.class);
+                             intent1.putExtra("objectId", backendlessUser.getObjectId());
+                             intent1.putExtra("password", backendlessUser.getPassword());
+                             intent1.putExtra("user", backendlessUser.getEmail());
+                             intent1.putExtra("name", backendlessUser.getProperty("name").toString().trim());
+                             intent1.putExtra("surname", backendlessUser.getProperty("surname").toString().trim());
+                             intent1.putExtra("role", backendlessUser.getProperty("role").toString().trim());
+                             intent1.putExtra("cell", backendlessUser.getProperty("cell").toString().trim());
+                             intent1.putExtra("isUpdated", backendlessUser.getProperty("isUpdated").toString().trim());
+                             */
+                            startActivity(new Intent(Login.this, HomeMenu.class));
                         }
 
                         Toast.makeText(Login.this, backendlessUser.getEmail() + " successfully logged in!", Toast.LENGTH_SHORT).show();
@@ -117,7 +114,7 @@ public class Login extends AppCompatActivity {
     }
 
     public void btnResetPassword(View v) {
-        if (connectionAvailable()) {
+        if (PUOHelper.connectionAvailable(this)) {
             LayoutInflater inflater = getLayoutInflater();
             final View view = inflater.inflate(R.layout.login_reset_password, null);
             etResetEmail = (EditText) view.findViewById(R.id.etResetEmail);
@@ -233,19 +230,4 @@ public class Login extends AppCompatActivity {
         }
     }
 
-    private boolean connectionAvailable() {
-        boolean connected = false;
-        ConnectivityManager cm = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        if (activeNetwork != null) {//if true,connected to the internet
-            if (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI) {
-                connected = true;//connected to using wifi
-            } else if (activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE) {
-                connected = true;//connected using mobile data
-            }
-        } else {
-            connected = false;//no internet connection
-        }
-        return connected;
-    }
 }

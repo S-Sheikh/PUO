@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -31,6 +32,7 @@ import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 import com.backendless.persistence.BackendlessDataQuery;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -38,6 +40,7 @@ import dmax.dialog.SpotsDialog;
 
 public class HomeMenu extends AppCompatActivity {
     Toolbar home_toolBar;
+    BackendlessUser user;
     TextView tvUsernameHome, tvUserType, tvWordCount, tvWordInfo;
     ListView lvWords;
     List<Word> words;
@@ -47,6 +50,7 @@ public class HomeMenu extends AppCompatActivity {
     CircleImageView civ_profile_Pic;
     SpotsDialog progressDialog;
     ProgressBar circularBar;
+    AddWordAdapter adapter;
     int sum = 0;
     private SwipeRefreshLayout swipe_refresh_word_list_home;
 
@@ -54,23 +58,36 @@ public class HomeMenu extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_menu);
+
         home_toolBar = (Toolbar) findViewById(R.id.home_toolBar);
+        setSupportActionBar(home_toolBar);
+
+        user = Backendless.UserService.CurrentUser();
+
+        civ_profile_Pic = (CircleImageView) findViewById(R.id.civ_profile_pic);
+        circularBar = (ProgressBar) findViewById(R.id.progressBarCircular);
         tvUsernameHome = (TextView) findViewById(R.id.tvUsernameHome);
         tvUserType = (TextView) findViewById(R.id.tvUserType);
         tvWordCount = (TextView) findViewById(R.id.tvWordCount);
         tvWordInfo = (TextView) findViewById(R.id.tvWordInfo);
+
+        words = new ArrayList<>();
+        adapter = new AddWordAdapter(HomeMenu.this, words);
         lvWords = (ListView) findViewById(R.id.lv_words);
-        civ_profile_Pic = (CircleImageView) findViewById(R.id.civ_profile_pic);
-        circularBar = (ProgressBar) findViewById(R.id.progressBarCircular);
-        setSupportActionBar(home_toolBar);
+        lvWords.setAdapter(adapter);
+
         loadData();
         countWords();
         refresh();
-        PUOHelper.getImageOnline(new DownloadTask(civ_profile_Pic));
+
+        //PUOHelper.getImageOnline(new DownloadTask(civ_profile_Pic));
         PUOHelper.readImage(civ_profile_Pic);
-        BackendlessUser user = Backendless.UserService.CurrentUser();
-        tvUsernameHome.setText(user.getProperty("name").toString().trim() + " " + user.getProperty("surname").toString().trim());
+
+
+        tvUsernameHome.setText(user.getProperty("name").toString().trim() +
+                " " + user.getProperty("surname").toString().trim());
         tvUserType.setText(user.getProperty("role").toString().trim());
+
         tvWordCount.setText(user.getProperty("count").toString() + " " + "Words Added");
 //        try{
 //            tvWordCount.setText(user.getProperty("count").toString());
@@ -84,6 +101,7 @@ public class HomeMenu extends AppCompatActivity {
                 tvWordInfo.setText(value);
             }
         });
+
     }
 
     @Override
@@ -124,7 +142,13 @@ public class HomeMenu extends AppCompatActivity {
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+    }
+
+    @Override
     protected void onResume() {
+        refresh();
         super.onResume();
     }
 
@@ -134,10 +158,7 @@ public class HomeMenu extends AppCompatActivity {
 
     }
 
-
     public void updateProfileData() {
-
-        BackendlessUser user = Backendless.UserService.CurrentUser();
         Intent intent = new Intent(HomeMenu.this, Update.class);
         intent.putExtra("user", user.getEmail());
         intent.putExtra("objectId", user.getObjectId());
@@ -154,7 +175,6 @@ public class HomeMenu extends AppCompatActivity {
 
     private void refresh() {
               /*Set pull to refresh.*/
-        final BackendlessUser user = Backendless.UserService.CurrentUser();
         swipe_refresh_word_list_home = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_word_list_home);
         swipe_refresh_word_list_home.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -168,7 +188,6 @@ public class HomeMenu extends AppCompatActivity {
                 R.color.colorPrimary,
                 R.color.colorPrimaryLight);
     }
-
 
     public void loadSpecificUserData() {
         circularBar.setVisibility(View.VISIBLE);
@@ -206,9 +225,8 @@ public class HomeMenu extends AppCompatActivity {
         Backendless.Persistence.of(Word.class).find(new AsyncCallback<BackendlessCollection<Word>>() {
             @Override
             public void handleResponse(BackendlessCollection<Word> addWordBackendlessCollection) {
-                words = addWordBackendlessCollection.getData();
-                AddWordAdapter adapter = new AddWordAdapter(HomeMenu.this, words);
-                lvWords.setAdapter(adapter);
+                words.addAll(addWordBackendlessCollection.getData());
+                adapter.notifyDataSetChanged();
                 circularBar.setVisibility(View.GONE);
                 swipe_refresh_word_list_home.setRefreshing(false);
             }
@@ -277,6 +295,7 @@ public class HomeMenu extends AppCompatActivity {
                             etDefinition.getText().toString().trim().isEmpty())) {
                         Backendless.Persistence.of(Word.class).find(new AsyncCallback<BackendlessCollection<Word>>() {
                             boolean wordExists = false;
+
                             @Override
                             public void handleResponse(BackendlessCollection<Word> addWordBackendlessCollection) {
                                 words = addWordBackendlessCollection.getData();
