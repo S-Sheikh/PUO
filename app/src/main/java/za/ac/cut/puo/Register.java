@@ -57,6 +57,7 @@ public class Register extends AppCompatActivity {
                 user.setProperty("email",edt_register__email.getText().toString().trim());
                 user.setProperty("name",edt_register__name.getText().toString().trim());
                 user.setProperty("surname",edt_register__surname.getText().toString().trim());
+                //  user.setProperty("username",edt_register__surname.getText().toString().trim());
                 user.setProperty("count", String.valueOf(0));
                 user.setPassword(edt_register__password.getText().toString().trim());
                 progressDialog = new SpotsDialog(Register.this, R.style.Custom);
@@ -70,6 +71,7 @@ public class Register extends AppCompatActivity {
                         intent.putExtra("user",edt_register__email.getText().toString().trim());
                         intent.putExtra("name",edt_register__name.getText().toString().trim());
                         intent.putExtra("surname",edt_register__surname.getText().toString().trim());
+                        // intent.putExtra("username",edt_register__surname.getText().toString().trim());
                         intent.putExtra("objectId", backendlessUser.getObjectId());
                         startActivity(intent);
                         progressDialog.dismiss();

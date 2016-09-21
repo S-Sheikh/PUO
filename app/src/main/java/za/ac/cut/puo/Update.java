@@ -165,7 +165,6 @@ public class Update extends AppCompatActivity {
         MediaStore.Images.Media.insertImage(getContentResolver(), file.getAbsolutePath(), file.getName(), file.getName());
     }
 
-
     public void readImage() {
         BackendlessUser user = Backendless.UserService.CurrentUser();
         String filename = user.getEmail() + ".png";
@@ -184,7 +183,6 @@ public class Update extends AppCompatActivity {
             ivProfilePic.setImageResource(R.drawable.logo_puo);
         }
     }
-
 
     public void initViews(){
         spRoles = (Spinner)findViewById(R.id.spRoles);
