@@ -1,7 +1,5 @@
 package za.ac.cut.puo;
 
-import android.graphics.Bitmap;
-
 import com.backendless.media.audio.AudioStream;
 
 import java.util.Date;
@@ -22,7 +20,6 @@ public class Word {
     private int count;
     private float rating;
     private AudioStream pronunciation;
-    private Bitmap descImage;
     private Date created;
     private Date updated;
 
@@ -35,7 +32,6 @@ public class Word {
         this.surname = null;
         this.sentence = null;
         this.supported = false;
-        this.descImage = null;
         this.pronunciation = null;
         this.blocked = false;
         this.repeatFlag = false;
@@ -163,14 +159,6 @@ public class Word {
 
     public void setRating(float rating) {
         this.rating = rating;
-    }
-
-    public Bitmap getDescImage() {
-        return descImage;
-    }
-
-    public void setDescImage(Bitmap descImage) {
-        this.descImage = descImage;
     }
 
     public boolean isBlocked() {

@@ -97,15 +97,12 @@ public class Update extends AppCompatActivity {
                 btn_update_submit.setVisibility(View.GONE);
                 etName.setText(user.getProperty("name").toString().trim());
                 etSurname.setText(user.getProperty("surname").toString().trim());
-                //readImageFromFile();
-                //readImage();
                 PUOHelper.getImageOnline(new DownloadTask(ivProfilePic));
-                //ivProfilePic.setImageBitmap(bitmap);
-                //getImageOnline();
                 etEmail.setText(user.getEmail());
                 etPassword.setText(user.getPassword());
                 etRePassword.setText(user.getPassword());
                 etCellPhone.setText(user.getProperty("cell").toString().trim());
+                //TODO: DO validation when spinner is sElected or not!!
                 //spRoles.setSelection(getIndex(spRoles,user.getProperty("roles").toString().trim()));
                 //spLocation.setSelection(getIndex(spLocation,user.getProperty("location").toString().trim()));
             }
@@ -131,8 +128,6 @@ public class Update extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        //readImageFromFile();
-        //readImage();
         super.onResume();
     }
 
@@ -141,15 +136,6 @@ public class Update extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_CHOOSE_PHOTO) {
             if (resultCode == Activity.RESULT_OK) {
-                /**Uri uri = data.getData();
-                 String[] projection = {MediaStore.Images.Media.DATA};
-                 Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
-                 cursor.moveToFirst();
-                 int columnIndex = cursor.getColumnIndex(projection[0]);
-                 String filePath = cursor.getString(columnIndex);
-                 cursor.close();
-                 Bitmap image = BitmapFactory.decodeFile(filePath);
-                 ivProfilePic.setImageBitmap(image);**/
                 Uri uri = data.getData();
                 try {
                     bitmap = MediaStore.Images.Media.getBitmap(Update.this.getContentResolver(), uri);
@@ -420,22 +406,6 @@ public class Update extends AppCompatActivity {
             }
         }
     }
-//
-//    private void getImageOnline() {
-//        BackendlessUser user = Backendless.UserService.CurrentUser();
-//        String imageLocation = user.getEmail() +"_.png";
-//        //String url ="https://api.backendless.com/D200A885-7EED-CB51-FFAC-228F87E55D00/v1/files/" + imageLocation;
-//        try {
-//            URL url = new URL("https://api.backendless.com/D200A885-7EED-CB51-FFAC-228F87E55D00/v1/files/UserProfilePics/" +imageLocation );
-//            System.out.println(url);
-//            DownloadTask task = new DownloadTask(this);
-//            task.execute(url);
-//
-//        } catch (MalformedURLException e) {
-//            e.printStackTrace();
-//        }
-//    }
-
 
 
     public void btnUpdateSubmit(View v) {
@@ -474,7 +444,6 @@ public class Update extends AppCompatActivity {
                                         try {
                                             writeImageToFile(bitmap);
                                             readImage();
-                                            // PUOHelper.getImageOnline(new DownloadTask(this));
                                         } catch (IOException e) {
                                             e.printStackTrace();
                                         }
@@ -590,42 +559,5 @@ public class Update extends AppCompatActivity {
         });
         dlg.show();
     }
-
-//    private static class DownloadTask extends AsyncTask<URL, Void, Bitmap> {
-//        AppCompatActivity activity;
-//        public DownloadTask(AppCompatActivity activity){
-//            this.activity = activity;
-//        }
-//        @Override
-//        protected Bitmap doInBackground(URL... params) {
-//            for (URL url : params) {
-//                try {
-//                    HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-//                    int responseCode = httpURLConnection.getResponseCode();
-//                    if (responseCode == HttpURLConnection.HTTP_OK) {
-//                        InputStream inputStream = httpURLConnection.getInputStream();
-//                        Bitmap imageBitmap = BitmapFactory.decodeStream(inputStream);
-//                        inputStream.close();
-//                        return imageBitmap;
-//                    }
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//            return null;
-//
-//        }
-//
-//        @Override
-//        protected void onPostExecute(Bitmap bitmap) {
-//            ImageView iv_pic = (ImageView)activity.findViewById(R.id.ivProfilePic);
-//            iv_pic.setImageBitmap(bitmap);
-//            super.onPostExecute(bitmap);
-//        }
-//    }
-
-
-
-
 }
 
