@@ -1,6 +1,6 @@
 package za.ac.cut.puo;
 
-import android.content.Context;
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -60,18 +60,6 @@ public class WordListFragment extends Fragment {
     }
 
     /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     */
-    public interface OnWordListItemClickListener {
-        void onMenuOptionSelected(int id);
-
-        void onWordSelected(int position);
-    }
-
-    /**
      * Allows the parent activity or fragment to define the listener.
      */
     public void setWordListItemListener(OnWordListItemClickListener mListener) {
@@ -93,9 +81,9 @@ public class WordListFragment extends Fragment {
         swipeRefreshWordList = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_word_list);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.rv_word_list);
         mWords = new ArrayList<>();
-        mAdapter = new WordListItemAdapter(mWords, getContext());
+        mAdapter = new WordListItemAdapter(mWords, ContextGetter.getAppContext());
         mRecyclerView.setAdapter(new SlideInBottomAnimationAdapter(mAdapter));
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(ContextGetter.getAppContext()));
         mRecyclerView.setItemAnimator(new SlideInLeftAnimator());
         mRecyclerView.getItemAnimator().setAddDuration(300);
         loadData(mWords);
@@ -112,7 +100,7 @@ public class WordListFragment extends Fragment {
 
             @Override
             public void onOverflowClicked(final ImageView v) {
-                final PopupMenu wordOptions = new PopupMenu(getContext(), v);
+                final PopupMenu wordOptions = new PopupMenu(ContextGetter.getAppContext(), v);
                 MenuInflater inflater = wordOptions.getMenuInflater();
                 inflater.inflate(R.menu.popup_menu, wordOptions.getMenu());
 
@@ -213,7 +201,7 @@ public class WordListFragment extends Fragment {
      * Updates a word status to supported.
      */
     public void supportWord(final int position) {
-        if (PUOHelper.connectionAvailable(getContext())) {
+        if (PUOHelper.connectionAvailable(ContextGetter.getAppContext())) {
             if (!mWords.get(position).isSupported()) {
                 mWords.get(position).setSupported(true);
                 mAdapter.notifyItemChanged(position);
@@ -259,7 +247,7 @@ public class WordListFragment extends Fragment {
      * Updates a word status to unsupported.
      */
     public void unSupportWord(final int position) {
-        if (PUOHelper.connectionAvailable(getContext())) {
+        if (PUOHelper.connectionAvailable(ContextGetter.getAppContext())) {
             if (mWords.get(position).isSupported()) {
                 mWords.get(position).setSupported(false);
                 mAdapter.notifyItemChanged(position);
@@ -308,7 +296,7 @@ public class WordListFragment extends Fragment {
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(Activity context) {
         super.onAttach(context);
         if (context instanceof OnWordListItemClickListener) {
             mListener = (OnWordListItemClickListener) context;
@@ -324,5 +312,17 @@ public class WordListFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     */
+    public interface OnWordListItemClickListener {
+        void onMenuOptionSelected(int id);
+
+        void onWordSelected(int position);
     }
 }

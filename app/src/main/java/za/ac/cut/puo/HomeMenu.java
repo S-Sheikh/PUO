@@ -122,6 +122,7 @@ public class HomeMenu extends AppCompatActivity {
             case R.id.word_chest:
                 return true;
             case R.id.word_2_word:
+                startActivity(new Intent(HomeMenu.this, ChooseNicknameActivity.class));
                 return true;
             case R.id.word_mates:
                 return true;

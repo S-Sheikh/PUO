@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/dp16"
+    android:paddingRight="@dimen/dp16">
+
+    <TextView
+        android:id="@+id/chatInvitationText"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp48"
+        android:layout_marginBottom="@dimen/dp4"
+        android:gravity="center"
+        android:text="@string/chat_invitation_default"
+        android:textSize="@dimen/text_large" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp48"
+        android:layout_marginTop="@dimen/dp4"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/declineButton"
+            android:layout_width="@dimen/dp144"
+            android:layout_height="match_parent"
+            android:layout_marginRight="@dimen/dp4"
+            android:text="@string/decline_button_text" />
+
+        <Button
+            android:id="@+id/acceptButton"
+            android:layout_width="@dimen/dp144"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/dp4"
+            android:text="@string/accept_button_text" />
+    </LinearLayout>
+</LinearLayout>

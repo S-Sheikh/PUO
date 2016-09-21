@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/dp16"
+    android:paddingRight="@dimen/dp16">
+
+    <TextView
+        android:id="@+id/textChatWithSmbTitle"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/dp48"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="@dimen/dp4"
+        android:gravity="center"
+        android:text="@string/text_chat_title"
+        android:textSize="@dimen/text_large" />
+
+    <EditText
+        android:id="@+id/messageField"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/dp48"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="@dimen/dp4"
+        android:imeOptions="actionGo"
+        android:inputType="textImeMultiLine"
+        android:minHeight="@dimen/dp40"
+        android:textSize="@dimen/text_medium" />
+
+    <EditText
+        android:id="@+id/historyField"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/messageField"
+        android:layout_below="@+id/textChatWithSmbTitle"
+        android:background="@android:color/transparent"
+        android:editable="false"
+        android:ellipsize="end"
+        android:gravity="bottom"
+        android:scrollbars="vertical"
+        android:textSize="@dimen/text_medium" />
+</RelativeLayout>
