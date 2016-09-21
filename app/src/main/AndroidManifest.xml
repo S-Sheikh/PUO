@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="za.ac.cut.puo">
 
+    <uses-sdk
+        android:minSdkVersion="16"
+        android:targetSdkVersion="16" />
+
     <supports-screens
         android:anyDensity="true"
         android:largeScreens="true"
@@ -16,13 +20,28 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.CAMERA" />
 
+    <!-- Messaging permissions -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="za.ac.cut.puo.permission.C2D_MESSAGE" />
+
+    <permission
+        android:name="za.ac.cut.puo.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+
+    <!-- End Messaging permissions -->
+
     <application
         android:name=".PUOApplication"
         android:allowBackup="true"
         android:icon="@drawable/logo_puo"
         android:label="@string/app_name"
+        android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <!--  android:screenOrientation="portrait"  I think ??!!?? this forces our app to be potrait only -->
         <activity android:name=".Login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,6 +49,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <receiver
+            android:name=".PushReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+
+                <category android:name="za.ac.cut.puo" />
+            </intent-filter>
+        </receiver>
+        <service android:name="com.backendless.AndroidService" />
+
         <activity
             android:name=".Register"
             android:parentActivityName=".Login">
@@ -103,6 +135,25 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".HomeMenu" />
         </activity>
+
+        <activity
+            android:name=".ChooseNicknameActivity"
+            android:parentActivityName=".HomeMenu"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".HomeMenu" />
+        </activity>
+        <activity
+            android:name=".AcceptChatActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ChatActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".SelectUserActivity"
+            android:screenOrientation="portrait" />
+
 
     </application>
 

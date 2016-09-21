@@ -8,5 +8,17 @@
     <dimen name="tv_label_left_margin">8dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
 
+    <!-- messaging layout dimens -->
+    <dimen name="dp4">4dp</dimen>
+    <dimen name="dp8">8dp</dimen>
+    <dimen name="dp16">16dp</dimen>
+    <dimen name="dp40">40dp</dimen>
+    <dimen name="dp48">48dp</dimen>
+    <dimen name="text_micro">12sp</dimen>
+    <dimen name="text_small">14sp</dimen>
+    <dimen name="text_medium">18sp</dimen>
+    <dimen name="text_large">22sp</dimen>
+    <dimen name="dp144">144dp</dimen>
+    <!-- messaging layout dimens -->
 
 </resources>
