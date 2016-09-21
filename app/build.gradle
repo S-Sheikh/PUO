@@ -1,4 +1,7 @@
 apply plugin: 'com.android.application'
+repositories {
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+}
 
 android {
     compileSdkVersion 24
@@ -37,4 +40,5 @@ dependencies {
     compile 'hanks.xyz:smallbang-library:0.1.2'
     compile 'jp.wasabeef:recyclerview-animators:2.2.4'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha1'
+    compile 'com.squareup.picasso:picasso:2.6.0-SNAPSHOT'
 }
