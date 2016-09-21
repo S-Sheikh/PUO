@@ -1,6 +1,6 @@
 package za.ac.cut.puo;
 
-class UserProfilePictures {
+public class UserProfilePictures {
     private String userMail;
     private String imageLocation;
 

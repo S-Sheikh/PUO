@@ -1,10 +1,7 @@
 package za.ac.cut.puo;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -13,7 +10,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -72,7 +68,7 @@ public class HomeMenu extends AppCompatActivity {
         tvWordInfo = (TextView) findViewById(R.id.tvWordInfo);
 
         words = new ArrayList<>();
-        adapter = new AddWordAdapter(HomeMenu.this, words);
+        adapter = new AddWordAdapter(this, words);
         lvWords = (ListView) findViewById(R.id.lv_words);
         lvWords.setAdapter(adapter);
 
@@ -80,20 +76,14 @@ public class HomeMenu extends AppCompatActivity {
         countWords();
         refresh();
 
-        //PUOHelper.getImageOnline(new DownloadTask(civ_profile_Pic));
         PUOHelper.readImage(civ_profile_Pic);
-
 
         tvUsernameHome.setText(user.getProperty("name").toString().trim() +
                 " " + user.getProperty("surname").toString().trim());
         tvUserType.setText(user.getProperty("role").toString().trim());
 
-        tvWordCount.setText(user.getProperty("count").toString() + " " + "Words Added");
-//        try{
-//            tvWordCount.setText(user.getProperty("count").toString());
-//        }catch (Exception e){
-//            Toast.makeText(HomeMenu.this, "No words added.Please add a word!", Toast.LENGTH_SHORT).show();
-//        }
+        displayWordCount();
+
         lvWords.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -104,10 +94,16 @@ public class HomeMenu extends AppCompatActivity {
 
     }
 
+    private void displayWordCount() {
+        if (user.getProperty("count").equals(1))
+            tvWordCount.setText(user.getProperty("count").toString() + " " + "Word Added");
+        else
+            tvWordCount.setText(user.getProperty("count").toString() + " " + "Words Added");
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.home_options_menu_items, menu);
+        getMenuInflater().inflate(R.menu.home_options_menu_items, menu);
         return true;
     }
 
@@ -180,8 +176,6 @@ public class HomeMenu extends AppCompatActivity {
             @Override
             public void onRefresh() {
                 loadData();
-                countWords();
-                tvWordCount.setText(user.getProperty("count").toString() + " " + "Words Added");
             }
         });
         swipe_refresh_word_list_home.setColorSchemeResources(R.color.colorAccent,
@@ -239,19 +233,14 @@ public class HomeMenu extends AppCompatActivity {
     }
 
     private void countWords() {
-        final BackendlessUser user = Backendless.UserService.CurrentUser();
-        Backendless.Persistence.of(Word.class).find(new AsyncCallback<BackendlessCollection<Word>>() {
+        String whereClause = "email = '" + user.getEmail() + "'";
+        BackendlessDataQuery dataQuery = new BackendlessDataQuery();
+        dataQuery.setWhereClause(whereClause);
+        Backendless.Persistence.of(Word.class).find(dataQuery, new AsyncCallback<BackendlessCollection<Word>>() {
             @Override
-            public void handleResponse(BackendlessCollection<Word> wordBackendlessCollection) {
-                int count = 0;
-                List<Word> words_ = wordBackendlessCollection.getData();
-                for (Word word : words_) {
-                    if (user.getEmail().equals(word.getEmail())) {
-                        count = word.getCount();
-                        sum += count;
-                    }
-                }
-                user.setProperty("count", sum);
+            public void handleResponse(BackendlessCollection<Word> userWords) {
+                int count = userWords.getTotalObjects();
+                user.setProperty("count", count);
                 Backendless.UserService.update(user, new AsyncCallback<BackendlessUser>() {
                     @Override
                     public void handleResponse(BackendlessUser backendlessUser) {
@@ -288,7 +277,7 @@ public class HomeMenu extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                if (connectionAvailable()) {
+                if (PUOHelper.connectionAvailable(getApplicationContext())) {
                     progressDialog = new SpotsDialog(HomeMenu.this, R.style.Custom);
                     progressDialog.show();
                     if (!(etAddWord.getText().toString().trim().isEmpty() || etSentence.getText().toString().trim().isEmpty() ||
@@ -299,35 +288,31 @@ public class HomeMenu extends AppCompatActivity {
                             @Override
                             public void handleResponse(BackendlessCollection<Word> addWordBackendlessCollection) {
                                 words = addWordBackendlessCollection.getData();
-                                for (int i = 0; i < words.size(); i++) {
-                                    if (words.get(i).getWord().trim().equalsIgnoreCase(etAddWord.getText().toString().trim())) {
+                                for (Word word : words) {
+                                    if (word.getWord().trim().equalsIgnoreCase(etAddWord.getText().toString().trim())) {
                                         wordExists = true;//word exists in database
                                         Toast.makeText(HomeMenu.this, "Word already exists!Please enter a new word :)", Toast.LENGTH_SHORT).show();
                                         progressDialog.dismiss();
-                                        break;
-
-                                    } else {
-                                        wordExists = false;//word does not exist in database
                                     }
                                 }
-                                if (wordExists == false) {
-                                    BackendlessUser user = Backendless.UserService.CurrentUser();
-                                    Word word = new Word();
-                                    word.setName(user.getProperty("name").toString().trim());
-                                    word.setSurname(user.getProperty("surname").toString().trim());
-                                    word.setWord(etAddWord.getText().toString().trim());
-                                    word.setDefinition(etDefinition.getText().toString().trim());
-                                    word.setSentence(etSentence.getText().toString().trim());
-                                    word.setLanguage(spLanguage.getSelectedItem().toString().trim());
-                                    word.setPartOfSpeech(spPartOfSpeech.getSelectedItem().toString().trim());
-                                    word.setEmail(user.getEmail());
-                                    word.setCount(word.getCount() + 1);
-                                    Backendless.Persistence.save(word, new AsyncCallback<Word>() {
+                                if (!wordExists) {
+                                    Word newWord = new Word();
+                                    newWord.setName(user.getProperty("name").toString().trim());
+                                    newWord.setSurname(user.getProperty("surname").toString().trim());
+                                    newWord.setWord(etAddWord.getText().toString().trim());
+                                    newWord.setDefinition(etDefinition.getText().toString().trim());
+                                    newWord.setSentence(etSentence.getText().toString().trim());
+                                    newWord.setLanguage(spLanguage.getSelectedItem().toString().trim());
+                                    newWord.setPartOfSpeech(spPartOfSpeech.getSelectedItem().toString().trim());
+                                    newWord.setEmail(user.getEmail());
+                                    newWord.setCount(newWord.getCount() + 1);
+                                    Backendless.Persistence.save(newWord, new AsyncCallback<Word>() {
                                         @Override
                                         public void handleResponse(Word word) {
                                             Toast.makeText(HomeMenu.this, word.getWord() + " saved successfully!", Toast.LENGTH_SHORT).show();
                                             loadData();
                                             countWords();
+                                            displayWordCount();
                                             progressDialog.dismiss();
                                         }
 
@@ -346,7 +331,9 @@ public class HomeMenu extends AppCompatActivity {
                                 progressDialog.dismiss();
                             }
                         });
-                    } else {
+                    } else
+
+                    {
                         Toast.makeText(HomeMenu.this, "Please fill in all fields!!", Toast.LENGTH_SHORT).show();
                         progressDialog.dismiss();
                     }
@@ -363,22 +350,6 @@ public class HomeMenu extends AppCompatActivity {
             }
         });
         dialog.show();
-    }
-
-    private boolean connectionAvailable() {
-        boolean connected = false;
-        ConnectivityManager cm = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        if (activeNetwork != null) {//if true,connected to the internet
-            if (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI) {
-                connected = true;//connected to using wifi
-            } else if (activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE) {
-                connected = true;//connected using mobile data
-            }
-        } else {
-            connected = false;//no internet connection
-        }
-        return connected;
     }
 
     public void logout() {

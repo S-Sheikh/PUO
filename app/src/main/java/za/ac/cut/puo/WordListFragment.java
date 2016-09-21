@@ -116,7 +116,8 @@ public class WordListFragment extends Fragment {
                 MenuInflater inflater = wordOptions.getMenuInflater();
                 inflater.inflate(R.menu.popup_menu, wordOptions.getMenu());
 
-                /**Check if word is supported or not and remove menu options accordingly.*/
+                /**
+                 * Check if word is supported or not and remove menu options accordingly.*/
                 if (!mWords.get((mRecyclerView.findContainingViewHolder(v)
                         .getAdapterPosition())).isSupported())
                     wordOptions.getMenu().removeItem(R.id.unsupport);
@@ -157,7 +158,7 @@ public class WordListFragment extends Fragment {
             }
         });
 
-        /*Set pull to refresh.*/
+        //Set pull to refresh.
         swipeRefreshWordList.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -316,6 +317,8 @@ public class WordListFragment extends Fragment {
                     + " must implement OnWordListItemClickListener");
         }
     }
+
+    
 
     @Override
     public void onDetach() {
