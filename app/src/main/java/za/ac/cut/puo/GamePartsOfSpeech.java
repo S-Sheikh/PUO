@@ -181,11 +181,11 @@ public class GamePartsOfSpeech extends AppCompatActivity {
                     scoreMulitplier = 3.00;
             }
             btn_circleScore.setText(Double.toString(round(score, 2)));
-            tv_multiplier.setText("X " + Double.toString(scoreMulitplier));
+            tv_multiplier.setText("+ " + Double.toString(scoreMulitplier));
             bounce();
         }else{
             mSmallBang.setColors(GamePartsOfSpeech.this.getResources().getIntArray(R.array.gBangWrong));
-            tv_multiplier.setText("X " + Double.toString(scoreMulitplier));
+            tv_multiplier.setText("+ " + Double.toString(scoreMulitplier));
         }
         mSmallBang.bang(v);
         populateButtonTxt();

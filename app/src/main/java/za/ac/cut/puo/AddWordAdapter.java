@@ -47,13 +47,13 @@ public class AddWordAdapter extends ArrayAdapter<Word> {
         BackendlessUser user = Backendless.UserService.CurrentUser();
         //download the image from backendless;
         String imageUri = "https://api.backendless.com/D200A885-7EED-CB51-FFAC-228F87E55D00/v1/files/WordPictures/" + values.get(position).getImageLocation();
-        if (!(imageUri.equals(""))) {
+        if (imageUri != null) {//TODO: Validation if user doesnt select picture
+
             Picasso.with(context).load(imageUri).fit().into(wordImg);
             System.out.println(imageUri);// for debugging purposes
         } else {
-            wordImg.setBackground(getContext().getResources().getDrawable(R.drawable.logo_puo));
+            wordImg.setImageDrawable(getContext().getResources().getDrawable(R.drawable.logo_puo));
         }
-
         //change text color to green in word is supported.
         if (values.get(position).isSupported()) {
             tv_word_status.setTextColor(getContext().getResources()
