@@ -12,4 +12,3 @@ public class Defaults {
 
     public static final String DEFAULT_CHANNEL = "default";
 }
-                                            

@@ -38,7 +38,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
-                android:text="Parts of Speech"
+                android:text="@string/game_parts_of_speech_title"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textColor="@android:color/primary_text_dark" />
 
@@ -76,9 +76,9 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="15dp"
                 android:background="@drawable/game_button_bg_words"
-                android:text="Words: 0/20"
+                android:text="@string/game_word_count"
                 android:textColor="@color/gColorWords"
-                android:textSize="20dp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
             <Button
@@ -91,9 +91,9 @@
                 android:layout_below="@+id/btn_attempts"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/game_button_bg_time"
-                android:text="Time: 0:00"
+                android:text="@string/game_time_count"
                 android:textColor="@color/gColorTime"
-                android:textSize="20dp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
             <Button
@@ -103,7 +103,8 @@
                 android:layout_alignBottom="@+id/btn_timer"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:layout_gravity="right"
+                android:layout_gravity="end"
+                android:layout_marginEnd="60dp"
                 android:layout_marginRight="60dp"
                 android:allowUndo="false"
                 android:background="@drawable/game_button_bg_score"
@@ -119,7 +120,7 @@
                 android:layout_above="@+id/btn_circleScore"
                 android:layout_alignLeft="@+id/btn_circleScore"
                 android:layout_alignStart="@+id/btn_circleScore"
-                android:text="Points"
+                android:text="@string/game_points"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/gColorPoints"
                 android:textStyle="bold" />
@@ -131,7 +132,7 @@
                 android:layout_below="@+id/btn_attempts"
                 android:layout_toEndOf="@+id/textView"
                 android:layout_toRightOf="@+id/textView"
-                android:text="+ 1.00"
+                android:text="@string/game_bonus_score"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/gColorPoints"
                 android:textStyle="bold" />
@@ -149,7 +150,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="25dp"
-                android:text="What Part of Speech is this word?"
+                android:text="@string/game_parts_of_speech_desc"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/colorPrimary"
                 android:textStyle="bold" />
@@ -182,21 +183,27 @@
 
             <Button
                 android:id="@+id/btn_ans_topLeft"
+                style="?attr/buttonBarButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_weight="1"
                 android:onClick="onBang"
-                android:text="New Button" />
+                android:text="New Button"
+                android:textColor="@android:color/black" />
 
             <Button
                 android:id="@+id/btn_ans_topRight"
+                style="?attr/buttonBarButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
+                android:layout_marginStart="5dp"
                 android:layout_weight="1"
                 android:onClick="onBang"
-                android:text="New Button" />
+                android:text="New Button"
+                android:textColor="@android:color/black" />
         </LinearLayout>
 
         <LinearLayout
@@ -208,21 +215,27 @@
 
             <Button
                 android:id="@+id/btn_ans_bottomLeft"
+                style="?attr/buttonBarButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_weight="1"
                 android:onClick="onBang"
-                android:text="New Button" />
+                android:text="New Button"
+                android:textColor="@android:color/black" />
 
             <Button
                 android:id="@+id/btn_ans_bottomRight"
+                style="?attr/buttonBarButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
+                android:layout_marginStart="5dp"
                 android:layout_weight="1"
                 android:onClick="onBang"
-                android:text="New Button" />
+                android:text="New Button"
+                android:textColor="@android:color/black" />
         </LinearLayout>
 
 

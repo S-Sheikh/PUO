@@ -48,6 +48,7 @@ public class AddWordAdapter extends ArrayAdapter<Word> {
         //download the image from backendless;
         String imageUri = "https://api.backendless.com/D200A885-7EED-CB51-FFAC-228F87E55D00/v1/files/WordPictures/" + values.get(position).getImageLocation();
         if (imageUri != null) {//TODO: Validation if user doesnt select picture
+
             Picasso.with(context).load(imageUri).fit().into(wordImg);
             System.out.println(imageUri);// for debugging purposes
         } else {
