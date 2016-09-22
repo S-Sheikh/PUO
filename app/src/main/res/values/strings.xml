@@ -145,6 +145,8 @@
     <string name="game_parts_of_speech_desc">What Part of Speech is this word?</string>
     <string name="game_wat_language_desc">What Language is this word?</string>
     <string name="game_what_language_title">What Language?</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
     <!-- messaging strings -->
 
 </resources>

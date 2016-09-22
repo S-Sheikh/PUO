@@ -31,7 +31,7 @@
         android:name="za.ac.cut.puo.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
 
-    <android:uses-permission android:name="android.permission.READ_PHONE_STATE" /> <!-- End Messaging permissions -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" /> <!-- End Messaging permissions -->
     <application
         android:name=".PUOApplication"
         android:allowBackup="true"
@@ -144,15 +144,16 @@
         <activity
             android:name=".SelectUserActivity"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".WordChestActivity"
-            android:label="@string/title_activity_word_chest"
-            android:parentActivityName=".HomeMenu"
-            android:theme="@style/AppTheme">
+
+        <receiver android:name=".AppWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
             <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="za.ac.cut.puo.HomeMenu" />
-        </activity>
+                android:name="android.appwidget.provider"
+                android:resource="@xml/app_widget_info" />
+        </receiver>
     </application>
 
 </manifest>
