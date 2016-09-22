@@ -41,6 +41,7 @@ public class Register extends AppCompatActivity {
                 && edt_register__email.getText().toString().trim().isEmpty() && edt_register_username.getText().toString().trim().isEmpty()
                 && edt_register__password.getText().toString().trim().isEmpty() && edt_register__rePassword.getText().toString().trim().isEmpty()) {
             txt_input.setError(getString(R.string.txt_input_layout));
+            txt_username.setError(getString(R.string.txt_input_layout));
             surname_txt_input.setError(getString(R.string.txt_input_layout));
             email_txt_input.setError(getString(R.string.txt_input_layout));
             pass_txt_input.setError(getString(R.string.txt_input_layout));
@@ -113,7 +114,7 @@ public class Register extends AppCompatActivity {
             else if (v.getId() == R.id.edt_register_rePassword)
                 repass_txt_input.setError(getString(R.string.txt_input_layout));
             else if (v.getId() == R.id.edt_register_username)
-                repass_txt_input.setError(getString(R.string.txt_input_layout));
+                txt_username.setError(getString(R.string.txt_input_layout));
         }
     }
 

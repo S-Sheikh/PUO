@@ -4,10 +4,8 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.ActionBar;
@@ -34,14 +32,8 @@ import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 import com.backendless.files.BackendlessFile;
-import com.squareup.picasso.Picasso;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 
 import dmax.dialog.SpotsDialog;
 
@@ -77,8 +69,7 @@ public class Update extends AppCompatActivity {
                 etPassword.setVisibility(View.GONE);
                 etRePassword.setVisibility(View.GONE);
                 btnResetPass.setVisibility(View.GONE);
-                //readImage();
-                PUOHelper.getImageOnline(new DownloadTask(ivProfilePic));
+                PUOHelper.readImage((ivProfilePic));
             } else {
                 etName.setEnabled(false);
                 etSurname.setEnabled(false);
@@ -97,14 +88,13 @@ public class Update extends AppCompatActivity {
                 btn_update_submit.setVisibility(View.GONE);
                 etName.setText(user.getProperty("name").toString().trim());
                 etSurname.setText(user.getProperty("surname").toString().trim());
-                //PUOHelper.getImageOnline(new DownloadTask(ivProfilePic));
-                String imageUri = "https://api.backendless.com/D200A885-7EED-CB51-FFAC-228F87E55D00/v1/files/UserProfilePics/" + user.getEmail() + "_.png";
-                Picasso.with(Update.this).load(imageUri).into(ivProfilePic);
+                etUsername.setText(user.getProperty("username").toString().trim());
+                PUOHelper.readImage((ivProfilePic));
                 etEmail.setText(user.getEmail());
                 etPassword.setText(user.getPassword());
                 etRePassword.setText(user.getPassword());
                 etCellPhone.setText(user.getProperty("cell").toString().trim());
-                //TODO: DO validation when spinner is sElected or not!!
+                //TODO: DO validation when spinner is selected or not!!
                 //spRoles.setSelection(getIndex(spRoles,user.getProperty("roles").toString().trim()));
                 //spLocation.setSelection(getIndex(spLocation,user.getProperty("location").toString().trim()));
             }
@@ -146,39 +136,6 @@ public class Update extends AppCompatActivity {
                     Toast.makeText(Update.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
-        }
-    }
-
-    public void writeImageToFile(Bitmap bitmap) throws IOException {
-        BackendlessUser user = Backendless.UserService.CurrentUser();
-        String path = Environment.getExternalStorageDirectory().toString();
-        OutputStream fOut = null;
-        String filename = user.getEmail();
-        File file = new File(path, filename + ".png"); // the File to save , append increasing numeric counter to prevent files from getting overwritten.
-        fOut = new FileOutputStream(file);
-
-        //Bitmap pictureBitmap = getImageBitmap(myurl); // obtaining the Bitmap
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, fOut); // saving the Bitmap to a file compressed as a PNG with 100% compression rate
-        fOut.close(); //close the stream
-        MediaStore.Images.Media.insertImage(getContentResolver(), file.getAbsolutePath(), file.getName(), file.getName());
-    }
-
-    public void readImage() {
-        BackendlessUser user = Backendless.UserService.CurrentUser();
-        String filename = user.getEmail() + ".png";
-        String filepath = Environment.getExternalStorageDirectory().toString() + "/" + filename;
-        File imagefile = new File(filepath);
-        if (imagefile.exists()) {
-            FileInputStream fis = null;
-            try {
-                fis = new FileInputStream(imagefile);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-            Bitmap bitmap = BitmapFactory.decodeStream(fis);
-            ivProfilePic.setImageBitmap(bitmap);
-        } else {
-            ivProfilePic.setImageResource(R.drawable.logo_puo);
         }
     }
 
@@ -478,17 +435,6 @@ public class Update extends AppCompatActivity {
                         startActivity(new Intent(Update.this, HomeMenu.class));
                         Update.this.finish();
 
-                        /**Is this necessary?
-                         Intent intent = new Intent(Update.this, HomeMenu.class);
-                         intent.putExtra("user", backendlessUser.getEmail());
-                         intent.putExtra("objectId", backendlessUser.getObjectId());
-                         intent.putExtra("name", backendlessUser.getProperty("name").toString().trim());
-                         intent.putExtra("surname", backendlessUser.getProperty("surname").toString().trim());
-                         intent.putExtra("role", backendlessUser.getProperty("role").toString().trim());
-                         intent.putExtra("location", backendlessUser.getProperty("location").toString().trim());
-                         intent.putExtra("cell", backendlessUser.getProperty("cell").toString().trim());
-                         intent.putExtra("isUpdated", backendlessUser.getProperty("isUpdated").toString().trim());
-                         */
                     }
 
                     @Override
@@ -507,6 +453,7 @@ public class Update extends AppCompatActivity {
         etName.setEnabled(true);
         etSurname.setEnabled(true);
         etEmail.setEnabled(true);
+        etUsername.setEnabled(true);
         passwordInput.setVisibility(View.GONE);
         rePasswordInput.setVisibility(View.GONE);
         etRePassword.setVisibility(View.GONE);

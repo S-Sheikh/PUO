@@ -21,20 +21,13 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class WordListItemAdapter extends RecyclerView.Adapter<WordListItemAdapter.ViewHolder> {
 
+    private static OnItemClickListener onItemClickCallBack;
     private List<Word> mWords;
     private Context mContext;
-    private static OnItemClickListener onItemClickCallBack;
 
     public WordListItemAdapter(List<Word> mWords, Context mContext) {
         this.mWords = mWords;
         this.mContext = mContext;
-    }
-
-    // Define the listener interface
-    public interface OnItemClickListener {
-        void onItemClicked(View itemView);
-
-        void onOverflowClicked(ImageView v);
     }
 
     // Allows the parent activity or fragment to define the listener
@@ -44,6 +37,55 @@ public class WordListItemAdapter extends RecyclerView.Adapter<WordListItemAdapte
 
     private Context getContext() {
         return mContext;
+    }
+
+    @Override
+    public WordListItemAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        // Inflate the custom word_list_item layout
+        View wordListItemView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.word_list_item, parent, false);
+
+        return new ViewHolder(wordListItemView);
+    }
+
+    @Override
+    public void onBindViewHolder(WordListItemAdapter.ViewHolder holder, int position) {
+        Word word = mWords.get(position);
+
+        //change text color to green in word is supported.
+        if (word.isSupported()) {
+            holder.wordStatus.setTextColor(getContext().getResources()
+                    .getColor(R.color.gColorTime));
+        } else {
+            holder.wordStatus.setTextColor(getContext().getResources()
+                    .getColor(R.color.colorPrimaryText));
+        }
+
+        //Set the word properties on the views.
+        holder.wordText.setText(word.getWord());
+        holder.wordStatus.setText(word.getStatus());
+        holder.wordAuthor.setText(word.getAuthor());
+        holder.wordLexicon.setText(word.getLexicon());
+        holder.wordRating.setRating(word.getRating());
+        String imageUri = "https://api.backendless.com/D200A885-7EED-CB51-FFAC-228F87E55D00/v1/files/WordPictures/" + word.getImageLocation();
+        Picasso.with(getContext()).load(imageUri)
+                .resize(300, 300)
+                .centerInside()
+                .placeholder(PUOHelper.getTextDrawable(word))
+                .error(PUOHelper.getTextDrawable(word))
+                .into(holder.wordDescImg);
+    }
+
+    @Override
+    public int getItemCount() {
+        return mWords.size();
+    }
+
+    // Define the listener interface
+    public interface OnItemClickListener {
+        void onItemClicked(View itemView);
+
+        void onOverflowClicked(ImageView v);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -78,45 +120,6 @@ public class WordListItemAdapter extends RecyclerView.Adapter<WordListItemAdapte
                 }
             }
         }
-    }
-
-    @Override
-    public WordListItemAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        // Inflate the custom word_list_item layout
-        View wordListItemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.word_list_item, parent, false);
-
-        return new ViewHolder(wordListItemView);
-    }
-
-    @Override
-    public void onBindViewHolder(WordListItemAdapter.ViewHolder holder, int position) {
-        Word word = mWords.get(position);
-
-        //change text color to green in word is supported.
-        if (word.isSupported()) {
-            holder.wordStatus.setTextColor(getContext().getResources()
-                    .getColor(R.color.gColorTime));
-        }
-
-        //Set the word properties on the views.
-        holder.wordText.setText(word.getWord());
-        holder.wordStatus.setText(word.getStatus());
-        holder.wordAuthor.setText(word.getAuthor());
-        holder.wordLexicon.setText(word.getLexicon());
-        holder.wordRating.setRating(word.getRating());
-        String imageUri = "https://api.backendless.com/D200A885-7EED-CB51-FFAC-228F87E55D00/v1/files/WordPictures/" + word.getImageLocation();
-        Picasso.with(getContext()).load(imageUri)
-                .resize(300, 300)
-                .centerInside()
-                .placeholder(PUOHelper.getTextDrawable(word))
-                .error(PUOHelper.getTextDrawable(word))
-                .into(holder.wordDescImg);
-    }
-
-    @Override
-    public int getItemCount() {
-        return mWords.size();
     }
 
 }

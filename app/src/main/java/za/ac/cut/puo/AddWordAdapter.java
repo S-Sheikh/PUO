@@ -56,6 +56,9 @@ public class AddWordAdapter extends ArrayAdapter<Word> {
         if (values.get(position).isSupported()) {
             tv_word_status.setTextColor(getContext().getResources()
                     .getColor(R.color.gColorTime));
+        } else {
+            tv_word_status.setTextColor(getContext().getResources()
+                    .getColor(R.color.colorPrimaryText));
         }
         return convertView;
     }
