@@ -41,7 +41,7 @@ import dmax.dialog.SpotsDialog;
 
 public class HomeMenu extends AppCompatActivity {
     public static final int REQUEST_CODE_CHOOSE_PHOTO = 1;
-    final int PAGE_SIZE = 100;
+    final int PAGE_SIZE = 5;
     Toolbar home_toolBar;
     BackendlessUser user;
     TextView tvUsernameHome, tvUserType, tvWordCount, tvWordInfo;
@@ -173,6 +173,7 @@ public class HomeMenu extends AppCompatActivity {
         intent.putExtra("password", user.getPassword());
         intent.putExtra("name", user.getProperty("name").toString().trim());
         intent.putExtra("surname", user.getProperty("surname").toString().trim());
+        intent.putExtra("username", user.getProperty("username").toString().trim());
         intent.putExtra("role", user.getProperty("role").toString().trim());
         intent.putExtra("location", user.getProperty("location").toString().trim());
         intent.putExtra("cell", user.getProperty("cell").toString().trim());

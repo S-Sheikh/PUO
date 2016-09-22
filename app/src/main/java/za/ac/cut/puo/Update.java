@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.ActionBar;
@@ -32,18 +34,24 @@ import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 import com.backendless.files.BackendlessFile;
+import com.squareup.picasso.Picasso;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 import dmax.dialog.SpotsDialog;
 
 public class Update extends AppCompatActivity {
     public static final int REQUEST_CODE_CHOOSE_PHOTO = 1;
     Spinner spRoles, spLocation;
-    EditText etName, etSurname, etEmail, etCellPhone, etPassword, etRePassword, etNewPass, etRePass;
+    EditText etName, etSurname, etEmail, etCellPhone, etPassword, etRePassword, etNewPass, etRePass, etUsername;
     TextView tvAddPic;
     ImageView ivProfilePic;
-    TextInputLayout nameInput, surnameInput, emailInput, passwordInput, rePasswordInput, cellInput;
+    TextInputLayout nameInput, surnameInput, emailInput, passwordInput, rePasswordInput, cellInput, usernameInput;
     SpotsDialog progressDialog;
     Toolbar update_toolBar;
     Button btn_update_submit, btnResetPass;
@@ -62,6 +70,7 @@ public class Update extends AppCompatActivity {
             if (user.getProperty("isUpdated").equals(false)) {
                 etName.setText(user.getProperty("name").toString().trim());
                 etSurname.setText(user.getProperty("surname").toString().trim());
+                etUsername.setText(user.getProperty("username").toString().trim());
                 etEmail.setText(user.getEmail());
                 passwordInput.setVisibility(View.GONE);
                 rePasswordInput.setVisibility(View.GONE);
@@ -69,10 +78,11 @@ public class Update extends AppCompatActivity {
                 etRePassword.setVisibility(View.GONE);
                 btnResetPass.setVisibility(View.GONE);
                 //readImage();
-                PUOHelper.readImage(ivProfilePic);
+                PUOHelper.getImageOnline(new DownloadTask(ivProfilePic));
             } else {
                 etName.setEnabled(false);
                 etSurname.setEnabled(false);
+                etUsername.setEnabled(false);
                 etEmail.setEnabled(false);
                 etPassword.setEnabled(false);
                 ivProfilePic.setEnabled(false);
@@ -87,11 +97,9 @@ public class Update extends AppCompatActivity {
                 btn_update_submit.setVisibility(View.GONE);
                 etName.setText(user.getProperty("name").toString().trim());
                 etSurname.setText(user.getProperty("surname").toString().trim());
-                //readImageFromFile();
-                //readImage();
-                PUOHelper.readImage(ivProfilePic);
-                //ivProfilePic.setImageBitmap(bitmap);
-                //getImageOnline();
+                //PUOHelper.getImageOnline(new DownloadTask(ivProfilePic));
+                String imageUri = "https://api.backendless.com/D200A885-7EED-CB51-FFAC-228F87E55D00/v1/files/UserProfilePics/" + user.getEmail() + "_.png";
+                Picasso.with(Update.this).load(imageUri).into(ivProfilePic);
                 etEmail.setText(user.getEmail());
                 etPassword.setText(user.getPassword());
                 etRePassword.setText(user.getPassword());
@@ -141,11 +149,45 @@ public class Update extends AppCompatActivity {
         }
     }
 
+    public void writeImageToFile(Bitmap bitmap) throws IOException {
+        BackendlessUser user = Backendless.UserService.CurrentUser();
+        String path = Environment.getExternalStorageDirectory().toString();
+        OutputStream fOut = null;
+        String filename = user.getEmail();
+        File file = new File(path, filename + ".png"); // the File to save , append increasing numeric counter to prevent files from getting overwritten.
+        fOut = new FileOutputStream(file);
+
+        //Bitmap pictureBitmap = getImageBitmap(myurl); // obtaining the Bitmap
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, fOut); // saving the Bitmap to a file compressed as a PNG with 100% compression rate
+        fOut.close(); //close the stream
+        MediaStore.Images.Media.insertImage(getContentResolver(), file.getAbsolutePath(), file.getName(), file.getName());
+    }
+
+    public void readImage() {
+        BackendlessUser user = Backendless.UserService.CurrentUser();
+        String filename = user.getEmail() + ".png";
+        String filepath = Environment.getExternalStorageDirectory().toString() + "/" + filename;
+        File imagefile = new File(filepath);
+        if (imagefile.exists()) {
+            FileInputStream fis = null;
+            try {
+                fis = new FileInputStream(imagefile);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            Bitmap bitmap = BitmapFactory.decodeStream(fis);
+            ivProfilePic.setImageBitmap(bitmap);
+        } else {
+            ivProfilePic.setImageResource(R.drawable.logo_puo);
+        }
+    }
+
     public void initViews() {
         spRoles = (Spinner) findViewById(R.id.spRoles);
         spLocation = (Spinner) findViewById(R.id.spLocation);
         etName = (EditText) findViewById(R.id.etName);
         etSurname = (EditText) findViewById(R.id.etSurname);
+        etUsername = (EditText) findViewById(R.id.etUsername);
         etEmail = (EditText) findViewById(R.id.etEmail);
         etCellPhone = (EditText) findViewById(R.id.etCellPhone);
         etPassword = (EditText) findViewById(R.id.etPassword);
@@ -154,6 +196,7 @@ public class Update extends AppCompatActivity {
         ivProfilePic = (ImageView) findViewById(R.id.ivProfilePic);
         nameInput = (TextInputLayout) findViewById(R.id.name_input);
         surnameInput = (TextInputLayout) findViewById(R.id.surname_input);
+        usernameInput = (TextInputLayout) findViewById(R.id.username_input);
         emailInput = (TextInputLayout) findViewById(R.id.email_input);
         passwordInput = (TextInputLayout) findViewById(R.id.password_input);
         rePasswordInput = (TextInputLayout) findViewById(R.id.repassword_input);
@@ -287,6 +330,28 @@ public class Update extends AppCompatActivity {
                 }
             }
         });
+        etUsername.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                validateEditText(s, etUsername);
+            }
+        });
+        etUsername.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    validateEditText(((EditText) v).getText(), etUsername);
+                }
+            }
+        });
 
         etCellPhone.addTextChangedListener(new TextWatcher() {
             @Override
@@ -326,6 +391,8 @@ public class Update extends AppCompatActivity {
                 surnameInput.setError(null);
             else if (v.getId() == R.id.etCellPhone)
                 cellInput.setError(null);
+            else if (v.getId() == R.id.etUsername)
+                usernameInput.setError(null);
         } else {
             if (v.getId() == R.id.etEmail)
                 emailInput.setError(getString(R.string.txt_input_layout));
@@ -339,6 +406,8 @@ public class Update extends AppCompatActivity {
                 surnameInput.setError(getString(R.string.txt_input_layout));
             else if (v.getId() == R.id.etCellPhone)
                 cellInput.setError(getString(R.string.txt_input_layout));
+            else if (v.getId() == R.id.etUsername)
+                usernameInput.setError(getString(R.string.txt_input_layout));
         }
     }
 
@@ -365,6 +434,7 @@ public class Update extends AppCompatActivity {
                 user.setProperty("objectId", getIntent().getStringExtra("objectId"));
                 user.setProperty("name", etName.getText().toString().trim());
                 user.setProperty("surname", etSurname.getText().toString().trim());
+                user.setProperty("username", etUsername.getText().toString().trim());
                 user.setProperty("cell", etCellPhone.getText().toString().trim());
                 user.setProperty("role", spRoles.getSelectedItem().toString().trim());
                 user.setProperty("location", spLocation.getSelectedItem().toString().trim());
@@ -372,11 +442,15 @@ public class Update extends AppCompatActivity {
                 final UserProfilePictures userProfilePictures = new UserProfilePictures();
                 userProfilePictures.setUserMail(user.getEmail());
                 userProfilePictures.setImageLocation("UserProfilePics/" + filename);
-                Backendless.Files.Android.upload(bitmap, Bitmap.CompressFormat.PNG, 100,
-                        filename, "UserProfilePics", true,
+                Backendless.Files.Android.upload(bitmap,
+                        Bitmap.CompressFormat.PNG,
+                        100,
+                        filename,
+                        "UserProfilePics",
+                        true,
                         new AsyncCallback<BackendlessFile>() {
                             @Override
-                            public void handleResponse(final BackendlessFile backendlessFile) {
+                            public void handleResponse(BackendlessFile backendlessFile) {
                                 Backendless.Persistence.save(userProfilePictures, new AsyncCallback<UserProfilePictures>() {
                                     @Override
                                     public void handleResponse(UserProfilePictures userProfilePictures) {
