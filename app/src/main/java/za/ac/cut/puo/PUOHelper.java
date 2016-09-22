@@ -12,6 +12,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.ImageView;
 
+import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
 
@@ -34,7 +36,7 @@ public class PUOHelper {
 
     public static final String BASE_EXTERNAL_APP_DIRECTORY =
             Environment.getExternalStorageDirectory().toString() + "/PUO/";
-    public static final String PROFILE_PIC_SUB_DIRECTORY = "Profile picture/";
+    public static final String PROFILE_PIC_SUB_DIRECTORY = "Profile_picture/";
 
     //Word List BoilerPlate
     public static List<Word> populateWordList() {
@@ -84,14 +86,16 @@ public class PUOHelper {
         String path = BASE_EXTERNAL_APP_DIRECTORY + PROFILE_PIC_SUB_DIRECTORY;
         OutputStream fOut;
         String filename = user.getEmail() + ".png";
-        File file = new File(path, filename); // the File to save , append increasing numeric counter to prevent files from getting overwritten.
-        System.out.println("file = " + file);
+        File profilePicDirectory = new File(path);
+        File file = new File(profilePicDirectory, filename); // the File to save , append increasing numeric counter to prevent files from getting overwritten.
+        System.out.println("file = " + file); // for debug purposes
         try {
-            fOut = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fOut); // saving the Bitmap to a file compressed as a PNG with 100% compression rate
-            fOut.flush(); // Not really required
-            fOut.close(); // do not forget to close the stream
-            MediaStore.Images.Media.insertImage(context.getContentResolver(), file.getAbsolutePath(), file.getName(), file.getName());
+            if (profilePicDirectory.mkdirs()) {
+                fOut = new FileOutputStream(file);
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, fOut); // saving the Bitmap to a file compressed as a PNG with 100% compression rate
+                fOut.close(); // do not forget to close the stream
+                MediaStore.Images.Media.insertImage(context.getContentResolver(), file.getAbsolutePath(), file.getName(), file.getName());
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -149,6 +153,21 @@ public class PUOHelper {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Generate image for word image using first two letters of word.
+     */
+    public static TextDrawable getTextDrawable(Word word) {
+        ColorGenerator generator = ColorGenerator.MATERIAL; // set random color generator
+        String text = word.getWord().substring(0, 2); // get first two letters of word
+        return TextDrawable.builder()
+                .beginConfig()
+                .bold()
+                .fontSize(90)
+                .width(180)
+                .height(180)
+                .endConfig().buildRect(text, generator.getRandomColor());
     }
 
 }

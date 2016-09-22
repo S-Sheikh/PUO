@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import com.amulyakhare.textdrawable.TextDrawable;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -93,14 +93,6 @@ public class WordListItemAdapter extends RecyclerView.Adapter<WordListItemAdapte
     public void onBindViewHolder(WordListItemAdapter.ViewHolder holder, int position) {
         Word word = mWords.get(position);
 
-        //Generate image for word image using first two letters of word.
-        String text = word.getWord().substring(0, 2);
-        TextDrawable textImage = TextDrawable.builder()
-                .beginConfig()
-                .width(60)
-                .height(60)
-                .endConfig().buildRound(text, getContext().getResources().getColor(R.color.colorPrimary));
-
         //change text color to green in word is supported.
         if (word.isSupported()) {
             holder.wordStatus.setTextColor(getContext().getResources()
@@ -113,8 +105,13 @@ public class WordListItemAdapter extends RecyclerView.Adapter<WordListItemAdapte
         holder.wordAuthor.setText(word.getAuthor());
         holder.wordLexicon.setText(word.getLexicon());
         holder.wordRating.setRating(word.getRating());
-        holder.wordDescImg.setImageDrawable(textImage);
-
+        String imageUri = "https://api.backendless.com/D200A885-7EED-CB51-FFAC-228F87E55D00/v1/files/WordPictures/" + word.getImageLocation();
+        Picasso.with(getContext()).load(imageUri)
+                .resize(300, 300)
+                .centerInside()
+                .placeholder(PUOHelper.getTextDrawable(word))
+                .error(PUOHelper.getTextDrawable(word))
+                .into(holder.wordDescImg);
     }
 
     @Override

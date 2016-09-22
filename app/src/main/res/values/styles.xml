@@ -10,6 +10,7 @@
         <item name="colorControlActivated">@color/colorAccent</item>
         <item name="colorControlHighlight">@color/colorAccent</item>
     </style>
+
     <style name="Custom" parent="android:Theme.DeviceDefault.Dialog">
         <item name="DialogTitleAppearance">@android:style/TextAppearance.Medium</item>
         <item name="DialogTitleText">Please Wait</item>
@@ -20,6 +21,7 @@
     <style name="CircularProgress" parent="Theme.AppCompat.Light">
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+
     <style name="toolBarText" parent="AppTheme">
         <!-- android:textColorPrimary is the  color of the title text
       in the Toolbar, in the Theme.AppCompat theme:  -->

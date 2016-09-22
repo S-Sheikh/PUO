@@ -1,9 +1,10 @@
 package za.ac.cut.puo;
 
-import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
@@ -60,6 +61,18 @@ public class WordListFragment extends Fragment {
     }
 
     /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     */
+    public interface OnWordListItemClickListener {
+        void onMenuOptionSelected(int id);
+
+        void onWordSelected(int position);
+    }
+
+    /**
      * Allows the parent activity or fragment to define the listener.
      */
     public void setWordListItemListener(OnWordListItemClickListener mListener) {
@@ -81,9 +94,9 @@ public class WordListFragment extends Fragment {
         swipeRefreshWordList = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_word_list);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.rv_word_list);
         mWords = new ArrayList<>();
-        mAdapter = new WordListItemAdapter(mWords, ContextGetter.getAppContext());
+        mAdapter = new WordListItemAdapter(mWords, getContext());
         mRecyclerView.setAdapter(new SlideInBottomAnimationAdapter(mAdapter));
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(ContextGetter.getAppContext()));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setItemAnimator(new SlideInLeftAnimator());
         mRecyclerView.getItemAnimator().setAddDuration(300);
         loadData(mWords);
@@ -94,13 +107,19 @@ public class WordListFragment extends Fragment {
             public void onItemClicked(View itemView) {
                 int position = mRecyclerView.getChildAdapterPosition(itemView);
                 mListener.onWordSelected(position);
-                setSnackBar(rootView, mWords.get(position).getWord() + ": selected.",
-                        Snackbar.LENGTH_SHORT).show();
+
+//                setSnackBar(rootView, mWords.get(position).getWord() + ": selected.",
+//                        Snackbar.LENGTH_SHORT).show();
+
+                WordListItemAdapter.ViewHolder vh = (WordListItemAdapter.ViewHolder)
+                        mRecyclerView.getChildViewHolder(itemView);
+
+                showWordDetailDialogFragment(mWords.get(position), vh.wordDescImg);
             }
 
             @Override
             public void onOverflowClicked(final ImageView v) {
-                final PopupMenu wordOptions = new PopupMenu(ContextGetter.getAppContext(), v);
+                final PopupMenu wordOptions = new PopupMenu(getContext(), v);
                 MenuInflater inflater = wordOptions.getMenuInflater();
                 inflater.inflate(R.menu.popup_menu, wordOptions.getMenu());
 
@@ -178,7 +197,7 @@ public class WordListFragment extends Fragment {
             public void handleResponse(BackendlessCollection<Word> puoWordList) {
                 List<Word> newWords = puoWordList.getData();
                 newWords.removeAll(wordList);
-                for (Word word:newWords) {
+                for (Word word : newWords) {
                     System.out.println("newWords = " + word.getWord());
                 }
                 mWords.addAll(newWords);
@@ -201,7 +220,7 @@ public class WordListFragment extends Fragment {
      * Updates a word status to supported.
      */
     public void supportWord(final int position) {
-        if (PUOHelper.connectionAvailable(ContextGetter.getAppContext())) {
+        if (PUOHelper.connectionAvailable(getContext())) {
             if (!mWords.get(position).isSupported()) {
                 mWords.get(position).setSupported(true);
                 mAdapter.notifyItemChanged(position);
@@ -247,7 +266,7 @@ public class WordListFragment extends Fragment {
      * Updates a word status to unsupported.
      */
     public void unSupportWord(final int position) {
-        if (PUOHelper.connectionAvailable(ContextGetter.getAppContext())) {
+        if (PUOHelper.connectionAvailable(getContext())) {
             if (mWords.get(position).isSupported()) {
                 mWords.get(position).setSupported(false);
                 mAdapter.notifyItemChanged(position);
@@ -295,8 +314,17 @@ public class WordListFragment extends Fragment {
         return sb;
     }
 
+    private void showWordDetailDialogFragment(Word word, ImageView v) {
+        FragmentManager fm = getFragmentManager();
+        WordDetailFragment wordDetailFragmentDialog = WordDetailFragment.newInstance(word, v);
+        // SETS the target fragment for use later when sending results
+        wordDetailFragmentDialog.setTargetFragment(WordListFragment.this, 400);
+        //fm.beginTransaction().add(wordDetailFragmentDialog,"fragment_wor_detail").commit();
+        wordDetailFragmentDialog.show(fm, "fragment_word_detail");
+    }
+
     @Override
-    public void onAttach(Activity context) {
+    public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof OnWordListItemClickListener) {
             mListener = (OnWordListItemClickListener) context;
@@ -306,23 +334,9 @@ public class WordListFragment extends Fragment {
         }
     }
 
-    
-
     @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     */
-    public interface OnWordListItemClickListener {
-        void onMenuOptionSelected(int id);
-
-        void onWordSelected(int position);
     }
 }

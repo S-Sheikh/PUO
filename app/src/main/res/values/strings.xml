@@ -106,6 +106,7 @@
     <string name="word_centers">Word Centers</string>
     <string name="game_no_score">0</string>
     <string name="popup_menu_unsupport">Unsupport</string>
+
     <array name="role_items">
         <item>Collector</item>
         <item>Specialist</item>
@@ -117,10 +118,6 @@
         <item>Province</item>
         <item>Code</item>
     </array>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
 
     <!-- messaging strings -->
     <string name="loading_text">Loading...</string>
@@ -137,6 +134,7 @@
     <string name="chat_invitation_default">Do you want to chat?</string>
     <string name="list_row_arrow_description">list_row_arrow</string>
     <string name="waiting_for_template">Waiting for %s to accept invitation...</string>
+    <string name="title_activity_word_chest">Word Chest</string>
     <string name="game_bonus_score">+ 1.0</string>
     <string name="game_points">Points</string>
     <string name="game_word_count">Words: 0/20</string>
