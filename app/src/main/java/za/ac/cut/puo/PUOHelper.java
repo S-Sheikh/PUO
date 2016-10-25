@@ -99,8 +99,6 @@ public class PUOHelper {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
     }
 
     //Reads an image from device storage and sets it as background
