@@ -101,7 +101,7 @@
     <string name="popup_menu_add_to_word_chest">Add to Word Chest</string>
     <string name="popup_menu_share">Share</string>
     <string name="add_image">Add Image</string>
-    <string name="add_sound_clip">Add Sound Clip</string>
+    <string name="add_sound_clip">Record</string>
     <string name="edit">Edit</string>
     <string name="word_centers">Word Centers</string>
     <string name="game_no_score">0</string>
@@ -147,6 +147,9 @@
     <string name="game_what_language_title">What Language?</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
+    <string name="tv_PlaySound">Play Clip</string>
     <!-- messaging strings -->
+
+    <string name="update_list">Update List</string>
 
 </resources>

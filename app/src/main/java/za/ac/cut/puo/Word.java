@@ -22,7 +22,7 @@ public class Word {
     private boolean blocked;
     private int count;
     private float rating;
-    private AudioStream pronunciation;
+    private String pronunciation;
     private Date created;
     private Date updated;
 
@@ -169,11 +169,11 @@ public class Word {
         this.updated = updated;
     }
 
-    public AudioStream getPronunciation() {
+    public String getPronunciation() {
         return pronunciation;
     }
 
-    public void setPronunciation(AudioStream pronunciation) {
+    public void setPronunciation(String pronunciation) {
         this.pronunciation = pronunciation;
     }
 
