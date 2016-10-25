@@ -88,7 +88,6 @@ public class PUOHelper {
         String filename = user.getEmail() + ".png";
         File profilePicDirectory = new File(path);
         File file = new File(profilePicDirectory, filename); // the File to save , append increasing numeric counter to prevent files from getting overwritten.
-        System.out.println("file = " + file); // for debug purposes
         try {
             if (profilePicDirectory.mkdirs()) {
                 fOut = new FileOutputStream(file);
@@ -108,7 +107,6 @@ public class PUOHelper {
         BackendlessUser user = Backendless.UserService.CurrentUser();
         String filename = user.getEmail() + ".png";
         String filepath = BASE_EXTERNAL_APP_DIRECTORY + PROFILE_PIC_SUB_DIRECTORY + filename;
-        System.out.println("filepath = " + filepath);
         File imagefile = new File(filepath);
         FileInputStream fis = null;
         if (imagefile.exists()) {
@@ -124,7 +122,6 @@ public class PUOHelper {
             getImageOnline(new DownloadTask(view));
         }
     }
-
 
     /**
      * Check if there is an internet connection available.

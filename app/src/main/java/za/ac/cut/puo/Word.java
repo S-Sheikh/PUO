@@ -2,10 +2,11 @@ package za.ac.cut.puo;
 
 import com.backendless.media.audio.AudioStream;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.Date;
 
 public class Word {
-    private boolean repeatFlag;
     private String email;
     private String word;
     private String language;
@@ -16,6 +17,7 @@ public class Word {
     private String sentence;
     private String objectId;
     private String imageLocation;
+    private boolean repeatFlag;
     private boolean supported;
     private boolean blocked;
     private int count;
@@ -47,6 +49,28 @@ public class Word {
         this.definition = definition;
         this.partOfSpeech = partOfSpeech;
         repeatFlag = false;
+    }
+
+    //WordChest Word
+    public Word(String word, String language, String partOfSpeech, String definition,
+                String sentence, int supported, float rating, String imageLocation,
+                String name, String surname, String email, String created) {
+        this.word = word;
+        this.language = language;
+        this.partOfSpeech = partOfSpeech;
+        this.definition = definition;
+        this.sentence = sentence;
+        this.supported = (supported == 1);
+        this.rating = rating;
+        this.imageLocation = imageLocation;
+        this.name = name;
+        this.surname = surname;
+        this.email = email;
+        try {
+            this.created = DateFormat.getDateInstance().parse(created);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     public boolean isRepeatFlag() {
@@ -144,7 +168,6 @@ public class Word {
     public void setUpdated(Date updated) {
         this.updated = updated;
     }
-
 
     public AudioStream getPronunciation() {
         return pronunciation;

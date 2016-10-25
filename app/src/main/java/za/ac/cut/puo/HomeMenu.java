@@ -149,7 +149,6 @@ public class HomeMenu extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -296,12 +295,10 @@ public class HomeMenu extends AppCompatActivity {
                     @Override
                     public void handleResponse(BackendlessUser backendlessUser) {
                     }
-
                     @Override
                     public void handleFault(BackendlessFault backendlessFault) {
                     }
                 });
-
             }
 
             @Override
@@ -309,7 +306,6 @@ public class HomeMenu extends AppCompatActivity {
 
             }
         });
-        sum = 0;
     }
 
     public void ivAddImageClicked(View view) {
