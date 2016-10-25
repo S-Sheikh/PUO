@@ -20,6 +20,7 @@ import java.util.Random;
 import xyz.hanks.library.SmallBang;
 
 public class GameMatchDefinition extends AppCompatActivity {
+    //Timer Stuff
     final int MSG_START_TIMER = 0;
     final int MSG_STOP_TIMER = 1;
     final int MSG_UPDATE_TIMER = 2;

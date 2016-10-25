@@ -20,12 +20,17 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.CAMERA" />
 
+
     <!-- Messaging permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="za.ac.cut.puo.permission.C2D_MESSAGE" />
+
+    <!--Widget Permission for ListView implementation-->
+
+
 
     <permission
         android:name="za.ac.cut.puo.permission.C2D_MESSAGE"
@@ -145,15 +150,26 @@
             android:name=".SelectUserActivity"
             android:screenOrientation="portrait" />
 
-        <receiver android:name=".AppWidget">
+        <receiver
+            android:exported="false"
+            android:name=".WidgetProvider"
+            android:icon="@drawable/logo_puo"
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.color.appwidget.list.UPDATE_LIST" />
             </intent-filter>
 
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/app_widget_info" />
+                android:resource="@xml/widget_provider" />
         </receiver>
+
+        <service
+            android:name=".WidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+
     </application>
 
 </manifest>
