@@ -1,20 +1,17 @@
 package za.ac.cut.puo;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
 import android.provider.MediaStore;
+import android.support.v4.content.CursorLoader;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -25,9 +22,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -46,7 +41,6 @@ import com.backendless.persistence.QueryOptions;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
@@ -58,16 +52,19 @@ import dmax.dialog.SpotsDialog;
 
 public class HomeMenu extends AppCompatActivity {
     public static final int REQUEST_CODE_CHOOSE_PHOTO = 1;
+    public static final int REQUEST_CODE_CAPTURE = 2;
+    public static final int REQUEST_CODE__SELECT_AUDIO = 3;
+    private static final String LOG_TAG = "AudioRecordTest";
+    private static String mFileName = null;
     final int PAGE_SIZE = 5;
     Toolbar home_toolBar;
     BackendlessUser user;
-    TextView tvUsernameHome, tvUserType, tvWordCount, tvWordInfo,tvAddSound;
+    TextView tvUsernameHome, tvUserType, tvWordCount, tvWordInfo, tvAddSound, tvPlayClip;
     ListView lvWords;
     List<Word> words;
     EditText etAddWord, etDefinition, etSentence;
     Spinner spLanguage, spPartOfSpeech;
-    ImageView ivAddImage, ivAddSound, wordImg;
-    Button btnPlayClip, btnRecord;
+    ImageView ivAddImage, ivTakePick, ivBrowse, ivPlayClip, ivRecord;
     CircleImageView civ_profile_Pic;
     SpotsDialog progressDialog;
     ProgressBar circularBar;
@@ -75,15 +72,21 @@ public class HomeMenu extends AppCompatActivity {
     int sum = 0, pictureCount = 0;
     QueryOptions queryOptions = new QueryOptions();
     Bitmap bitmap;
-    private SwipeRefreshLayout swipe_refresh_word_list_home;
-    private static final String LOG_TAG = "AudioRecordTest";
-    private static String mFileName = null;
-    private MediaRecorder mRecorder = null;
-    private MediaPlayer mPlayer = null;
     boolean mStartRecording = true;
     boolean mStartPlaying = true;
-    byte[] soundBytes ;
+    byte[] soundBytes;
     String currentDateTime = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+    String audioPath = null;
+    boolean ivRecordclicked = false;
+    boolean ivSelectAudioclicked = false;
+    private SwipeRefreshLayout swipe_refresh_word_list_home;
+    private MediaRecorder mRecorder = null;
+    private MediaPlayer mPlayer = null;
+
+    public HomeMenu() {
+        mFileName = Environment.getExternalStorageDirectory().toString();
+        mFileName += "/_AUD_" + currentDateTime + "_.3gp";
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,8 +97,6 @@ public class HomeMenu extends AppCompatActivity {
         setSupportActionBar(home_toolBar);
 
         user = Backendless.UserService.CurrentUser();
-        btnPlayClip = (Button) findViewById(R.id.btnPlayClip);
-        btnRecord = (Button) findViewById(R.id.btnRecord);
         civ_profile_Pic = (CircleImageView) findViewById(R.id.civ_profile_pic);
         circularBar = (ProgressBar) findViewById(R.id.progressBarCircular);
         tvUsernameHome = (TextView) findViewById(R.id.tvUsernameHome);
@@ -103,7 +104,6 @@ public class HomeMenu extends AppCompatActivity {
         tvWordCount = (TextView) findViewById(R.id.tvWordCount);
         tvWordInfo = (TextView) findViewById(R.id.tvWordInfo);
         lvWords = (ListView) findViewById(R.id.lv_words);
-        tvAddSound = (TextView)findViewById(R.id.tvAddSound);
         loadData();
         countWords();
         refresh();
@@ -183,49 +183,42 @@ public class HomeMenu extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-       /* switch(requestCode) {
-            case 0:
-                if(resultCode == RESULT_OK){
-                    Uri selectedImage = data.getData();
-                    imageview.setImageURI(selectedImage);
-                }
 
-                break;
-            case 1:
-                if(resultCode == RESULT_OK){
-                    Uri selectedImage = data.getData();
-                    imageview.setImageURI(selectedImage);
-                }
-                break;
-        }
-    }*/
-        if (requestCode == REQUEST_CODE_CHOOSE_PHOTO && resultCode == Activity.RESULT_OK) {
-            if (data == null) {
-                return;
-            }
-            try {
-                InputStream inputStream = getContentResolver().openInputStream(data.getData());
-                bitmap = BitmapFactory.decodeStream(inputStream);
-                ivAddImage.setImageBitmap(bitmap);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
-        /*if (requestCode == REQUEST_CODE_CHOOSE_PHOTO) {
+        if (requestCode == REQUEST_CODE_CHOOSE_PHOTO) {
             if (resultCode == Activity.RESULT_OK) {
                 Uri uri = data.getData();
                 try {
                     bitmap = MediaStore.Images.Media.getBitmap(HomeMenu.this.getContentResolver(), uri);
                     ivAddImage.setImageBitmap(bitmap);
-                } catch (IOException e) {
-                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    //Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
                 }
             }
-        }*/
+        } else if (requestCode == REQUEST_CODE_CAPTURE) {
+            if (resultCode == Activity.RESULT_OK) {
+                try {
+                    bitmap = (Bitmap) data.getExtras().get("data");
+                    ivTakePick.setImageBitmap(bitmap);
+                } catch (Exception e) {
+                    //Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+            }
+        } else if (requestCode == REQUEST_CODE__SELECT_AUDIO) {
+            super.onActivityResult(requestCode, resultCode, data);
+            if (resultCode == Activity.RESULT_OK) {
+                if ((data != null) && (data.getData() != null)) {
+                    Uri audioFileUri = data.getData();
+                    audioPath = getRealPathFromURI(audioFileUri);
+                    startPlaying(audioPath);
+                    Toast.makeText(this, audioPath, Toast.LENGTH_LONG).show();
+                }
+            }
+        }
     }
 
     public void updateProfileData() {
@@ -374,121 +367,128 @@ public class HomeMenu extends AppCompatActivity {
         sum = 0;
     }
 
-
     public void RecordAudio(View view) {
-                onRecord(mStartRecording);
-                if (mStartRecording) {
-                    btnRecord.setText("Stop");
-                } else {
-                    btnRecord.setText("Record");
-                }
-                mStartRecording = !mStartRecording;
+        ivRecordclicked = true;
+        onRecord(mStartRecording);
+        if (mStartRecording) {
+            //Stop timer
+            ivRecord.setImageResource(0);
+            ivRecord.setImageResource(R.drawable.ic_mic_off);
+            tvAddSound.setText("Stop");
+        } else {
+            //Show and start timer
+            ivRecord.setImageResource(0);
+            ivRecord.setImageResource(R.drawable.ic_mic);
+            tvAddSound.setText("Record");
+        }
+        mStartRecording = !mStartRecording;
+        if (ivRecordclicked) {
+            ivBrowse.setEnabled(false);
+        }
     }
 
-    public void PlayAudio(View view){
-                onPlay(mStartPlaying);
-                if (mStartPlaying) {
-                    btnPlayClip.setText("Stop");
-                } else {
-                    btnPlayClip.setText("Play");
-                }
-                mStartPlaying = !mStartPlaying;
-    }
-
-            public void AddImage() {
-                Intent choosePhotoIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                choosePhotoIntent.setType("image/*");
-                if (choosePhotoIntent.resolveActivity(HomeMenu.this.getPackageManager()) != null) {
-                    choosePhotoIntent.putExtra("imageUri", choosePhotoIntent.getData());
-                    startActivityForResult(choosePhotoIntent, REQUEST_CODE_CHOOSE_PHOTO);
-                }
+    public void PlayAudio(View view) {
+        try {
+            onPlay(mStartPlaying);
+            if (mStartPlaying) {
+                //stop timer
+                ivPlayClip.setImageResource(0);
+                ivPlayClip.setImageResource(R.drawable.ic_stop);
+                tvPlayClip.setText("Stop");
+            } else {
+                ivPlayClip.setImageResource(0);
+                ivPlayClip.setImageResource(R.drawable.ic_play);
+                tvPlayClip.setText("Play Clip");
+                //Show and start timer
             }
+            mStartPlaying = !mStartPlaying;
+        } catch (Exception e) {
+            Toast.makeText(this, "Please Record or Select Audio :)", Toast.LENGTH_LONG).show();
+        }
+    }
 
-            public void AddWord() {
-                LayoutInflater inflater = getLayoutInflater();
-                final View view = inflater.inflate(R.layout.home_add_word, null);
-                etAddWord = (EditText) view.findViewById(R.id.etAddWord);
-                etDefinition = (EditText) view.findViewById(R.id.etDefinition);
-                etSentence = (EditText) view.findViewById(R.id.etSentence);
-                spLanguage = (Spinner) view.findViewById(R.id.spLanguage);
-                spPartOfSpeech = (Spinner) view.findViewById(R.id.spPartOfSpeech);
-                ivAddImage = (ImageView) view.findViewById(R.id.ivAddImage);
-                btnRecord = (Button) view.findViewById(R.id.btnRecord);
-                btnPlayClip = (Button) view.findViewById(R.id.btnPlayClip);
-                //ivAddSound = (ImageView) view.findViewById(R.id.ivAddSound);
-                AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-                dialog.setView(view);
-                dialog.setPositiveButton("Add", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+    public void AddImage(View view) {
+        Intent choosePhotoIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        choosePhotoIntent.setType("image/*");
+        if (choosePhotoIntent.resolveActivity(HomeMenu.this.getPackageManager()) != null) {
+            choosePhotoIntent.putExtra("imageUri", choosePhotoIntent.getData());
+            startActivityForResult(choosePhotoIntent, REQUEST_CODE_CHOOSE_PHOTO);
+        }
+    }
 
-                        if (PUOHelper.connectionAvailable(getApplicationContext())) {
-                            progressDialog = new SpotsDialog(HomeMenu.this, R.style.Custom);
-                            progressDialog.show();
-                            if (!(etAddWord.getText().toString().trim().isEmpty() || etSentence.getText().toString().trim().isEmpty() ||
-                                    etDefinition.getText().toString().trim().isEmpty())) {
-                                Backendless.Persistence.of(Word.class).find(new AsyncCallback<BackendlessCollection<Word>>() {
-                                    boolean wordExists = false;
+    public void CaptureImage(View view) {
+        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(cameraIntent, REQUEST_CODE_CAPTURE);
+    }
 
-                                    @Override
-                                    public void handleResponse(BackendlessCollection<Word> addWordBackendlessCollection) {
-                                        words = addWordBackendlessCollection.getData();
-                                        for (Word word : words) {
-                                            if (word.getWord().trim().equalsIgnoreCase(etAddWord.getText().toString().trim())) {
-                                                wordExists = true;//word exists in database
-                                                Toast.makeText(HomeMenu.this, "Word already exists!Please enter a new word :)", Toast.LENGTH_SHORT).show();
-                                                progressDialog.dismiss();
-                                            }
-                                        }
-                                        if (!wordExists) {
-                                            final Word newWord = new Word();
-                                            newWord.setName(user.getProperty("name").toString().trim());
-                                            newWord.setSurname(user.getProperty("surname").toString().trim());
-                                            newWord.setWord(etAddWord.getText().toString().trim());
-                                            newWord.setDefinition(etDefinition.getText().toString().trim());
-                                            newWord.setSentence(etSentence.getText().toString().trim());
-                                            newWord.setLanguage(spLanguage.getSelectedItem().toString().trim());
-                                            newWord.setPartOfSpeech(spPartOfSpeech.getSelectedItem().toString().trim());
-                                            newWord.setEmail(user.getEmail());
-                                            newWord.setCount(newWord.getCount() + 1);
-                                            String filename = etAddWord.getText().toString().trim() + "_.png";
-                                            final String voiceClipFIleName = "_AUD" + currentDateTime + "_.3gp";
-                                            newWord.setPronunciation(voiceClipFIleName);
-                                            newWord.setImageLocation(filename);
-                                            newWord.setEmail(user.getEmail());
-                                            if (bitmap != null) {
-                                                Backendless.Files.Android.upload(bitmap, Bitmap.CompressFormat.PNG,
-                                                        100, filename, "WordPictures", true,
-                                                        new AsyncCallback<BackendlessFile>() {
+    public void AddWord() {
+        LayoutInflater inflater = getLayoutInflater();
+        final View view = inflater.inflate(R.layout.home_add_word, null);
+        etAddWord = (EditText) view.findViewById(R.id.etAddWord);
+        etDefinition = (EditText) view.findViewById(R.id.etDefinition);
+        etSentence = (EditText) view.findViewById(R.id.etSentence);
+        spLanguage = (Spinner) view.findViewById(R.id.spLanguage);
+        spPartOfSpeech = (Spinner) view.findViewById(R.id.spPartOfSpeech);
+        ivAddImage = (ImageView) view.findViewById(R.id.ivAddImage);
+        ivTakePick = (ImageView) view.findViewById(R.id.ivTakePic);
+        ivPlayClip = (ImageView) view.findViewById(R.id.ivPlayClip);
+        tvAddSound = (TextView) view.findViewById(R.id.tvAddSound);
+        tvPlayClip = (TextView) view.findViewById(R.id.tvPlayClip);
+        ivBrowse = (ImageView) view.findViewById(R.id.ivBrowse);
+        ivPlayClip = (ImageView) view.findViewById(R.id.ivPlayClip);
+        ivRecord = (ImageView) view.findViewById(R.id.ivRecord);
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setView(view);
+        dialog.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                if (PUOHelper.connectionAvailable(getApplicationContext())) {
+                    progressDialog = new SpotsDialog(HomeMenu.this, R.style.Custom);
+                    progressDialog.show();
+                    if (!(etAddWord.getText().toString().trim().isEmpty() || etSentence.getText().toString().trim().isEmpty() ||
+                            etDefinition.getText().toString().trim().isEmpty())) {
+                        Backendless.Persistence.of(Word.class).find(new AsyncCallback<BackendlessCollection<Word>>() {
+                            boolean wordExists = false;
+
+                            @Override
+                            public void handleResponse(BackendlessCollection<Word> addWordBackendlessCollection) {
+                                words = addWordBackendlessCollection.getData();
+                                for (Word word : words) {
+                                    if (word.getWord().trim().equalsIgnoreCase(etAddWord.getText().toString().trim())) {
+                                        wordExists = true;//word exists in database
+                                        Toast.makeText(HomeMenu.this, "Word already exists!Please enter a new word :)", Toast.LENGTH_SHORT).show();
+                                        progressDialog.dismiss();
+                                    }
+                                }
+                                if (!wordExists) {
+                                    final Word newWord = new Word();
+                                    newWord.setName(user.getProperty("name").toString().trim());
+                                    newWord.setSurname(user.getProperty("surname").toString().trim());
+                                    newWord.setWord(etAddWord.getText().toString().trim());
+                                    newWord.setDefinition(etDefinition.getText().toString().trim());
+                                    newWord.setSentence(etSentence.getText().toString().trim());
+                                    newWord.setLanguage(spLanguage.getSelectedItem().toString().trim());
+                                    newWord.setPartOfSpeech(spPartOfSpeech.getSelectedItem().toString().trim());
+                                    newWord.setEmail(user.getEmail());
+                                    newWord.setCount(newWord.getCount() + 1);
+                                    String filename = etAddWord.getText().toString().trim() + "_.png";
+                                    final String voiceClipFIleName = "_AUD" + currentDateTime + "_.3gp";
+                                    final String selectedAudioFileName = audioPath;
+                                    newWord.setPronunciation(voiceClipFIleName);
+                                    newWord.setImageLocation(filename);
+                                    newWord.setEmail(user.getEmail());
+                                    if (bitmap != null) {
+                                        Backendless.Files.Android.upload(bitmap, Bitmap.CompressFormat.PNG,
+                                                100, filename, "WordPictures", true,
+                                                new AsyncCallback<BackendlessFile>() {
+                                                    @Override
+                                                    public void handleResponse(BackendlessFile backendlessFile) {
+                                                        //Upload recorded audio
+                                                        Backendless.Files.saveFile("Voice_Clips", voiceClipFIleName, soundClipBytes(), new AsyncCallback<String>() {
                                                             @Override
-                                                            public void handleResponse(BackendlessFile backendlessFile) {
-                                                                Backendless.Files.saveFile("Voice_Clips", voiceClipFIleName, soundClipBytes(), new AsyncCallback<String>() {
-                                                                    @Override
-                                                                    public void handleResponse(String s) {
-                                                                        //
-                                                                    }
-                                                                    @Override
-                                                                    public void handleFault(BackendlessFault backendlessFault) {
-                                                                        Toast.makeText(HomeMenu.this, backendlessFault.getMessage(), Toast.LENGTH_LONG).show();
-                                                                        progressDialog.dismiss();
-                                                                    }
-                                                                });
-                                                                Backendless.Persistence.save(newWord, new AsyncCallback<Word>() {
-                                                                    @Override
-                                                                    public void handleResponse(Word word) {
-                                                                        Toast.makeText(HomeMenu.this, word.getWord() + " saved successfully!", Toast.LENGTH_SHORT).show();
-                                                                        loadData();
-                                                                        countWords();
-                                                                        displayWordCount();
-                                                                        progressDialog.dismiss();
-                                                                    }
-
-                                                                    @Override
-                                                                    public void handleFault(BackendlessFault backendlessFault) {
-                                                                        Toast.makeText(HomeMenu.this, backendlessFault.getMessage(), Toast.LENGTH_LONG).show();
-                                                                        progressDialog.dismiss();
-                                                                    }
-                                                                });
+                                                            public void handleResponse(String s) {
+                                                                //
                                                             }
 
                                                             @Override
@@ -497,139 +497,191 @@ public class HomeMenu extends AppCompatActivity {
                                                                 progressDialog.dismiss();
                                                             }
                                                         });
+                                                        //Upload Selected Audio:
+                                                        Backendless.Files.saveFile("Selected Audio", selectedAudioFileName, AudioBytes(), new AsyncCallback<String>() {
+                                                            @Override
+                                                            public void handleResponse(String s) {
+                                                                //
+                                                            }
 
-                                            } else {
-                                                Backendless.Files.saveFile("Voice_Clips", mFileName, soundClipBytes(), new AsyncCallback<String>() {
-                                                    @Override
-                                                    public void handleResponse(String s) {
-                                                        //
+                                                            @Override
+                                                            public void handleFault(BackendlessFault backendlessFault) {
+                                                                Toast.makeText(HomeMenu.this, backendlessFault.getMessage(), Toast.LENGTH_LONG).show();
+                                                                progressDialog.dismiss();
+                                                            }
+                                                        });
+                                                        Backendless.Persistence.save(newWord, new AsyncCallback<Word>() {
+                                                            @Override
+                                                            public void handleResponse(Word word) {
+                                                                Toast.makeText(HomeMenu.this, word.getWord() + " saved successfully!", Toast.LENGTH_SHORT).show();
+                                                                loadData();
+                                                                countWords();
+                                                                displayWordCount();
+                                                                progressDialog.dismiss();
+                                                            }
+
+                                                            @Override
+                                                            public void handleFault(BackendlessFault backendlessFault) {
+                                                                Toast.makeText(HomeMenu.this, backendlessFault.getMessage(), Toast.LENGTH_LONG).show();
+                                                                progressDialog.dismiss();
+                                                            }
+                                                        });
                                                     }
+
                                                     @Override
                                                     public void handleFault(BackendlessFault backendlessFault) {
                                                         Toast.makeText(HomeMenu.this, backendlessFault.getMessage(), Toast.LENGTH_LONG).show();
                                                         progressDialog.dismiss();
                                                     }
                                                 });
-                                                Backendless.Persistence.save(newWord, new AsyncCallback<Word>() {
-                                                    @Override
-                                                    public void handleResponse(Word word) {
-                                                        Toast.makeText(HomeMenu.this, word.getWord() + " saved successfully!", Toast.LENGTH_SHORT).show();
-                                                        loadData();
-                                                        countWords();
-                                                        displayWordCount();
-                                                        progressDialog.dismiss();
-                                                    }
 
-                                                    @Override
-                                                    public void handleFault(BackendlessFault backendlessFault) {
-                                                        Toast.makeText(HomeMenu.this, backendlessFault.getMessage(), Toast.LENGTH_LONG).show();
-                                                        progressDialog.dismiss();
-                                                    }
-                                                });
+                                    } else {
+                                        //Upload Recorded Audio;
+                                        Backendless.Files.saveFile("Voice_Clips", mFileName, soundClipBytes(), new AsyncCallback<String>() {
+                                            @Override
+                                            public void handleResponse(String s) {
+                                                //
                                             }
-                                        }
-                                    }
 
-                                    @Override
-                                    public void handleFault(BackendlessFault backendlessFault) {
-                                        Toast.makeText(HomeMenu.this, backendlessFault.getMessage(), Toast.LENGTH_SHORT).show();
-                                        progressDialog.dismiss();
+                                            @Override
+                                            public void handleFault(BackendlessFault backendlessFault) {
+                                                Toast.makeText(HomeMenu.this, backendlessFault.getMessage(), Toast.LENGTH_LONG).show();
+                                                progressDialog.dismiss();
+                                            }
+                                        });
+                                        //Upload Selected Audio:
+                                        Backendless.Files.saveFile("Selected Audio", selectedAudioFileName, AudioBytes(), new AsyncCallback<String>() {
+                                            @Override
+                                            public void handleResponse(String s) {
+                                                //
+                                            }
+
+                                            @Override
+                                            public void handleFault(BackendlessFault backendlessFault) {
+                                                Toast.makeText(HomeMenu.this, backendlessFault.getMessage(), Toast.LENGTH_LONG).show();
+                                                progressDialog.dismiss();
+                                            }
+                                        });
+                                        Backendless.Persistence.save(newWord, new AsyncCallback<Word>() {
+                                            @Override
+                                            public void handleResponse(Word word) {
+                                                Toast.makeText(HomeMenu.this, word.getWord() + " saved successfully!", Toast.LENGTH_SHORT).show();
+                                                loadData();
+                                                countWords();
+                                                displayWordCount();
+                                                progressDialog.dismiss();
+                                            }
+
+                                            @Override
+                                            public void handleFault(BackendlessFault backendlessFault) {
+                                                Toast.makeText(HomeMenu.this, backendlessFault.getMessage(), Toast.LENGTH_LONG).show();
+                                                progressDialog.dismiss();
+                                            }
+                                        });
                                     }
-                                });
-                            } else {
-                                Toast.makeText(HomeMenu.this, "Please fill in all fields!!", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                            @Override
+                            public void handleFault(BackendlessFault backendlessFault) {
+                                Toast.makeText(HomeMenu.this, backendlessFault.getMessage(), Toast.LENGTH_SHORT).show();
                                 progressDialog.dismiss();
                             }
-                        } else {
-                            Toast.makeText(HomeMenu.this, "Please connect to the internet!", Toast.LENGTH_SHORT).show();
-                            progressDialog.dismiss();
-                        }
-                    }
-                });
-                dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                });
-                dialog.show();
-            }
-
-            public void logout() {
-                progressDialog = new SpotsDialog(HomeMenu.this, R.style.Custom);
-                progressDialog.show();
-                Backendless.UserService.logout(new AsyncCallback<Void>() {
-                    @Override
-                    public void handleResponse(Void aVoid) {
-                        Toast.makeText(HomeMenu.this, "Successfully logged out!", Toast.LENGTH_SHORT).show();
-                        progressDialog.dismiss();
-                        HomeMenu.this.finish();
-                        //startActivity(new Intent(HomeMenu.this, Login.class));
-                    }
-
-                    @Override
-                    public void handleFault(BackendlessFault backendlessFault) {
-                        Toast.makeText(HomeMenu.this, backendlessFault.getMessage(), Toast.LENGTH_SHORT).show();
+                        });
+                    } else {
+                        Toast.makeText(HomeMenu.this, "Please fill in all fields!!", Toast.LENGTH_SHORT).show();
                         progressDialog.dismiss();
                     }
-                });
-            }
-
-            private void onRecord(boolean start) {
-                if (start) {
-                    startRecording();
                 } else {
-                    stopRecording();
+                    Toast.makeText(HomeMenu.this, "Please connect to the internet!", Toast.LENGTH_SHORT).show();
+                    progressDialog.dismiss();
                 }
             }
+        });
+        dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        dialog.show();
+    }
 
-            private void onPlay(boolean start) {
-                if (start) {
-                    startPlaying();
-                } else {
-                    stopPlaying();
-                }
+    public void logout() {
+        progressDialog = new SpotsDialog(HomeMenu.this, R.style.Custom);
+        progressDialog.show();
+        Backendless.UserService.logout(new AsyncCallback<Void>() {
+            @Override
+            public void handleResponse(Void aVoid) {
+                Toast.makeText(HomeMenu.this, "Successfully logged out!", Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
+                HomeMenu.this.finish();
+                //startActivity(new Intent(HomeMenu.this, Login.class));
             }
 
-            private void startPlaying() {
-                mPlayer = new MediaPlayer();
-                try {
-                    mPlayer.setDataSource(mFileName);
-                    mPlayer.prepare();
-                    mPlayer.start();
-                } catch (IOException e) {
-                    Log.e(LOG_TAG, "prepare() failed");
-                }
+            @Override
+            public void handleFault(BackendlessFault backendlessFault) {
+                Toast.makeText(HomeMenu.this, backendlessFault.getMessage(), Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
             }
+        });
+    }
 
-            private void stopPlaying() {
-                mPlayer.release();
-                mPlayer = null;
-            }
+    private void onRecord(boolean start) {
+        if (start) {
+            startRecording();
+        } else {
+            stopRecording();
+        }
+    }
 
-            private void startRecording() {
-                mRecorder = new MediaRecorder();
-                mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-                mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-                mRecorder.setOutputFile(mFileName);
-                mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+    private void onPlay(boolean start) {
+        if (start) {
+            startPlaying(mFileName);
+            startPlaying(audioPath);
+        } else {
+            stopPlaying();
+        }
+    }
 
-                try {
-                    mRecorder.prepare();
-                } catch (IOException e) {
-                    Log.e(LOG_TAG, "prepare() failed");
-                }
+    private void startPlaying(String filename) {
+        mPlayer = new MediaPlayer();
+        try {
+            mPlayer.setDataSource(filename);
+            mPlayer.prepare();
+            mPlayer.start();
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "prepare() failed");
+        }
+    }
 
-                mRecorder.start();
-            }
+    private void stopPlaying() {
+        mPlayer.release();
+        mPlayer = null;
+    }
 
-            private void stopRecording() {
-                mRecorder.stop();
-                mRecorder.release();
-                mRecorder = null;
-            }
+    private void startRecording() {
+        mRecorder = new MediaRecorder();
+        mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        mRecorder.setOutputFile(mFileName);
+        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
 
-    public byte[] soundClipBytes(){
+        try {
+            mRecorder.prepare();
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "prepare() failed");
+        }
+
+        mRecorder.start();
+    }
+
+    private void stopRecording() {
+        mRecorder.stop();
+        mRecorder.release();
+        mRecorder = null;
+    }
+
+    public byte[] soundClipBytes() {
         byte[] soundBytes = null;
 
         try {
@@ -637,7 +689,21 @@ public class HomeMenu extends AppCompatActivity {
             soundBytes = new byte[inputStream.available()];
 
             soundBytes = toByteArray(inputStream);
-        }catch(Exception e){
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return soundBytes;
+    }
+
+    public byte[] AudioBytes() {
+        byte[] soundBytes = null;
+
+        try {
+            InputStream inputStream = getContentResolver().openInputStream(Uri.fromFile(new File(audioPath)));
+            soundBytes = new byte[inputStream.available()];
+
+            soundBytes = toByteArray(inputStream);
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return soundBytes;
@@ -650,52 +716,32 @@ public class HomeMenu extends AppCompatActivity {
         while (read != -1) {
             read = in.read(buffer);
             if (read != -1)
-                out.write(buffer,0,read);
+                out.write(buffer, 0, read);
         }
         out.close();
         return out.toByteArray();
     }
 
-    /**
-     * Click on View to change photo. Sets into View of your layout, android:onClick="clickOnPhoto"
-     * @param view View
-     */
-    public void clickOnPhoto(View view) {
-        try{
-            Intent pickIntent = new Intent();
-            pickIntent.setType("image/*");
-            pickIntent.setAction(Intent.ACTION_GET_CONTENT);
-
-            Intent takePhotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-            String pickTitle = "Select or take a new Picture"; // Or get from strings.xml
-            Intent chooserIntent = Intent.createChooser(pickIntent, pickTitle);
-            chooserIntent.putExtra
-                    (
-                            Intent.EXTRA_INITIAL_INTENTS,
-                            new Intent[] { takePhotoIntent }
-                    );
-            startActivityForResult(chooserIntent, REQUEST_CODE_CHOOSE_PHOTO);
-        }catch(Exception e){
-            Toast.makeText(this,e.getMessage(),Toast.LENGTH_SHORT).show();
+    public void SelectAudio(View view) {
+        ivSelectAudioclicked = true;
+        Intent intent;
+        intent = new Intent();
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        intent.setType("audio/*");
+        startActivityForResult(Intent.createChooser(intent, "Select Audio:"), REQUEST_CODE__SELECT_AUDIO);
+        if (ivSelectAudioclicked) {
+            ivRecord.setEnabled(false);
         }
-
-
     }
-    public void Photo(View view){
-        Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
-        getIntent.setType("image/*");
 
-        Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        pickIntent.setType("image/*");
-
-        Intent chooserIntent = Intent.createChooser(getIntent, "Select Image");
-        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] {pickIntent});
-
-        startActivityForResult(chooserIntent, REQUEST_CODE_CHOOSE_PHOTO);
-    }
-    public HomeMenu() {
-        mFileName = Environment.getExternalStorageDirectory().toString();
-        mFileName += "/_AUD_" + currentDateTime + "_.3gp";
+    private String getRealPathFromURI(Uri contentUri) {
+        String[] proj = {MediaStore.Images.Media.DATA};
+        CursorLoader loader = new CursorLoader(HomeMenu.this, contentUri, proj, null, null, null);
+        Cursor cursor = loader.loadInBackground();
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        String result = cursor.getString(column_index);
+        cursor.close();
+        return result;
     }
 }
