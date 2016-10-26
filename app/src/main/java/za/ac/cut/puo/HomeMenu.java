@@ -122,6 +122,8 @@ public class HomeMenu extends AppCompatActivity {
 
     }
 
+
+    //TODO:DONT FORGET TO IMPLEMENT RUN-TIME PERMISSIONS FOR CAMERA AND MIC!!!!!!!!
     private void displayWordCount() {
         if (user.getProperty("count").equals(1))
             tvWordCount.setText(user.getProperty("count").toString() + " " + "Word Added");
@@ -170,6 +172,7 @@ public class HomeMenu extends AppCompatActivity {
                 startActivity(new Intent(HomeMenu.this, ChooseNicknameActivity.class));
                 return true;
             case R.id.word_mates:
+                startActivity(new Intent(HomeMenu.this, WordMates.class));
                 return true;
             case R.id.word_game:
                 startActivity(new Intent(HomeMenu.this, GameHome.class));
@@ -612,6 +615,18 @@ public class HomeMenu extends AppCompatActivity {
         Backendless.UserService.logout(new AsyncCallback<Void>() {
             @Override
             public void handleResponse(Void aVoid) {
+                user.setProperty("status", "Offline");
+                Backendless.UserService.update(user, new AsyncCallback<BackendlessUser>() {
+                    @Override
+                    public void handleResponse(BackendlessUser backendlessUser) {
+                        //
+                    }
+
+                    @Override
+                    public void handleFault(BackendlessFault backendlessFault) {
+                        //
+                    }
+                });
                 Toast.makeText(HomeMenu.this, "Successfully logged out!", Toast.LENGTH_SHORT).show();
                 progressDialog.dismiss();
                 HomeMenu.this.finish();
@@ -744,4 +759,5 @@ public class HomeMenu extends AppCompatActivity {
         cursor.close();
         return result;
     }
+
 }

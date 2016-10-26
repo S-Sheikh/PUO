@@ -5,9 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="za.ac.cut.puo.ContactList">
+    tools:context=".WordMates">
+
     <android.support.v7.widget.Toolbar
-        android:id="@+id/contactList_toolBar"
+        android:id="@+id/wordMates_toolBar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:layout_marginBottom="16dp"
@@ -15,13 +16,14 @@
         android:elevation="4dp"
         android:theme="@style/toolBarText"
         app:popupTheme="@style/AppTheme" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:background="@color/colorPrimary"
-        android:gravity="center_horizontal"
+        android:gravity="left"
         android:orientation="horizontal">
 
         <ImageView
@@ -31,10 +33,10 @@
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
             android:paddingBottom="10dp"
-            android:src="@drawable/wordmates" />
+            app:srcCompat="@drawable/ic_users" />
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
             android:gravity="center_vertical"
@@ -49,6 +51,34 @@
                 android:textColor="@color/colorIcons"
                 android:textStyle="bold" />
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:text="Online:"
+                android:textColor="@color/gColorButtonEight"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvUsersOnline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="5dp"
+                android:paddingRight="10dp"
+                android:paddingTop="10dp"
+                android:textColor="@color/colorIcons"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
     </LinearLayout>
 
     <LinearLayout
@@ -92,6 +122,7 @@
             android:textAppearance="?android:attr/textAppearanceSmall" />
     </LinearLayout>
 
+    <include layout="@layout/progress_bar_circular" />
     <ListView
         android:id="@+id/lvContactList"
         android:layout_width="match_parent"
