@@ -71,7 +71,18 @@ public class Login extends AppCompatActivity {
                 Backendless.UserService.login(etEmail, etPassword, new AsyncCallback<BackendlessUser>() {
                     @Override
                     public void handleResponse(BackendlessUser backendlessUser) {
+                        backendlessUser.setProperty("status", "Online");
+                        Backendless.UserService.update(backendlessUser, new AsyncCallback<BackendlessUser>() {
+                            @Override
+                            public void handleResponse(BackendlessUser backendlessUser) {
+                                //
+                            }
 
+                            @Override
+                            public void handleFault(BackendlessFault backendlessFault) {
+                                //
+                            }
+                        });
                         if (backendlessUser.getProperty("isUpdated").equals(false)) {
                             Intent intent = new Intent(Login.this, Update.class);
                             intent.putExtra("user", backendlessUser.getEmail());

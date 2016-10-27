@@ -151,5 +151,10 @@
     <!-- messaging strings -->
 
     <string name="update_list">Update List</string>
+    <string name="take_pic">Take Picture</string>
+    <string name="select_audio">Browse</string>
+    <string name="tvUserType">Specialist</string>
+    <string name="tvUsername">Jason Bourne</string>
+    <string name="tvStatus">Online</string>
 
 </resources>

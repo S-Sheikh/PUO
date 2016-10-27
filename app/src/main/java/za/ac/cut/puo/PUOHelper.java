@@ -165,4 +165,16 @@ public class PUOHelper {
                 .endConfig().buildRect(text, generator.getRandomColor());
     }
 
+    public static TextDrawable getTextDrawable(BackendlessUser user) {
+        ColorGenerator generator = ColorGenerator.MATERIAL; // set random color generator
+        String text = user.getProperty("name").toString().substring(0, 2); // get first two letters of word
+        return TextDrawable.builder()
+                .beginConfig()
+                .bold()
+                .fontSize(90)
+                .width(180)
+                .height(180)
+                .endConfig().buildRect(text, generator.getRandomColor());
+    }
+
 }

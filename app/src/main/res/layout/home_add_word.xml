@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView android:layout_height="match_parent"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:layout_height="match_parent">
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -21,6 +21,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginLeft="10dp"
+            android:onClick="RecordAudio"
             app:srcCompat="@drawable/ic_add_word" />
 
         <LinearLayout
@@ -110,79 +111,125 @@
         android:layout_marginTop="25dp"
         android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/btnRecord"
+        <ImageView
+            android:id="@+id/ivRecord"
             android:layout_width="0dp"
             android:layout_height="40dp"
+            android:layout_marginRight="15dp"
             android:layout_weight="1"
+            android:clickable="true"
+            android:onClick="RecordAudio"
             android:text="Record"
-            android:clickable="true"
-            android:onClick="RecordAudio" />
+            app:srcCompat="@drawable/ic_mic" />
 
-        <Button
-            android:id="@+id/btnPlayClip"
+        <ImageView
+            android:id="@+id/ivPlayClip"
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:text="Play"
             android:clickable="true"
-            android:onClick="PlayAudio" />
+            android:onClick="PlayAudio"
+            android:text="Play"
+            app:srcCompat="@drawable/ic_play" />
+
+        <ImageView
+            android:id="@+id/ivBrowse"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:onClick="SelectAudio"
+            app:srcCompat="@drawable/ic_select_audio" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginRight="20dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:gravity="center_horizontal"
         android:orientation="horizontal">
+
         <TextView
             android:id="@+id/tvAddSound"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
             android:text="@string/add_sound_clip"
-            android:layout_marginRight="70dp"
             android:textAppearance="?android:attr/textAppearanceSmall" />
+
         <TextView
             android:id="@+id/tvPlayClip"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
             android:text="@string/tv_PlaySound"
-            android:layout_marginLeft="50dp"
-            android:layout_marginRight="15dp"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <TextView
+            android:id="@+id/tvSelectAudio"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:text="@string/select_audio"
             android:textAppearance="?android:attr/textAppearanceSmall" />
     </LinearLayout>
 
     <LinearLayout
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
-       android:orientation="horizontal"
-       android:gravity="center_horizontal">
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
 
        <ImageView
            android:id="@+id/ivAddImage"
            android:layout_width="0dp"
-           android:layout_weight="1"
            android:layout_height="40dp"
-           android:layout_marginTop="10dp"
-           android:layout_marginLeft="50dp"
-           android:layout_marginRight="50dp"
+           android:layout_marginTop="20dp"
+           android:layout_weight="1"
            android:clickable="true"
-           android:onClick="clickOnPhoto"
+           android:onClick="AddImage"
            app:srcCompat="@drawable/ic_add_image" />
+
+        <ImageView
+            android:id="@+id/ivTakePic"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:onClick="CaptureImage"
+            app:srcCompat="@drawable/ic_camera" />
    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:gravity="center_horizontal">
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
         <TextView
             android:id="@+id/tvAddImage"
-            android:layout_marginTop="10dp"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
             android:text="@string/add_image"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <TextView
+            android:id="@+id/tvTakePic"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:text="@string/take_pic"
             android:textAppearance="?android:attr/textAppearanceSmall" />
     </LinearLayout>
 
