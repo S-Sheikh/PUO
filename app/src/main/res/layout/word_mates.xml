@@ -81,46 +81,46 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:divider="@color/colorDivider"
-        android:orientation="horizontal"
-        android:showDividers="middle|beginning|end">
+    <!-- <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_marginLeft="10dp"
+         android:layout_marginRight="10dp"
+         android:divider="@color/colorDivider"
+         android:orientation="horizontal"
+         android:showDividers="middle|beginning|end">
 
-        <Spinner
-            android:id="@+id/spStatus"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginLeft="120dp"
-            android:prompt="@string/sp_Status" />
+         <Spinner
+             android:id="@+id/spStatus"
+             android:layout_width="50dp"
+             android:layout_height="50dp"
+             android:layout_marginLeft="120dp"
+             android:prompt="@string/sp_Status" />
 
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:text="@string/contact_role"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+         <TextView
+             android:id="@+id/textView3"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_marginLeft="20dp"
+             android:text="@string/contact_role"
+             android:textAppearance="?android:attr/textAppearanceSmall" />
 
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:text="ZA"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+         <TextView
+             android:id="@+id/textView4"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_marginLeft="20dp"
+             android:text="ZA"
+             android:textAppearance="?android:attr/textAppearanceSmall" />
 
-        <TextView
-            android:id="@+id/textView5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:text="AZ"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
-    </LinearLayout>
+         <TextView
+             android:id="@+id/textView5"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_marginLeft="20dp"
+             android:text="AZ"
+             android:textAppearance="?android:attr/textAppearanceSmall" />
+     </LinearLayout>-->
 
     <include layout="@layout/progress_bar_circular" />
     <ListView

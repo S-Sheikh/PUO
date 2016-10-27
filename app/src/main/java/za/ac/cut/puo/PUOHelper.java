@@ -89,7 +89,7 @@ public class PUOHelper {
         BackendlessUser user = Backendless.UserService.CurrentUser();
         String path = BASE_EXTERNAL_APP_DIRECTORY + PROFILE_PIC_SUB_DIRECTORY;
         OutputStream fOut;
-        String filename = user.getEmail() + ".png";
+        String filename = user.getEmail() + "_.png";
         File profilePicDirectory = new File(path);
         File file = new File(profilePicDirectory, filename); // the File to save , append increasing numeric counter to prevent files from getting overwritten.
         try {
@@ -171,7 +171,7 @@ public class PUOHelper {
 
     public static TextDrawable getTextDrawable(BackendlessUser user) {
         ColorGenerator generator = ColorGenerator.MATERIAL; // set random color generator
-        String text = user.getProperty("name").toString().substring(0, 2); // get first two letters of word
+        String text = user.getProperty("name").toString().substring(0, 2); // get first two letters of a user
         return TextDrawable.builder()
                 .beginConfig()
                 .bold()

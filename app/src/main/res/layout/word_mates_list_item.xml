@@ -64,12 +64,13 @@
                 cardView:srcCompat="@drawable/ic_email" />
 
             <ImageView
-                android:id="@+id/ivShare"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:id="@+id/ivSMS"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginTop="5dp"
                 android:layout_weight="1"
                 android:clickable="true"
-                cardView:srcCompat="@drawable/ic_share" />
+                cardView:srcCompat="@drawable/ic_sms" />
         </LinearLayout>
 
         <TextView

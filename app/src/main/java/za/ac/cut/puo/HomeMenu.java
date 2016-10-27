@@ -79,6 +79,8 @@ public class HomeMenu extends AppCompatActivity {
     String audioPath = null;
     boolean ivRecordclicked = false;
     boolean ivSelectAudioclicked = false;
+    Boolean supported = false;
+    int count = 0;
     private SwipeRefreshLayout swipe_refresh_word_list_home;
     private MediaRecorder mRecorder = null;
     private MediaPlayer mPlayer = null;
@@ -178,6 +180,7 @@ public class HomeMenu extends AppCompatActivity {
                 startActivity(new Intent(HomeMenu.this, GameHome.class));
                 return true;
             case R.id.word_highscore:
+                startActivity(new Intent(HomeMenu.this, GameHighScoresActivity.class));
                 return true;
             case R.id.logout:
                 logout();
@@ -261,16 +264,28 @@ public class HomeMenu extends AppCompatActivity {
         if (words != null) {
             words.clear();
         }
-
-        Backendless.Persistence.of(Word.class).find(new AsyncCallback<BackendlessCollection<Word>>() {
+        String whereClause = "status = '" + "Supported" + "'";
+        BackendlessDataQuery dataQuery = new BackendlessDataQuery();
+        dataQuery.setWhereClause(whereClause);
+        Backendless.Persistence.of(Word.class).find(dataQuery, new AsyncCallback<BackendlessCollection<Word>>() {
             @Override
             public void handleResponse(BackendlessCollection<Word> addWordBackendlessCollection) {
                 words = addWordBackendlessCollection.getData();
-                AddWordAdapter adapter = new AddWordAdapter(HomeMenu.this, words);
-                lvWords.setAdapter(adapter);
-                adapter.notifyDataSetChanged();
-                circularBar.setVisibility(View.GONE);
-                swipe_refresh_word_list_home.setRefreshing(false);
+                for (Word temp : words) {
+                    if (count < 5) {
+                        supported = true;
+                    }
+                    count++;
+                }
+
+                if (supported) {
+                    AddWordAdapter adapter = new AddWordAdapter(HomeMenu.this, words);
+                    lvWords.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
+                    circularBar.setVisibility(View.GONE);
+                    swipe_refresh_word_list_home.setRefreshing(false);
+                }
+
             }
 
             @Override

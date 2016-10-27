@@ -68,56 +68,61 @@ public class Login extends AppCompatActivity {
             if (PUOHelper.connectionAvailable(this)) {
                 progressDialog = new SpotsDialog(Login.this, R.style.Custom);
                 progressDialog.show();
-                Backendless.UserService.login(etEmail, etPassword, new AsyncCallback<BackendlessUser>() {
-                    @Override
-                    public void handleResponse(BackendlessUser backendlessUser) {
-                        backendlessUser.setProperty("status", "Online");
-                        Backendless.UserService.update(backendlessUser, new AsyncCallback<BackendlessUser>() {
-                            @Override
-                            public void handleResponse(BackendlessUser backendlessUser) {
-                                //
+                try {
+                    Backendless.UserService.login(etEmail, etPassword, new AsyncCallback<BackendlessUser>() {
+                        @Override
+                        public void handleResponse(BackendlessUser backendlessUser) {
+                            backendlessUser.setProperty("status", "Online");
+                            Backendless.UserService.update(backendlessUser, new AsyncCallback<BackendlessUser>() {
+                                @Override
+                                public void handleResponse(BackendlessUser backendlessUser) {
+                                    //
+                                }
+
+                                @Override
+                                public void handleFault(BackendlessFault backendlessFault) {
+                                    //
+                                }
+                            });
+                            if (backendlessUser.getProperty("isUpdated").equals(false)) {
+                                Intent intent = new Intent(Login.this, Update.class);
+                                intent.putExtra("user", backendlessUser.getEmail());
+                                intent.putExtra("password", backendlessUser.getPassword());
+                                intent.putExtra("name", backendlessUser.getProperty("name").toString().trim());
+                                intent.putExtra("surname", backendlessUser.getProperty("surname").toString().trim());
+                                intent.putExtra("objectId", backendlessUser.getObjectId());
+                                startActivity(intent);
+                            } else {
+                                /** Is this needed?
+                                 backendlessUser.setProperty("isUpdated", true);
+                                 Intent intent1 = new Intent(Login.this, HomeMenu.class);
+                                 intent1.putExtra("objectId", backendlessUser.getObjectId());
+                                 intent1.putExtra("password", backendlessUser.getPassword());
+                                 intent1.putExtra("user", backendlessUser.getEmail());
+                                 intent1.putExtra("name", backendlessUser.getProperty("name").toString().trim());
+                                 intent1.putExtra("surname", backendlessUser.getProperty("surname").toString().trim());
+                                 intent1.putExtra("role", backendlessUser.getProperty("role").toString().trim());
+                                 intent1.putExtra("cell", backendlessUser.getProperty("cell").toString().trim());
+                                 intent1.putExtra("isUpdated", backendlessUser.getProperty("isUpdated").toString().trim());
+                                 */
+                                startActivity(new Intent(Login.this, HomeMenu.class));
                             }
 
-                            @Override
-                            public void handleFault(BackendlessFault backendlessFault) {
-                                //
-                            }
-                        });
-                        if (backendlessUser.getProperty("isUpdated").equals(false)) {
-                            Intent intent = new Intent(Login.this, Update.class);
-                            intent.putExtra("user", backendlessUser.getEmail());
-                            intent.putExtra("password", backendlessUser.getPassword());
-                            intent.putExtra("name", backendlessUser.getProperty("name").toString().trim());
-                            intent.putExtra("surname", backendlessUser.getProperty("surname").toString().trim());
-                            intent.putExtra("objectId", backendlessUser.getObjectId());
-                            startActivity(intent);
-                        } else {
-                            /** Is this needed?
-                             backendlessUser.setProperty("isUpdated", true);
-                             Intent intent1 = new Intent(Login.this, HomeMenu.class);
-                             intent1.putExtra("objectId", backendlessUser.getObjectId());
-                             intent1.putExtra("password", backendlessUser.getPassword());
-                             intent1.putExtra("user", backendlessUser.getEmail());
-                             intent1.putExtra("name", backendlessUser.getProperty("name").toString().trim());
-                             intent1.putExtra("surname", backendlessUser.getProperty("surname").toString().trim());
-                             intent1.putExtra("role", backendlessUser.getProperty("role").toString().trim());
-                             intent1.putExtra("cell", backendlessUser.getProperty("cell").toString().trim());
-                             intent1.putExtra("isUpdated", backendlessUser.getProperty("isUpdated").toString().trim());
-                             */
-                            startActivity(new Intent(Login.this, HomeMenu.class));
+                            Toast.makeText(Login.this, backendlessUser.getEmail() + " successfully logged in!", Toast.LENGTH_SHORT).show();
+                            progressDialog.dismiss();
                         }
 
-                        Toast.makeText(Login.this, backendlessUser.getEmail() + " successfully logged in!", Toast.LENGTH_SHORT).show();
-                        progressDialog.dismiss();
-                    }
+                        @Override
+                        public void handleFault(BackendlessFault backendlessFault) {
+                            email_txt_input_login.setError(backendlessFault.getMessage());
+                            pass_txt_input_login.setError(backendlessFault.getMessage());
+                            progressDialog.dismiss();
+                        }
+                    }, true);
+                } catch (Exception e) {
+                    //
+                }
 
-                    @Override
-                    public void handleFault(BackendlessFault backendlessFault) {
-                        email_txt_input_login.setError(backendlessFault.getMessage());
-                        pass_txt_input_login.setError(backendlessFault.getMessage());
-                        progressDialog.dismiss();
-                    }
-                }, true);
             } else {
                 Toast.makeText(Login.this, "No internet connection!", Toast.LENGTH_SHORT).show();
             }
