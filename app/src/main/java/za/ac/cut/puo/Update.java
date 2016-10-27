@@ -99,7 +99,6 @@ public class Update extends AppCompatActivity {
                 //spLocation.setSelection(getIndex(spLocation,user.getProperty("location").toString().trim()));
             }
         }
-
     }
 
     @Override
@@ -375,7 +374,6 @@ public class Update extends AppCompatActivity {
             }
         }
     }
-
 
     public void btnUpdateSubmit(View v) {
         final BackendlessUser user = Backendless.UserService.CurrentUser();

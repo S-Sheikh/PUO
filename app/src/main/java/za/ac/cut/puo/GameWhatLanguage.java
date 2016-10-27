@@ -123,7 +123,7 @@ public class GameWhatLanguage extends AppCompatActivity {
         wordArrayList.add(new Word("thetha", "Xhosa", "conversation; discussion", "noun"));
         //Word Array BoilerPlate End
 
-        randomGenerator = new Random(); // Initialize it lolololol
+        randomGenerator = new Random(); // getTask it lolololol
 
         populateButtonTxt();
 

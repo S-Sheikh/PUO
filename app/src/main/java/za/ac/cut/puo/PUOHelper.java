@@ -5,12 +5,14 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
@@ -27,6 +29,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import za.ac.cut.puo.data.WordsDbAdapter;
 
 /**
  * Created by hodielisrael on 2016/09/14.
@@ -175,6 +179,58 @@ public class PUOHelper {
                 .width(180)
                 .height(180)
                 .endConfig().buildRect(text, generator.getRandomColor());
+    }
+
+    public static class SaveToWordChestTask extends AsyncTask<Word, Void, Long> {
+        private static WordsDbAdapter wordsDbAdapter;
+        private static Context mContext;
+
+        private SaveToWordChestTask(Context context) {
+            wordsDbAdapter = new WordsDbAdapter(context);
+            mContext = context;
+        }
+
+        public static SaveToWordChestTask getTask(Context context) {
+            return new SaveToWordChestTask(context);
+        }
+
+        @Override
+        protected Long doInBackground(Word... word) {
+            return wordsDbAdapter.insertWord(word[0]);
+        }
+
+        @Override
+        protected void onPostExecute(Long result) {
+            if (result > 0)
+                Toast.makeText(mContext, "Word saved to WordChest!", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public static class LoadFromWordChestTask extends AsyncTask<Void, Void, List<Word>> {
+        private static WordsDbAdapter wordsDbAdapter;
+        private static Context mContext;
+
+        private LoadFromWordChestTask(Context context) {
+            wordsDbAdapter = new WordsDbAdapter(context);
+            mContext = context;
+        }
+
+        public static LoadFromWordChestTask getTask(Context context) {
+            return new LoadFromWordChestTask(context);
+        }
+
+        @Override
+        protected List<Word> doInBackground(Void... params) {
+            return wordsDbAdapter.getWords();
+        }
+
+        @Override
+        protected void onPostExecute(List<Word> words) {
+            if (words == null)
+                Toast.makeText(mContext, "No words in WordChest!", Toast.LENGTH_LONG).show();
+            else
+                Toast.makeText(mContext,words.size()+ " words retrieved!", Toast.LENGTH_LONG).show();
+        }
     }
 
 }

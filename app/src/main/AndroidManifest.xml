@@ -2,10 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="za.ac.cut.puo">
 
-    <uses-sdk
-        android:minSdkVersion="16"
-        android:targetSdkVersion="16" />
-
     <supports-screens
         android:anyDensity="true"
         android:largeScreens="true"

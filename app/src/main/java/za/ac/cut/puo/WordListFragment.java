@@ -197,9 +197,9 @@ public class WordListFragment extends Fragment {
             public void handleResponse(BackendlessCollection<Word> puoWordList) {
                 List<Word> newWords = puoWordList.getData();
                 newWords.removeAll(wordList);
-                for (Word word : newWords) {
-                    System.out.println("newWords = " + word.getWord());
-                }
+//                for (Word word : newWords) {
+//                    System.out.println("newWords = " + word.getWord());
+//                }
                 mWords.addAll(newWords);
 
                 int curSize = mRecyclerView.getAdapter().getItemCount();

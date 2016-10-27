@@ -8,8 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="za.ac.cut.puo.WordChestActivityFragment"
-    tools:showIn="@layout/activity_word_chest">
+    tools:context="za.ac.cut.puo.WordChestActivityFragment">
 
     <include layout="@layout/sort_filter_bar" />
 
