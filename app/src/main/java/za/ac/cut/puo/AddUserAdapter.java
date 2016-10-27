@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
 import com.squareup.picasso.Picasso;
 
@@ -28,7 +29,9 @@ public class AddUserAdapter extends ArrayAdapter<BackendlessUser> {
     private final List<BackendlessUser> values;
     TextView tvUsername, tvStatus, tvUsertype;
     CircleImageView civ_user_pic;
-    ImageView ivCall, ivMail, ivShare;
+    ImageView ivCall, ivMail, ivSMS;
+    String word = "";
+    BackendlessUser user = Backendless.UserService.CurrentUser();
 
     public AddUserAdapter(Context context, List<BackendlessUser> list) {
         super(context, R.layout.word_mates_list_item, list);
@@ -47,9 +50,9 @@ public class AddUserAdapter extends ArrayAdapter<BackendlessUser> {
         civ_user_pic = (CircleImageView) convertView.findViewById(R.id.civ_user_pic);
         ivCall = (ImageView) convertView.findViewById(R.id.ivCall);
         ivMail = (ImageView) convertView.findViewById(R.id.ivMail);
-        ivShare = (ImageView) convertView.findViewById(R.id.ivShare);
-
+        ivSMS = (ImageView) convertView.findViewById(R.id.ivSMS);
         tvUsername.setText(values.get(position).getProperty("name").toString() + " " + values.get(position).getProperty("surname").toString());
+        tvStatus.setText(values.get(position).getProperty("status").toString());
         tvStatus.setText(values.get(position).getProperty("status").toString());
         tvUsertype.setText(values.get(position).getProperty("role").toString());
         String imageUri = "https://api.backendless.com/D200A885-7EED-CB51-FFAC-228F87E55D00/v1/files/UserProfilePics/" + values.get(position).getEmail() + "_.png";
@@ -70,7 +73,6 @@ public class AddUserAdapter extends ArrayAdapter<BackendlessUser> {
                 context.startActivity(intent);
             }
         });
-
         ivMail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,6 +82,18 @@ public class AddUserAdapter extends ArrayAdapter<BackendlessUser> {
                 context.startActivity(Intent.createChooser(intent, "Send Email:"));
             }
         });
+        ivSMS.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent sendIntent = new Intent(Intent.ACTION_VIEW);
+                sendIntent.putExtra("address", values.get(position).getProperty("cell").toString());
+                //sendIntent.putExtra("sms_body"  , "default");
+                sendIntent.setType("vnd.android-dir/mms-sms");
+                context.startActivity(sendIntent);
+            }
+        });
         return convertView;
     }
+
 }
