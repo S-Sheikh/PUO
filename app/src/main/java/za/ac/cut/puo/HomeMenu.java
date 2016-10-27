@@ -180,6 +180,7 @@ public class HomeMenu extends AppCompatActivity {
                 startActivity(new Intent(HomeMenu.this, GameHome.class));
                 return true;
             case R.id.word_highscore:
+                startActivity(new Intent(HomeMenu.this, GameHighScoresActivity.class));
                 return true;
             case R.id.logout:
                 logout();

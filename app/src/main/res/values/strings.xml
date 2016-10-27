@@ -156,5 +156,7 @@
     <string name="tvUserType">Specialist</string>
     <string name="tvUsername">Jason Bourne</string>
     <string name="tvStatus">Online</string>
+    <string name="load_words">Loading Words</string>
+    <string name="high_scores">High Scores</string>
 
 </resources>
