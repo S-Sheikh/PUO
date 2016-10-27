@@ -49,42 +49,47 @@ public class Register extends AppCompatActivity {
         } else if (!(edt_register__password.getText().toString().trim().equals(edt_register__rePassword.getText().toString().trim()))) {
             Toast.makeText(Register.this, "Please make sure passwords match", Toast.LENGTH_SHORT).show();
         } else {
-            if (PUOHelper.connectionAvailable(this)) {
-                BackendlessUser user = new BackendlessUser();
-                user.setProperty("email",edt_register__email.getText().toString().trim());
-                user.setProperty("name",edt_register__name.getText().toString().trim());
-                user.setProperty("surname",edt_register__surname.getText().toString().trim());
-                user.setProperty("username", edt_register_username.getText().toString().trim());
-                user.setProperty("status", "Offline");
-                user.setProperty("count", String.valueOf(0));
-                user.setPassword(edt_register__password.getText().toString().trim());
-                progressDialog = new SpotsDialog(Register.this, R.style.Custom);
-                progressDialog.show();
-                Backendless.UserService.register(user, new AsyncCallback<BackendlessUser>() {
-                    @Override
-                    public void handleResponse(BackendlessUser backendlessUser) {
-                        Toast.makeText(Register.this, "Confirmation link has been sent to you!", Toast.LENGTH_SHORT).show();
+            try {
+                if (PUOHelper.connectionAvailable(this)) {
+                    BackendlessUser user = new BackendlessUser();
+                    user.setProperty("email", edt_register__email.getText().toString().trim());
+                    user.setProperty("name", edt_register__name.getText().toString().trim());
+                    user.setProperty("surname", edt_register__surname.getText().toString().trim());
+                    user.setProperty("username", edt_register_username.getText().toString().trim());
+                    user.setProperty("status", "Offline");
+                    user.setProperty("count", String.valueOf(0));
+                    user.setPassword(edt_register__password.getText().toString().trim());
+                    progressDialog = new SpotsDialog(Register.this, R.style.Custom);
+                    progressDialog.show();
+                    Backendless.UserService.register(user, new AsyncCallback<BackendlessUser>() {
+                        @Override
+                        public void handleResponse(BackendlessUser backendlessUser) {
+                            Toast.makeText(Register.this, "Confirmation link has been sent to you!", Toast.LENGTH_SHORT).show();
 
-                        Intent intent = new Intent(Register.this, Login.class);
-                        intent.putExtra("user", edt_register__email.getText().toString().trim());
-                        intent.putExtra("name", edt_register__name.getText().toString().trim());
-                        intent.putExtra("surname", edt_register__surname.getText().toString().trim());
-                        intent.putExtra("username", edt_register_username.getText().toString().trim());
-                        intent.putExtra("objectId", backendlessUser.getObjectId());
-                        startActivity(intent);
-                        progressDialog.dismiss();
-                        Register.this.finish();
-                    }
+                            Intent intent = new Intent(Register.this, Login.class);
+                            intent.putExtra("user", edt_register__email.getText().toString().trim());
+                            intent.putExtra("name", edt_register__name.getText().toString().trim());
+                            intent.putExtra("surname", edt_register__surname.getText().toString().trim());
+                            intent.putExtra("username", edt_register_username.getText().toString().trim());
+                            intent.putExtra("objectId", backendlessUser.getObjectId());
+                            startActivity(intent);
+                            progressDialog.dismiss();
+                            Register.this.finish();
+                        }
 
-                    @Override
-                    public void handleFault(BackendlessFault backendlessFault) {
-                        Toast.makeText(Register.this, backendlessFault.getMessage(), Toast.LENGTH_SHORT).show();
-                        progressDialog.dismiss();
-                    }
-                });
-            } else {
-                Toast.makeText(Register.this, "No internet connection!", Toast.LENGTH_SHORT).show();
+                        @Override
+                        public void handleFault(BackendlessFault backendlessFault) {
+                            Toast.makeText(Register.this, backendlessFault.getMessage(), Toast.LENGTH_SHORT).show();
+                            progressDialog.dismiss();
+                        }
+                    });
+                } else {
+                    Toast.makeText(Register.this, "No internet connection!", Toast.LENGTH_SHORT).show();
+                }
+            } catch (Exception e) {
+                //
             }
+
         }
 
     }
