@@ -50,7 +50,6 @@ public class AddWordAdapter extends ArrayAdapter<Word> {
                     .placeholder(PUOHelper.getTextDrawable(values.get(position)))
                     .error(PUOHelper.getTextDrawable(values.get(position)))
                     .into(wordImg);
-        System.out.println(imageUri);// for debugging purposes
 
         //change text color to green in word is supported.
         if (values.get(position).isSupported()) {

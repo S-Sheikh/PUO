@@ -60,6 +60,9 @@ public class WordListItemAdapter extends RecyclerView.Adapter<WordListItemAdapte
             holder.wordStatus.setTextColor(getContext().getResources()
                     .getColor(R.color.colorPrimaryText));
         }
+        if (word.isBlocked())
+            holder.wordStatus.setTextColor(getContext().getResources()
+                    .getColor(R.color.Cayenne));
 
         //Set the word properties on the views.
         holder.wordText.setText(word.getWord());

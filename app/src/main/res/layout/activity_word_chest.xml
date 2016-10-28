@@ -10,11 +10,11 @@
     <include layout="@layout/puo_toolbar" />
 
     <fragment
-        android:id="@+id/fragment_wordChest"
+        android:id="@+id/fragment_wordlist"
         android:name="za.ac.cut.puo.WordListFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:layout="@layout/fragment_word_chest" />
+        tools:layout="@layout/fragment_word_list" />
 
 </android.support.design.widget.CoordinatorLayout>

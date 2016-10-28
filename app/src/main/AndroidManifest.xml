@@ -139,6 +139,13 @@
                 android:value=".HomeMenu" />
         </activity>
         <activity
+            android:name=".WordChestActivity"
+            android:parentActivityName=".HomeMenu">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".HomeMenu" />
+        </activity>
+        <activity
             android:name=".ChooseNicknameActivity"
             android:parentActivityName=".HomeMenu"
             android:screenOrientation="portrait">

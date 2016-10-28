@@ -1,7 +1,5 @@
 package za.ac.cut.puo;
 
-import com.backendless.media.audio.AudioStream;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Date;
@@ -67,7 +65,7 @@ public class Word {
         this.surname = surname;
         this.email = email;
         try {
-            this.created = DateFormat.getDateInstance().parse(created);
+            this.created = DateFormat.getDateTimeInstance().parse(created);
         } catch (ParseException e) {
             e.printStackTrace();
         }

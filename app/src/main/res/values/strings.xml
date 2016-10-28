@@ -63,8 +63,10 @@
     <string name="change_password">Change Password</string>
     <!-- sort_filter_bar spinner entries -->
     <string-array name="entries_ordering">
-        <item>By date</item>
-        <item>Alphabetically</item>
+        <item>Date Asc</item>
+        <item>Date Desc</item>
+        <item>Alphabetical Asc</item>
+        <item>Alphabetical Desc</item>
     </string-array>
 
     <string-array name="entries_part_of_speech">

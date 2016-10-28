@@ -181,6 +181,8 @@ public class PUOHelper {
                 .endConfig().buildRect(text, generator.getRandomColor());
     }
 
+    /**
+     * Saves a Word object to the local SQLite database.*/
     public static class SaveToWordChestTask extends AsyncTask<Word, Void, Long> {
         private static WordsDbAdapter wordsDbAdapter;
         private static Context mContext;
@@ -206,6 +208,9 @@ public class PUOHelper {
         }
     }
 
+    /**
+     * Gets the words from the local SQLite database.
+     * @return a List<Word> */
     public static class LoadFromWordChestTask extends AsyncTask<Void, Void, List<Word>> {
         private static WordsDbAdapter wordsDbAdapter;
         private static Context mContext;
@@ -226,10 +231,11 @@ public class PUOHelper {
 
         @Override
         protected void onPostExecute(List<Word> words) {
-            if (words == null)
-                Toast.makeText(mContext, "No words in WordChest!", Toast.LENGTH_LONG).show();
-            else
-                Toast.makeText(mContext,words.size()+ " words retrieved!", Toast.LENGTH_LONG).show();
+            if (words == null) {
+                WordListFragment.setmWords(words);
+                Toast.makeText(mContext, "No words in WordChest!", Toast.LENGTH_SHORT).show();
+            } else
+                WordListFragment.setmWords(words);
         }
     }
 

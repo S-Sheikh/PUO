@@ -56,5 +56,5 @@
         <item>@color/gColorButtonSix</item>
     </integer-array>
 
-    <color name="Red">#ff0000</color>
+    <color name="Cayenne">#B92D00</color>
 </resources>
