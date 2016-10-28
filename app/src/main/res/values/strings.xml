@@ -156,6 +156,8 @@
     <string name="tvUserType">Specialist</string>
     <string name="tvUsername">Jason Bourne</string>
     <string name="tvStatus">Online</string>
+    <string name="load_words">Loading Words</string>
+    <string name="high_scores">High Scores</string>
 
     <!-- AdMob ad unit IDs -->
     <string name="banner_home_footer">ca-app-pub-0664570763252260/3326522424</string>

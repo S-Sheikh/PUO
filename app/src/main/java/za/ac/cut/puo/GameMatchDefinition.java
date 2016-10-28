@@ -1,6 +1,7 @@
 package za.ac.cut.puo;
 
 import android.animation.ObjectAnimator;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -11,12 +12,23 @@ import android.view.View;
 import android.view.animation.BounceInterpolator;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.backendless.Backendless;
+import com.backendless.BackendlessCollection;
+import com.backendless.BackendlessUser;
+import com.backendless.async.callback.AsyncCallback;
+import com.backendless.exceptions.BackendlessFault;
+import com.backendless.persistence.BackendlessDataQuery;
+import com.backendless.persistence.QueryOptions;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
+import dmax.dialog.SpotsDialog;
 import xyz.hanks.library.SmallBang;
 
 public class GameMatchDefinition extends AppCompatActivity {
@@ -39,6 +51,9 @@ public class GameMatchDefinition extends AppCompatActivity {
     int answerAttempts;
     boolean scoreStreak = false;
     int attemptCount = 0;
+    SpotsDialog progressDialog;
+    BackendlessUser user;
+
     Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -74,6 +89,7 @@ public class GameMatchDefinition extends AppCompatActivity {
     };
     private SmallBang mSmallBang;
     private Random randomGenerator;
+    List<Word> words;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,41 +115,51 @@ public class GameMatchDefinition extends AppCompatActivity {
         buttonAdapter.add(new WordGameAdapter(btn_ans_topRight));
         //end Init button adpater
 
-        //Word Array BoilerPlate Start
+        user = Backendless.UserService.CurrentUser();
+
+//Word Array BoilerPlate Start
         //English Words
         wordArrayList.add(new Word("eutaxy", "English", "good order or management", "noun"));
-        wordArrayList.add(new Word("dabster", "English", "Slang. an expert", "noun"));
-        wordArrayList.add(new Word("pulverulent", "English", "covered with dust or powder.", "adjective"));
-        wordArrayList.add(new Word("vilipend", "English", "to vilify; depreciate", "verb"));
-
-        //Afrikaans Words
+//        //Afrikaans Words
         wordArrayList.add(new Word("vark", "Afrikaans", "an omnivorous domesticated hoofed mammal", "noun"));
-        wordArrayList.add(new Word("evalueer", "Afrikaans", "evaluate or estimate the nature, ability, or quality of", "verb"));
-        wordArrayList.add(new Word("piek", "Afrikaans", "a thin, pointed piece of metal, wood, or another rigid material", "noun"));
-        wordArrayList.add(new Word("golf", "Afrikaans", "a gesture or signal made by moving one's hand to and fro", "noun"));
-
-        //Zulu Words
+//        //Zulu Words
         wordArrayList.add(new Word("ukuzibulala", "Zulu", "the action of killing oneself intentionally", "noun"));
-        wordArrayList.add(new Word("bazizwa", "Zulu", "experience (an emotion or sensation)", "verb"));
-        wordArrayList.add(new Word("kuzwakale", "Zulu", "in good condition; not damaged, injured, or diseased", "adjective"));
-        wordArrayList.add(new Word("ingadi", "Zulu", "a piece of ground, often near a house, used for growing flowers, fruit, or vegetablesy", "noun"));
-
-        //Xhosa Words
+//        //Xhosa Words
         wordArrayList.add(new Word("inja", "Xhosa", "a domesticated carnivorous mammal that typically has a long snout", "test"));
-        wordArrayList.add(new Word("Dudula", "Xhosa", "an act of exerting force on someone or something", "verb"));
-        wordArrayList.add(new Word("umzabalazo", "Xhosa", "a forceful or violent effort to get free of restraint or resist attack", "noun"));
-        wordArrayList.add(new Word("thetha", "Xhosa", "conversation; discussion", "noun"));
         //Word Array BoilerPlate End
+        GameMatchDefinition.this.progressDialog = new SpotsDialog(GameMatchDefinition.this, R.style.Custom);
+        GameMatchDefinition.this.progressDialog.show();
+        int PAGESIZE = 100;
+        BackendlessDataQuery dataQuery = new BackendlessDataQuery();
+        dataQuery.setPageSize(PAGESIZE);
+        Backendless.Data.of(Word.class).find(dataQuery, new AsyncCallback<BackendlessCollection<Word>>() {
+            @Override
+            public void handleResponse(BackendlessCollection<Word> wordBackendlessCollection) {
+                words = wordBackendlessCollection.getData();
+                wordArrayList.clear();
+                for (Word word: words) {
+                    wordArrayList.add(new Word(word.getWord() , word.getLanguage() , word.getDefinition() , word.getPartOfSpeech()));
+                }
+                mHandler.sendEmptyMessage(MSG_START_TIMER);
+                progressDialog.dismiss();
+            }
 
-        randomGenerator = new Random(); // Initialize it lolololol
+            @Override
+            public void handleFault(BackendlessFault backendlessFault) {
+
+            }
+        });
+
+
+
+
+        randomGenerator = new Random(); // Initialize it
 
         populateButtonTxt();
-
         score = 001;
         answerAttempts = 0;
         scoreMulitplier = 1.00;
 
-        mHandler.sendEmptyMessage(MSG_START_TIMER);
         PUOHelper.setAppBar(this, getResources().getString(R.string.app_name))
                 .setDisplayHomeAsUpEnabled(true);
 
@@ -141,8 +167,7 @@ public class GameMatchDefinition extends AppCompatActivity {
         btn_question.setMaxLines(2);
         btn_question.setEllipsize(TextUtils.TruncateAt.END);
         vibe = (Vibrator) getSystemService(this.VIBRATOR_SERVICE);
-//        ActionBar actionbar = getSupportActionBar();
-//        actionbar.setDisplayHomeAsUpEnabled(true);
+
     }
 
     public void onBang(View v) {
@@ -191,14 +216,34 @@ public class GameMatchDefinition extends AppCompatActivity {
             tv_multiplier.setText("+ " + Double.toString(scoreMulitplier));
         }
         mSmallBang.bang(v);
-        ;
+
         populateButtonTxt();
         attemptCount++;
-//        if(attemptCount == 5){
-//            this.finish();
-//        }else{
         btn_attempts.setText("Words:  " + attemptCount + "/20");
-//        }
+
+        //End Game handling
+
+        if(attemptCount == 20){
+            progressDialog.show();
+            final GameHighScores newScore = new GameHighScores();
+            newScore.setScore(Double.parseDouble(btn_circleScore.getText().toString()));
+            newScore.setType("Definition");
+            newScore.setUserName(user.getProperty("name") + " " + user.getProperty("surname"));
+            Backendless.Persistence.save(newScore, new AsyncCallback<GameHighScores>() {
+                @Override
+                public void handleResponse(GameHighScores gameHighScores) {
+                   Toast.makeText(GameMatchDefinition.this, newScore.getUserName() + " Score Submitted!", Toast.LENGTH_SHORT).show();
+                    progressDialog.dismiss();
+                }
+
+                @Override
+                public void handleFault(BackendlessFault backendlessFault) {
+                    Toast.makeText(GameMatchDefinition.this, backendlessFault.getMessage(), Toast.LENGTH_LONG).show();
+                    progressDialog.dismiss();
+                }
+            });
+            GameMatchDefinition.this.finish();
+        }
     }
 
     //Set Random Buttons with Random(non Repeating) Words
