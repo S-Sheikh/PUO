@@ -45,4 +45,5 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.6.0-SNAPSHOT'
     compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha1'
+    compile 'com.google.android.gms:play-services-ads:9.4.0'
 }

@@ -38,6 +38,8 @@ import com.backendless.exceptions.BackendlessFault;
 import com.backendless.files.BackendlessFile;
 import com.backendless.persistence.BackendlessDataQuery;
 import com.backendless.persistence.QueryOptions;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -84,6 +86,7 @@ public class HomeMenu extends AppCompatActivity {
     private SwipeRefreshLayout swipe_refresh_word_list_home;
     private MediaRecorder mRecorder = null;
     private MediaPlayer mPlayer = null;
+    private AdView mAdView;
 
     public HomeMenu() {
         mFileName = Environment.getExternalStorageDirectory().toString();
@@ -94,6 +97,10 @@ public class HomeMenu extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_menu);
+        mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder()
+                .build();
+        mAdView.loadAd(adRequest);
 
         home_toolBar = (Toolbar) findViewById(R.id.home_toolBar);
         setSupportActionBar(home_toolBar);
@@ -146,6 +153,26 @@ public class HomeMenu extends AppCompatActivity {
             mPlayer = null;
         }
 
+        if (mAdView != null) {
+            mAdView.pause();
+        }
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mAdView != null) {
+            mAdView.resume();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mAdView != null) {
+            mAdView.destroy();
+        }
     }
 
     @Override
@@ -263,8 +290,10 @@ public class HomeMenu extends AppCompatActivity {
         if (words != null) {
             words.clear();
         }
+
         String whereClause = "status = '" + "Supported" + "'";
         BackendlessDataQuery dataQuery = new BackendlessDataQuery();
+        dataQuery.setPageSize(5);
         dataQuery.setWhereClause(whereClause);
         Backendless.Persistence.of(Word.class).find(dataQuery, new AsyncCallback<BackendlessCollection<Word>>() {
             @Override

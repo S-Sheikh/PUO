@@ -157,4 +157,9 @@
     <string name="tvUsername">Jason Bourne</string>
     <string name="tvStatus">Online</string>
 
+    <!-- AdMob ad unit IDs -->
+    <string name="banner_home_footer">ca-app-pub-0664570763252260/3326522424</string>
+    <string name="interstitial_full_screen">ca-app-pub-0664570763252260/1769900428</string>
+
+
 </resources>

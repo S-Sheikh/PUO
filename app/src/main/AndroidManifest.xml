@@ -50,6 +50,14 @@
 
         <!-- android:screenOrientation="portrait"  I think ??!!?? this forces our app to be potrait only-->
         @Watley:Makes sense keep it!!!-->
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <activity
+            android:name="com.google.android.gms.ads.AdActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:theme="@android:style/Theme.Translucent" />
         <activity android:name=".Login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -160,6 +168,7 @@
             android:name=".SelectUserActivity"
             android:screenOrientation="portrait" />
 
+        !--Include the AdActivity configChanges and theme. -->
 
         <receiver
             android:name=".WidgetProvider"
