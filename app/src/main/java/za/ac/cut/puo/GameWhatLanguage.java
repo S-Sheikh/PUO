@@ -83,7 +83,7 @@ public class GameWhatLanguage extends AppCompatActivity {
         btn_ans_topRight = (Button) findViewById(R.id.btn_ans_topRight);
         btn_ans_bottomLeft = (Button) findViewById(R.id.btn_ans_bottomLeft);
         btn_ans_bottomRight = (Button) findViewById(R.id.btn_ans_bottomRight);
-        btn_circleScore = (Button)findViewById(R.id.btn_circleScore);
+        btn_circleScore = (Button) findViewById(R.id.btn_circleScore);
         btn_timer = (Button) findViewById(R.id.btn_timer);
         btn_attempts = (Button) findViewById(R.id.btn_attempts);
         tv_multiplier = (TextView) findViewById(R.id.tv_multiplier);
@@ -142,7 +142,7 @@ public class GameWhatLanguage extends AppCompatActivity {
     }
 
     public void onBang(View v) {
-        Button btn = (Button)v;
+        Button btn = (Button) v;
         //If Answer is correct
         if (correctWord.getLanguage().toString().trim().equals(btn.getText().toString())) {//Absolutley Necessary kek
             mSmallBang.setColors(GameWhatLanguage.this.getResources().getIntArray(R.array.gBangCorrect));
@@ -199,10 +199,10 @@ public class GameWhatLanguage extends AppCompatActivity {
     //Set Random Buttons with Random(non Repeating words) Words
     public void populateButtonTxt() {
         //ReSet all Flags to False
-        for(Word word : wordArrayList){
+        for (Word word : wordArrayList) {
             word.setRepeatFlag(false);
         }
-        for(WordGameAdapter btn : buttonAdapter){
+        for (WordGameAdapter btn : buttonAdapter) {
             btn.setFlag(false);
         }
         //End Reset all Flags to/ False
@@ -240,15 +240,14 @@ public class GameWhatLanguage extends AppCompatActivity {
         return randItem;
     }
 
-    public Word makeQuestion(){
+    public Word makeQuestion() {
         int index = randomGenerator.nextInt(questionArray.size());
         Word randItem = questionArray.get(index);
         return randItem;
     }
 
 
-
-    public void bounce(){
+    public void bounce() {
         animY = ObjectAnimator.ofFloat(btn_circleScore, "translationY", -100f, 0f);
         animY.setDuration(700);//0.7sec
         animY.setInterpolator(new BounceInterpolator());

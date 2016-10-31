@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/colorPrimaryLight"
     tools:context="za.ac.cut.puo.HomeMenu">
 
     <android.support.design.widget.AppBarLayout
@@ -94,6 +95,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clickable="false"
+            android:background="@color/colorPrimaryLight"
             android:listSelector="@drawable/card_view_selector_bg" />
     </android.support.v4.widget.SwipeRefreshLayout>
 

@@ -15,7 +15,7 @@ public class ContextGetter extends Application {
         return context;
     }
 
-    public void onCreate(){
+    public void onCreate() {
         super.onCreate();
         context = getApplicationContext();
     }

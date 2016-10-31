@@ -182,7 +182,8 @@ public class PUOHelper {
     }
 
     /**
-     * Saves a Word object to the local SQLite database.*/
+     * Saves a Word object to the local SQLite database.
+     */
     public static class SaveToWordChestTask extends AsyncTask<Word, Void, Long> {
         private static WordsDbAdapter wordsDbAdapter;
         private static Context mContext;
@@ -210,7 +211,9 @@ public class PUOHelper {
 
     /**
      * Gets the words from the local SQLite database.
-     * @return a List<Word> */
+     *
+     * @return a List<Word>
+     */
     public static class LoadFromWordChestTask extends AsyncTask<Void, Void, List<Word>> {
         private static WordsDbAdapter wordsDbAdapter;
         private static Context mContext;

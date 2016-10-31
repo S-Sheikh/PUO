@@ -10,7 +10,7 @@ public class WordGameAdapter {
     boolean flag;
     int btnColor;
 
-    public WordGameAdapter(Button Answer){
+    public WordGameAdapter(Button Answer) {
         this.Answer = Answer;
         flag = false;
     }

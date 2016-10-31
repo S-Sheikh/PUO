@@ -32,8 +32,8 @@ public class WordsDbHelper extends SQLiteOpenHelper {
                         WordEntry.COLUMN_IMAGELOCATION + " TEXT, " +
                         WordEntry.COLUMN_NAME + " TEXT, " +
                         WordEntry.COLUMN_SURNAME + " TEXT," +
-                        WordEntry.COLUMN_EMAIL +" TEXT, " +
-                        WordEntry.COLUMN_CREATED +" TEXT)";
+                        WordEntry.COLUMN_EMAIL + " TEXT, " +
+                        WordEntry.COLUMN_CREATED + " TEXT)";
 
         db.execSQL(SQL_CREATE_WORDS_TABLE);
     }

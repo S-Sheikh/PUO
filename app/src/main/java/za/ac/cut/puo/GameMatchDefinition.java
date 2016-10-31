@@ -1,7 +1,6 @@
 package za.ac.cut.puo;
 
 import android.animation.ObjectAnimator;
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -20,11 +19,11 @@ import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 import com.backendless.persistence.BackendlessDataQuery;
-import com.backendless.persistence.QueryOptions;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 
@@ -53,6 +52,8 @@ public class GameMatchDefinition extends AppCompatActivity {
     int attemptCount = 0;
     SpotsDialog progressDialog;
     BackendlessUser user;
+    GameHighScores newScore;
+
 
     Handler mHandler = new Handler() {
         @Override
@@ -116,6 +117,7 @@ public class GameMatchDefinition extends AppCompatActivity {
         //end Init button adpater
 
         user = Backendless.UserService.CurrentUser();
+        newScore = new GameHighScores();
 
 //Word Array BoilerPlate Start
         //English Words
@@ -137,10 +139,11 @@ public class GameMatchDefinition extends AppCompatActivity {
             public void handleResponse(BackendlessCollection<Word> wordBackendlessCollection) {
                 words = wordBackendlessCollection.getData();
                 wordArrayList.clear();
-                for (Word word: words) {
-                    wordArrayList.add(new Word(word.getWord() , word.getLanguage() , word.getDefinition() , word.getPartOfSpeech()));
+                for (Word word : words) {
+                    wordArrayList.add(new Word(word.getWord(), word.getLanguage(), word.getDefinition(), word.getPartOfSpeech()));
                 }
                 mHandler.sendEmptyMessage(MSG_START_TIMER);
+                newScore.setStartDate(java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime()));
                 progressDialog.dismiss();
             }
 
@@ -149,8 +152,6 @@ public class GameMatchDefinition extends AppCompatActivity {
 
             }
         });
-
-
 
 
         randomGenerator = new Random(); // Initialize it
@@ -223,17 +224,15 @@ public class GameMatchDefinition extends AppCompatActivity {
 
         //End Game handling
 
-        if(attemptCount == 20){
-            progressDialog.show();
-            final GameHighScores newScore = new GameHighScores();
+        if (attemptCount == 20) {
             newScore.setScore(Double.parseDouble(btn_circleScore.getText().toString()));
             newScore.setType("Definition");
             newScore.setUserName(user.getProperty("name") + " " + user.getProperty("surname"));
+            newScore.setUserMail(user.getEmail());
             Backendless.Persistence.save(newScore, new AsyncCallback<GameHighScores>() {
                 @Override
                 public void handleResponse(GameHighScores gameHighScores) {
-                   Toast.makeText(GameMatchDefinition.this, newScore.getUserName() + " Score Submitted!", Toast.LENGTH_SHORT).show();
-                    progressDialog.dismiss();
+                    Toast.makeText(GameMatchDefinition.this, newScore.getUserName() + " Score Submitted!", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override

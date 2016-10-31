@@ -68,7 +68,7 @@ public class WordListFragment extends Fragment {
         int curSize = mRecyclerView.getAdapter().getItemCount();
         mRecyclerView.getAdapter().notifyItemRangeInserted(curSize, mWords.size());
         mRecyclerView.getAdapter().notifyItemRangeChanged(0, mWords.size());
-        for (Word word:mWords) {
+        for (Word word : mWords) {
             Log.d("MYTAG", "setmWords: " + word.getWord());
         }
     }
@@ -411,7 +411,7 @@ public class WordListFragment extends Fragment {
                     return o1.getCreated().compareTo(o2.getCreated());
             }
         });
-        for (Word word:sortedList) {
+        for (Word word : sortedList) {
             Log.d("MYTAG", "sortList: " + word.getWord());
         }
         setmWords(sortedList);

@@ -398,6 +398,7 @@ public class HomeMenu extends AppCompatActivity {
                     @Override
                     public void handleResponse(BackendlessUser backendlessUser) {
                     }
+
                     @Override
                     public void handleFault(BackendlessFault backendlessFault) {
                     }

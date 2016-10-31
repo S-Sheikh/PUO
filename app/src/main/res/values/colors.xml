@@ -54,6 +54,8 @@
         <item>@color/gColorButtonFour</item>
         <item>@color/gColorButtonFive</item>
         <item>@color/gColorButtonSix</item>
+        <item>@color/gColorButtonSeven</item>
+        <item>@color/gColorButtonEight</item>
     </integer-array>
 
     <color name="Cayenne">#B92D00</color>

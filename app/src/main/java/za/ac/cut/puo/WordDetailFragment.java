@@ -15,8 +15,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
-
-
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link WordDetailFragment#newInstance} factory method to

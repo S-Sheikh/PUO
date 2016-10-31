@@ -1,7 +1,5 @@
 package za.ac.cut.puo;
 
-import java.util.Date;
-
 /**
  * Created by Shahbaaz Sheikh on 26/10/2016.
  */
@@ -9,18 +7,35 @@ import java.util.Date;
 public class GameHighScores {
     private String type;
     private double score;
-    public Date created;
+    private String startDate;
     private String userName;
+    private String userMail;
 
-    public GameHighScores(String type, double score, Date created, String userName) {
-        this.type = null;
-        this.setScore(0);
-        this.created = null;
-        this.userName = null;
+    public String getUserMail() {
+        return userMail;
+    }
+
+    public void setUserMail(String userMail) {
+        this.userMail = userMail;
     }
 
     public GameHighScores() {
+        this.type = null;
+        setScore(0);
+        this.startDate = null;
+        this.userName = null;
+        this.userMail = null;
+
     }
+
+    public String getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
+
 
     public String getType() {
         return type;
@@ -38,13 +53,6 @@ public class GameHighScores {
         this.score = score;
     }
 
-    public Date getCreated() {
-        return created;
-    }
-
-    public void setCreated(Date created) {
-        this.created = created;
-    }
 
     public String getUserName() {
         return userName;

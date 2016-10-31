@@ -4,7 +4,8 @@ import android.provider.BaseColumns;
 
 public class WordsDbContract {
 
-    private WordsDbContract() {}
+    private WordsDbContract() {
+    }
 
     /* Inner class that defines the table contents */
     public static final class WordEntry implements BaseColumns {
@@ -15,7 +16,7 @@ public class WordsDbContract {
         public static final String COLUMN_PARTOFSPEECH = "partofspeech";
         public static final String COLUMN_DEFINITION = "definition";
         public static final String COLUMN_SENTENCE = "sentence";
-        public static final String COLUMN_SUPPORTED= "supported";
+        public static final String COLUMN_SUPPORTED = "supported";
         public static final String COLUMN_RATING = "rating";
         public static final String COLUMN_IMAGELOCATION = "imagelocation";
         public static final String COLUMN_NAME = "name";

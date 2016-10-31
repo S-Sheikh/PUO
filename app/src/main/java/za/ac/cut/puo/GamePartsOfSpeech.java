@@ -82,7 +82,7 @@ public class GamePartsOfSpeech extends AppCompatActivity {
         btn_ans_topRight = (Button) findViewById(R.id.btn_ans_topRight);
         btn_ans_bottomLeft = (Button) findViewById(R.id.btn_ans_bottomLeft);
         btn_ans_bottomRight = (Button) findViewById(R.id.btn_ans_bottomRight);
-        btn_circleScore = (Button)findViewById(R.id.btn_circleScore);
+        btn_circleScore = (Button) findViewById(R.id.btn_circleScore);
         btn_timer = (Button) findViewById(R.id.btn_timer);
         btn_attempts = (Button) findViewById(R.id.btn_attempts);
         tv_multiplier = (TextView) findViewById(R.id.tv_multiplier);
@@ -143,7 +143,7 @@ public class GamePartsOfSpeech extends AppCompatActivity {
     }
 
     public void onBang(View v) {
-        Button btn = (Button)v;
+        Button btn = (Button) v;
         //If Answer is correct
         if (correctWord.getPartOfSpeech().toString().trim().equals(btn.getText().toString())) {//Absolutley Necessary kek
             mSmallBang.setColors(GamePartsOfSpeech.this.getResources().getIntArray(R.array.gBangCorrect));
@@ -183,7 +183,7 @@ public class GamePartsOfSpeech extends AppCompatActivity {
             btn_circleScore.setText(Double.toString(round(score, 2)));
             tv_multiplier.setText("+ " + Double.toString(scoreMulitplier));
             bounce();
-        }else{
+        } else {
             mSmallBang.setColors(GamePartsOfSpeech.this.getResources().getIntArray(R.array.gBangWrong));
             tv_multiplier.setText("+ " + Double.toString(scoreMulitplier));
         }
@@ -195,10 +195,10 @@ public class GamePartsOfSpeech extends AppCompatActivity {
 
     public void populateButtonTxt() {
         //ReSet all Flags to False
-        for(Word word : wordArrayList){
+        for (Word word : wordArrayList) {
             word.setRepeatFlag(false);
         }
-        for(WordGameAdapter btn : buttonAdapter){
+        for (WordGameAdapter btn : buttonAdapter) {
             btn.setFlag(false);
         }
         //End Reset all Flags to/ False
@@ -236,7 +236,7 @@ public class GamePartsOfSpeech extends AppCompatActivity {
         return randItem;
     }
 
-    public Word makeQuestion(){
+    public Word makeQuestion() {
         int index = randomGenerator.nextInt(questionArray.size());
         Word randItem = questionArray.get(index);
         return randItem;

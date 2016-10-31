@@ -39,6 +39,6 @@ public class DownloadTask extends AsyncTask<URL, Void, Bitmap> {
     @Override
     protected void onPostExecute(Bitmap bitmap) {
         view.setImageBitmap(bitmap);
-        PUOHelper.writeImageToFile(view.getContext(),bitmap);
+        PUOHelper.writeImageToFile(view.getContext(), bitmap);
     }
 }
