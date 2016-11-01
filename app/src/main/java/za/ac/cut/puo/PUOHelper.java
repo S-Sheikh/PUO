@@ -3,15 +3,20 @@ package za.ac.cut.puo;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.amulyakhare.textdrawable.TextDrawable;
@@ -74,9 +79,11 @@ public class PUOHelper {
     }
 
     /**
-     * Sets up the action bar for an activity using the toolbar puo_toolbar.xml layout.
+     * Sets up and returns the action bar for an activity using the toolbar puo_toolbar.xml layout.
      * Add <include layout="@layout/puo_toolbar"/> in your activity's layout then call this
      * method in your activity's onCreate.
+     *
+     * @return ActionBar
      */
     public static ActionBar setAppBar(AppCompatActivity activity, String title) {
         Toolbar appBar = (Toolbar) activity.findViewById(R.id.puo_toolbar);
@@ -104,7 +111,9 @@ public class PUOHelper {
         }
     }
 
-    //Reads an image from device storage and sets it as background
+    /**
+     * Reads an image from device storage and sets it as background.
+     */
     public static void readImage(ImageView view) {
         BackendlessUser user = Backendless.UserService.CurrentUser();
         String filename = user.getEmail() + ".png";
@@ -234,12 +243,28 @@ public class PUOHelper {
 
         @Override
         protected void onPostExecute(List<Word> words) {
-            if (words == null) {
-                WordListFragment.setmWords(words);
+            if (words == null)
                 Toast.makeText(mContext, "No words in WordChest!", Toast.LENGTH_SHORT).show();
-            } else
+            else
                 WordListFragment.setmWords(words);
         }
     }
 
+    /**
+     * Returns a popup window for setting a word rating.
+     *
+     * @param anchor  view for anchoring the popup window.
+     * @param context activity that this method is being called from.
+     * @return popup
+     */
+    public static PopupWindow getPopup(Context context, @Nullable View anchor) {
+        PopupWindow popup = new PopupWindow(context);
+        View layout = ((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE))
+                .inflate(R.layout.rate_word_popup, null);
+        popup.setContentView(layout);
+        popup.setBackgroundDrawable(new BitmapDrawable());
+        popup.setOutsideTouchable(true);
+        popup.setFocusable(true);
+        return popup;
+    }
 }

@@ -1,7 +1,7 @@
 package za.ac.cut.puo;
 
-import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Word {
@@ -40,7 +40,7 @@ public class Word {
         this.setRating(0);
     }
 
-    //Game Word
+    /*Game Word*/
     public Word(String word, String language, String definition, String partOfSpeech) {
         this.word = word;
         this.language = language;
@@ -49,7 +49,7 @@ public class Word {
         repeatFlag = false;
     }
 
-    //WordChest Word
+    /*WordChest Word*/
     public Word(String word, String language, String partOfSpeech, String definition,
                 String sentence, int supported, float rating, String imageLocation,
                 String name, String surname, String email, String created) {
@@ -65,7 +65,7 @@ public class Word {
         this.surname = surname;
         this.email = email;
         try {
-            this.created = DateFormat.getDateTimeInstance().parse(created);
+            this.created = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy").parse(created);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -180,7 +180,7 @@ public class Word {
     }
 
     public void setRating(float rating) {
-        this.rating = rating;
+        this.rating = (this.rating == 0) ? rating : (this.rating + rating) / 2;
     }
 
     public boolean isBlocked() {
@@ -195,16 +195,17 @@ public class Word {
         return partOfSpeech + ", " + language;
     }
 
+    /**
+     * @return status "Blocked" if word is blocked, else if word is supported return
+     * "Supported" else "Unsupported".
+     */
     public String getStatus() {
-        /**
-         * @return status "Blocked" if word is blocked, else if word is supported return
-         * "Supported" else "Unsupported".
-         * */
         return blocked ? "Blocked" : (supported ? "Supported" : "Unsupported");
     }
 
     public String getAuthor() {
-        return "Added by: " + name.substring(0, 1).toUpperCase() + ". " + surname.substring(0, 1).toUpperCase() + surname.substring(1);
+        return "Added by: " + name.substring(0, 1).toUpperCase() + ". " +
+                surname.substring(0, 1).toUpperCase() + surname.substring(1);
     }
 
     public int getCount() {

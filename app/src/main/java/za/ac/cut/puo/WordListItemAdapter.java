@@ -30,13 +30,56 @@ public class WordListItemAdapter extends RecyclerView.Adapter<WordListItemAdapte
         this.mContext = mContext;
     }
 
-    // Allows the parent activity or fragment to define the listener
+    /**
+     * Allows the parent activity or fragment to define the listener.
+     */
     public void setOnItemClickListener(OnItemClickListener listener) {
         onItemClickCallBack = listener;
     }
 
     private Context getContext() {
         return mContext;
+    }
+
+    /*Define the listener interface*/
+    public interface OnItemClickListener {
+        void onItemClicked(View itemView);
+
+        void onOverflowClicked(ImageView v);
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        public CircleImageView wordDescImg;
+        public TextView wordText, wordStatus, wordAuthor, wordLexicon;
+        public RatingBar wordRating;
+        public ImageView icPopupMenu;
+
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            wordDescImg = (CircleImageView) itemView.findViewById(R.id.civ_word_pic);
+            wordText = (TextView) itemView.findViewById(R.id.tv_word_text);
+            wordStatus = (TextView) itemView.findViewById(R.id.tv_word_status);
+            wordAuthor = (TextView) itemView.findViewById(R.id.tv_word_author);
+            wordLexicon = (TextView) itemView.findViewById(R.id.tv_word_lexicon);
+            wordRating = (RatingBar) itemView.findViewById(R.id.rtb_word_rating);
+            icPopupMenu = (ImageView) itemView.findViewById(R.id.iv_ic_popup_menu);
+
+            itemView.setOnClickListener(this);
+            icPopupMenu.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (onItemClickCallBack != null) {
+                if (v instanceof ImageView) {
+                    onItemClickCallBack.onOverflowClicked((ImageView) v);
+                } else {
+                    onItemClickCallBack.onItemClicked(v);
+                }
+            }
+        }
     }
 
     @Override
@@ -83,46 +126,4 @@ public class WordListItemAdapter extends RecyclerView.Adapter<WordListItemAdapte
     public int getItemCount() {
         return mWords.size();
     }
-
-    // Define the listener interface
-    public interface OnItemClickListener {
-        void onItemClicked(View itemView);
-
-        void onOverflowClicked(ImageView v);
-    }
-
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
-        public CircleImageView wordDescImg;
-        public TextView wordText, wordStatus, wordAuthor, wordLexicon;
-        public RatingBar wordRating;
-        public ImageView icPopupMenu;
-
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-            wordDescImg = (CircleImageView) itemView.findViewById(R.id.civ_word_pic);
-            wordText = (TextView) itemView.findViewById(R.id.tv_word_text);
-            wordStatus = (TextView) itemView.findViewById(R.id.tv_word_status);
-            wordAuthor = (TextView) itemView.findViewById(R.id.tv_word_author);
-            wordLexicon = (TextView) itemView.findViewById(R.id.tv_word_lexicon);
-            wordRating = (RatingBar) itemView.findViewById(R.id.rtb_word_rating);
-            icPopupMenu = (ImageView) itemView.findViewById(R.id.iv_ic_popup_menu);
-
-            itemView.setOnClickListener(this);
-            icPopupMenu.setOnClickListener(this);
-        }
-
-        @Override
-        public void onClick(View v) {
-            if (onItemClickCallBack != null) {
-                if (v instanceof ImageView) {
-                    onItemClickCallBack.onOverflowClicked((ImageView) v);
-                } else {
-                    onItemClickCallBack.onItemClicked(v);
-                }
-            }
-        }
-    }
-
 }

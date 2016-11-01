@@ -11,14 +11,18 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
+import android.widget.RatingBar;
 import android.widget.Spinner;
 
 import com.backendless.Backendless;
@@ -48,9 +52,11 @@ import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
 public class WordListFragment extends Fragment {
 
     private static List<Word> mWords;
+    public static WordListFragment mInstance;
     private static RecyclerView mRecyclerView;
-    private WordListItemAdapter mAdapter;
+    private static WordListItemAdapter mAdapter;
     private View rootView;
+
     private OnWordListItemClickListener mListener;
     private SwipeRefreshLayout swipeRefreshWordList;
     private ProgressBar circularBar;
@@ -65,12 +71,19 @@ public class WordListFragment extends Fragment {
             mWords.clear();
 
         mWords.addAll(words);
-        int curSize = mRecyclerView.getAdapter().getItemCount();
-        mRecyclerView.getAdapter().notifyItemRangeInserted(curSize, mWords.size());
-        mRecyclerView.getAdapter().notifyItemRangeChanged(0, mWords.size());
+        int curSize = mAdapter.getItemCount();
+        mAdapter.notifyItemRangeInserted(curSize, mWords.size());
         for (Word word : mWords) {
-            Log.d("MYTAG", "setmWords: " + word.getWord());
+            Log.d("WordListFragment", "setmWords: " + word.getWord() + word.getCreated());
         }
+    }
+
+    public static RecyclerView getmRecyclerView() {
+        return mRecyclerView;
+    }
+
+    public static WordListItemAdapter getmAdapter() {
+        return mAdapter;
     }
 
     /**
@@ -142,7 +155,7 @@ public class WordListFragment extends Fragment {
                 WordListItemAdapter.ViewHolder vh = (WordListItemAdapter.ViewHolder)
                         mRecyclerView.getChildViewHolder(itemView);
 
-                showWordDetailDialogFragment(mWords.get(position), vh.wordDescImg);
+                showWordDetailDialogFragment(mWords.get(position), vh.wordDescImg, position);
             }
 
             @Override
@@ -162,7 +175,7 @@ public class WordListFragment extends Fragment {
                 wordOptions.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-                        int position = (mRecyclerView.findContainingViewHolder(v).getAdapterPosition());
+                        int position = mRecyclerView.findContainingViewHolder(v).getAdapterPosition();
                         switch (item.getItemId()) {
                             case R.id.support:
                                 mListener.onMenuOptionSelected(R.id.support);
@@ -178,6 +191,7 @@ public class WordListFragment extends Fragment {
                                 return true;
                             case R.id.rate:
                                 mListener.onMenuOptionSelected(R.id.rate);
+                                rateWord(position);
                                 return true;
                             case R.id.add_to_word_chest:
                                 mListener.onMenuOptionSelected(R.id.add_to_word_chest);
@@ -249,8 +263,8 @@ public class WordListFragment extends Fragment {
         } else if (getContext() instanceof WordChestActivity) {
             PUOHelper.LoadFromWordChestTask.getTask(getContext()).execute();
 
-            int curSize = mRecyclerView.getAdapter().getItemCount();
-            mRecyclerView.getAdapter().notifyItemRangeInserted(curSize, mWords.size());
+            int curSize = mAdapter.getItemCount();
+            mAdapter.notifyItemRangeInserted(curSize, mWords.size());
             circularBar.setVisibility(View.GONE);
             swipeRefreshWordList.setRefreshing(false);
         }
@@ -264,36 +278,20 @@ public class WordListFragment extends Fragment {
     public void supportWord(final int position) {
         //TODO: update support functionality to allow multiple support
         if (PUOHelper.connectionAvailable(getContext())) {
-            if (!mWords.get(position).isSupported()) {
-                mWords.get(position).setSupported(true);
+            Word word = mWords.get(position);
+            if (!word.isSupported()) {
+                word.setSupported(true);
                 mAdapter.notifyItemChanged(position);
-                Backendless.Persistence.of(Word.class).findById(mWords.get(position), new AsyncCallback<Word>() {
+                Backendless.Persistence.save(word, new AsyncCallback<Word>() {
                     @Override
                     public void handleResponse(Word word) {
-                        if (!word.isSupported()) {
-                            word.setSupported(true);
-                            mAdapter.notifyItemChanged(position);
-                            Backendless.Persistence.save(word, new AsyncCallback<Word>() {
-                                @Override
-                                public void handleResponse(Word word) {
-                                    setSnackBar(getView(), word.getWord() + ": is now supported!",
-                                            Snackbar.LENGTH_SHORT).show();
-                                }
-
-                                @Override
-                                public void handleFault(BackendlessFault backendlessFault) {
-                                    setSnackBar(getView(), backendlessFault.getMessage(),
-                                            Snackbar.LENGTH_SHORT).show();
-                                }
-                            });
-                        } else
-                            setSnackBar(getView(), word.getWord() + ": is already supported!",
-                                    Snackbar.LENGTH_SHORT).show();
+                        setSnackBar(getView(), word.getWord() + ": is now supported!",
+                                Snackbar.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void handleFault(BackendlessFault backendlessFault) {
-                        setSnackBar(rootView, backendlessFault.getMessage(),
+                        setSnackBar(getView(), backendlessFault.getMessage(),
                                 Snackbar.LENGTH_SHORT).show();
                     }
                 });
@@ -399,20 +397,49 @@ public class WordListFragment extends Fragment {
                     Snackbar.LENGTH_LONG).show();
     }
 
-    public void sortList(final String sortOption) {
-        List<Word> sortedList = new ArrayList<>();
-        sortedList = mWords;
-        Collections.sort(sortedList, new Comparator<Word>() {
+    public void rateWord(final int position) {
+        final PopupWindow ratingPopup = PUOHelper.getPopup(getContext(), null);
+        ratingPopup.showAtLocation(new View(getContext()), Gravity.CENTER, 0, 0);
+        final RatingBar ratingBar = (RatingBar) ratingPopup.getContentView().findViewById(R.id.rating_bar);
+        Button rate = (Button) ratingPopup.getContentView().findViewById(R.id.btn_rate);
+        rate.setOnClickListener(new View.OnClickListener() {
             @Override
-            public int compare(Word o1, Word o2) {
-                if (sortOption.equalsIgnoreCase("Date Asc"))
-                    return o2.getCreated().compareTo(o1.getCreated());
-                else
-                    return o1.getCreated().compareTo(o2.getCreated());
+            public void onClick(View v) {
+                Word word = mWords.get(position);
+                word.setRating(ratingBar.getRating());
+                mAdapter.notifyItemChanged(position);
+                Backendless.Persistence.save(word, new AsyncCallback<Word>() {
+                    @Override
+                    public void handleResponse(Word word) {
+                    }
+
+                    @Override
+                    public void handleFault(BackendlessFault backendlessFault) {
+                        setSnackBar(rootView, backendlessFault.getMessage(),
+                                Snackbar.LENGTH_SHORT).show();
+                    }
+                });
+                ratingPopup.dismiss();
             }
         });
+
+    }
+
+    public void sortList(final String sortOption) {
+        List<Word> sortedList = mWords;
+        if (sortedList != null || sortedList.size() < 0) {
+            Collections.sort(sortedList, new Comparator<Word>() {
+                @Override
+                public int compare(Word o1, Word o2) {
+                    if (sortOption.equalsIgnoreCase("Date Asc"))
+                        return o2.getCreated().compareTo(o1.getCreated());
+                    else
+                        return o1.getCreated().compareTo(o2.getCreated());
+                }
+            });
+        }
         for (Word word : sortedList) {
-            Log.d("MYTAG", "sortList: " + word.getWord());
+            Log.d("WordListFragment", "sortList: " + word.getWord() + word.getCreated());
         }
         setmWords(sortedList);
     }
@@ -423,9 +450,9 @@ public class WordListFragment extends Fragment {
         return sb;
     }
 
-    private void showWordDetailDialogFragment(Word word, ImageView v) {
+    private void showWordDetailDialogFragment(Word word, ImageView v, int position) {
         FragmentManager fm = getFragmentManager();
-        WordDetailFragment wordDetailFragmentDialog = WordDetailFragment.newInstance(word, v);
+        WordDetailFragment wordDetailFragmentDialog = WordDetailFragment.newInstance(word, v, position);
         // SETS the target fragment for use later when sending results
         wordDetailFragmentDialog.setTargetFragment(WordListFragment.this, 400);
         //fm.beginTransaction().add(wordDetailFragmentDialog,"fragment_wor_detail").commit();

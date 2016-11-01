@@ -18,11 +18,22 @@ public class WordTreasureActivity extends AppCompatActivity implements
 
     @Override
     public void onMenuOptionSelected(int id) {
-
+        switch (id) {
+            case R.id.rate:
+                return;
+            case R.id.add_to_word_chest:
+                return;
+            case R.id.share:
+                return;
+            default:
+                return;
+        }
     }
 
     @Override
     public void onWordSelected(int position) {
 
     }
+
+
 }
