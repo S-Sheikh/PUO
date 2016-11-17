@@ -2,7 +2,6 @@ package za.ac.cut.puo;
 
 
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -333,13 +332,7 @@ public class WordDetailFragment extends AppCompatDialogFragment implements Toolb
                     mediaPlayer.release();
                 }
             });
-            audioDlg.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                @Override
-                public void onCancel(DialogInterface dialogInterface) {
-                    mediaPlayer.reset();
-                    mediaPlayer.release();
-                }
-            });
+
             // Trigger an async preparation which will file listener when completed
             mediaPlayer.prepareAsync();
         } else
