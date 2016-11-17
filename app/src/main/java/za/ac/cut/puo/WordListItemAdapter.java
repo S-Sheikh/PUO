@@ -46,7 +46,7 @@ public class WordListItemAdapter extends RecyclerView.Adapter<WordListItemAdapte
         public CircleImageView wordDescImg;
         public TextView wordText, wordStatus, wordAuthor, wordLexicon, supporters;
         public RatingBar wordRating;
-        public ImageView icPopupMenu;
+        public ImageView icPopupMenu, ivBgSupporters;
 
 
         public ViewHolder(View itemView) {
@@ -58,6 +58,7 @@ public class WordListItemAdapter extends RecyclerView.Adapter<WordListItemAdapte
             wordAuthor = (TextView) itemView.findViewById(R.id.tv_word_author);
             wordLexicon = (TextView) itemView.findViewById(R.id.tv_word_lexicon);
             wordRating = (RatingBar) itemView.findViewById(R.id.rtb_word_rating);
+            ivBgSupporters = (ImageView) itemView.findViewById(R.id.iv_bg_supporters);
             icPopupMenu = (ImageView) itemView.findViewById(R.id.iv_ic_popup_menu);
 
             itemView.setOnClickListener(this);
@@ -90,10 +91,11 @@ public class WordListItemAdapter extends RecyclerView.Adapter<WordListItemAdapte
         Word word = mWords.get(position);
 
         //change text color to green in word is supported.
-        if (word.isSupported()) {
+        if (word.isSupported()&&!word.isBlocked()) {
             holder.wordStatus.setTextColor(getContext().getResources()
                     .getColor(R.color.gGreen));
             holder.supporters.setVisibility(View.VISIBLE);
+            holder.ivBgSupporters.setVisibility(View.VISIBLE);
             holder.supporters.setText(String.valueOf(word.getSupporters()));
         } else {
             holder.wordStatus.setTextColor(getContext().getResources()
@@ -109,7 +111,7 @@ public class WordListItemAdapter extends RecyclerView.Adapter<WordListItemAdapte
         holder.wordAuthor.setText(word.getAuthor());
         holder.wordLexicon.setText(word.getLexicon());
         holder.wordRating.setRating(word.getRating());
-        String imageUri = "https://api.backendless.com/D200A885-7EED-CB51-FFAC-228F87E55D00/v1/files/WordPictures/" + word.getImageLocation();
+        String imageUri = Defaults.WORD_IMAGE_BASE_URL + word.getImageLocation();
         Picasso.with(getContext()).load(imageUri)
                 .resize(300, 300)
                 .centerInside()

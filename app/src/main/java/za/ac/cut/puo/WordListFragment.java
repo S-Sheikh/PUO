@@ -233,7 +233,6 @@ public class WordListFragment extends Fragment {
 
             }
         });
-
     }
 
     /**
@@ -408,15 +407,15 @@ public class WordListFragment extends Fragment {
     }
 
     public void sortList(final String sortOption) {
-        List<Word> sortedList = mWords;
-        if (!sortedList.isEmpty()) {
+        //List<Word> sortedList = mWords;
+        if (!mWords.isEmpty()) {
             if (sortOption.equalsIgnoreCase("Date Asc")) {
-                setmWords(Lists.reverse(sortedList));
+                setmWords(Lists.reverse(mWords));
                 mAdapter.notifyItemRangeChanged(0, mWords.size());
             }
         }
-        for (Word word : sortedList) {
-            Log.d("WordListFragment", "sortList: " + word.getWord() + word.getCreated());
+        for (Word word : mWords) {
+            Log.d("WordListFragment", "sortList: " + word.getWord());
         }
 
     }

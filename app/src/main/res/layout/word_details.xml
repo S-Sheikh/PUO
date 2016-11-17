@@ -31,7 +31,8 @@
         android:layout_alignBottom="@id/tv_word_status"
         android:layout_below="@id/tv_word_text"
         android:layout_marginLeft="2dp"
-        android:layout_toRightOf="@id/tv_word_status"/>
+        android:layout_toRightOf="@id/tv_word_status"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/tv_supporters"

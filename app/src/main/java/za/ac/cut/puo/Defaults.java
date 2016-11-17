@@ -10,8 +10,11 @@ public class Defaults {
     public static final String GOOGLE_PROJECT_ID = "247987286074";
     public static final String GCM_SENDER_ID = "830980328375";
     public static final String DEFAULT_CHANNEL = "default";
-    public static final String BASE_EXTERNAL_APP_DIRECTORY =
-            Environment.getExternalStorageDirectory().toString() + "/PUO/";
+    public static final String BASE_EXTERNAL_APP_DIRECTORY = Environment.getExternalStorageDirectory().toString() + "/PUO/";
     public static final String PROFILE_PIC_SUB_DIRECTORY = "Profile_picture/";
+    public static final String AUDIO_BASE_URL = "https://api.backendless.com/D200A885-7EED-CB51-FFAC-228F87E55D00/v1/files/Voice_Clips/";
+    public static final String WORD_IMAGE_BASE_URL = "https://api.backendless.com/D200A885-7EED-CB51-FFAC-228F87E55D00/v1/files/WordPictures/";
+
+
 }
 
