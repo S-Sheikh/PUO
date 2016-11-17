@@ -16,7 +16,7 @@
         android:theme="@style/AppTheme.AppBarOverlay"
         app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-    <include layout="@layout/app_footer" />
+
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -63,6 +63,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/add_picture" />
                 </LinearLayout>
+
             </LinearLayout>
 
             <LinearLayout
@@ -113,6 +114,7 @@
                     android:layout_gravity="center_horizontal"
                     android:hint="@string/register_username_hint"
                     android:inputType="textPersonName" />
+
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -203,6 +205,7 @@
                     android:layout_marginTop="20dp"
                     android:entries="@array/role_items"
                     android:prompt="@string/roles_hint" />
+
             </android.support.design.widget.CollapsingToolbarLayout>
 
             <android.support.design.widget.CollapsingToolbarLayout
@@ -243,16 +246,10 @@
                     android:text="@string/change_password"
                     android:textColor="@color/colorIcons" />
 
-                <Button
-                    android:id="@+id/button01"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/buttons"
-                    android:text="Location"
-                    android:textColor="@color/colorIcons" />
+
             </LinearLayout>
+
+            <include layout="@layout/app_footer" />
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 </LinearLayout>
