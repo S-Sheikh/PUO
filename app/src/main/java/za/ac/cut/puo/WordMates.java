@@ -85,6 +85,7 @@ public class WordMates extends AppCompatActivity {
                         BackendlessUser user = userIterator.next();
                         if (user.getProperty("status").toString().equals("Online")) {
                             count++;
+
                         }
                     }
                     tvUsersOnline.setText(String.valueOf(count));

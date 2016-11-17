@@ -93,18 +93,7 @@ public class Login extends AppCompatActivity {
                                 intent.putExtra("objectId", backendlessUser.getObjectId());
                                 startActivity(intent);
                             } else {
-                                /** Is this needed?
-                                 backendlessUser.setProperty("isUpdated", true);
-                                 Intent intent1 = new Intent(Login.this, HomeMenu.class);
-                                 intent1.putExtra("objectId", backendlessUser.getObjectId());
-                                 intent1.putExtra("password", backendlessUser.getPassword());
-                                 intent1.putExtra("user", backendlessUser.getEmail());
-                                 intent1.putExtra("name", backendlessUser.getProperty("name").toString().trim());
-                                 intent1.putExtra("surname", backendlessUser.getProperty("surname").toString().trim());
-                                 intent1.putExtra("role", backendlessUser.getProperty("role").toString().trim());
-                                 intent1.putExtra("cell", backendlessUser.getProperty("cell").toString().trim());
-                                 intent1.putExtra("isUpdated", backendlessUser.getProperty("isUpdated").toString().trim());
-                                 */
+
                                 startActivity(new Intent(Login.this, HomeMenu.class));
                             }
 
