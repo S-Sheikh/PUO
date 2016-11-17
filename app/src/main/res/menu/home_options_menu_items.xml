@@ -19,13 +19,6 @@
         android:orderInCategory="103"
         android:title="@string/word_treasure"
         app:showAsAction="never" />
-
-    <item
-        android:id="@+id/word_centers"
-        android:orderInCategory="104"
-        android:title="@string/word_centers"
-        app:showAsAction="never" />
-
     <item
         android:id="@+id/word_chest"
         android:orderInCategory="104"
@@ -37,11 +30,6 @@
         android:title="@string/word_mates"
         app:showAsAction="never" />
 
-    <item
-        android:id="@+id/word_2_word"
-        android:orderInCategory="106"
-        android:title="@string/word_2_word"
-        app:showAsAction="never" />
 
     <item
         android:id="@+id/word_game"

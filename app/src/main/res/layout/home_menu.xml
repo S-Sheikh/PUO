@@ -5,8 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/colorPrimaryLight"
+    android:orientation="vertical"
     tools:context="za.ac.cut.puo.HomeMenu">
 
     <android.support.design.widget.AppBarLayout
@@ -84,7 +84,7 @@
         android:layout_gravity="center_horizontal"
         android:text="@string/tv_recent_words" />
 
-    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh_word_list_home"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
@@ -94,8 +94,8 @@
             android:id="@+id/lv_words"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:clickable="false"
             android:background="@color/colorPrimaryLight"
+            android:clickable="false"
             android:listSelector="@drawable/card_view_selector_bg" />
     </android.support.v4.widget.SwipeRefreshLayout>
 
@@ -119,9 +119,12 @@
         android:textColor="@color/colorIcons" />
 
     <com.google.android.gms.ads.AdView
-        android:id="@+id/adView"
-        android:layout_width="match_parent"
+        android:id="@+id/AdView"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         ads:adSize="BANNER"
-        ads:adUnitId="@string/banner_home_footer"></com.google.android.gms.ads.AdView>
+        ads:adUnitId="@string/banner_home_footer">
+
+    </com.google.android.gms.ads.AdView>
 </LinearLayout>
