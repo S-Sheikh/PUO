@@ -30,10 +30,8 @@ import com.backendless.exceptions.BackendlessFault;
 
 import java.io.IOException;
 
-import static android.media.MediaPlayer.MEDIA_ERROR_IO;
 import static android.media.MediaPlayer.MEDIA_ERROR_MALFORMED;
-import static android.media.MediaPlayer.MEDIA_ERROR_TIMED_OUT;
-import static android.media.MediaPlayer.MEDIA_ERROR_UNSUPPORTED;
+import static android.media.MediaPlayer.MEDIA_ERROR_UNKNOWN;
 
 
 /**
@@ -54,7 +52,6 @@ public class WordDetailFragment extends AppCompatDialogFragment implements Toolb
     private ImageView ivWordAudio, ivBgSupporters;
     private MediaPlayer mediaPlayer;
     private ProgressDialog audioDlg;
-
 
 
     public WordDetailFragment() {
@@ -108,9 +105,9 @@ public class WordDetailFragment extends AppCompatDialogFragment implements Toolb
         collapsingToolbar.setTitle(selectedWord.getWord());
 
         /*change text color to green if word is supported.*/
-        if (selectedWord.isSupported()&&!selectedWord.isBlocked()) {
+        if (selectedWord.isSupported() && !selectedWord.isBlocked()) {
             wordStatus.setTextColor(getContext().getResources()
-                    .getColor(R.color.gGreen));
+                    .getColor(R.color.gLime));
             supporters.setVisibility(View.VISIBLE);
             ivBgSupporters.setVisibility(View.VISIBLE);
             supporters.setText(String.valueOf(selectedWord.getSupporters()));
@@ -135,7 +132,16 @@ public class WordDetailFragment extends AppCompatDialogFragment implements Toolb
 
         wordActionsBar.setOnMenuItemClickListener(this);
         wordDetailToolbar.setOnMenuItemClickListener(this);
-        ivWordAudio.setOnClickListener(view -> streamWordAudio());
+        ivWordAudio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (selectedWord.getPronunciation() != null)
+                    if (!selectedWord.getPronunciation().isEmpty())
+                        streamWordAudio();
+
+                Toast.makeText(getContext(), "No pronunciation set for this word!", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         return wordDetailView;
     }
@@ -175,7 +181,7 @@ public class WordDetailFragment extends AppCompatDialogFragment implements Toolb
                     selectedWord.setSupported(true);
                     wordStatus.setText(selectedWord.getStatus());
                     wordStatus.setTextColor(getContext().getResources()
-                            .getColor(R.color.gGreen));
+                            .getColor(R.color.gLime));
                     supporters.setVisibility(View.VISIBLE);
                     ivBgSupporters.setVisibility(View.VISIBLE);
                 }
@@ -208,34 +214,37 @@ public class WordDetailFragment extends AppCompatDialogFragment implements Toolb
      * Updates the word rating.
      */
     public void rateWord() {
-        if (PUOHelper.connectionAvailable(getContext())){
+        if (PUOHelper.connectionAvailable(getContext())) {
             final PopupWindow ratingPopup = PUOHelper.getPopup(getContext(), mContainer);
             final RatingBar ratingBar = (RatingBar) ratingPopup.getContentView().findViewById(R.id.rating_bar);
             Button rate = (Button) ratingPopup.getContentView().findViewById(R.id.btn_rate);
             ratingPopup.showAtLocation(wordDetailView, Gravity.CENTER, 0, 0);
             ratingPopup.update();
-            rate.setOnClickListener(v -> {
-                if (ratingBar.getRating() > 0) {
-                    selectedWord.setRating(ratingBar.getRating());
-                    ((WordListFragment) getTargetFragment())
-                            .getmAdapter().notifyItemChanged(wordPosition);
-                    wordRatings.setRating(selectedWord.getRating());
-                    Backendless.Persistence.save(selectedWord, new AsyncCallback<Word>() {
-                        @Override
-                        public void handleResponse(Word word) {
-                        }
+            rate.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (ratingBar.getRating() > 0) {
+                        selectedWord.setRating(ratingBar.getRating());
+                        ((WordListFragment) getTargetFragment())
+                                .getmAdapter().notifyItemChanged(wordPosition);
+                        wordRatings.setRating(selectedWord.getRating());
+                        Backendless.Persistence.save(selectedWord, new AsyncCallback<Word>() {
+                            @Override
+                            public void handleResponse(Word word) {
+                            }
 
-                        @Override
-                        public void handleFault(BackendlessFault backendlessFault) {
-                            Toast.makeText(getContext(), backendlessFault.getMessage(),
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                } else
-                    Toast.makeText(getContext(), "No rating set!", Toast.LENGTH_SHORT).show();
-                ratingPopup.dismiss();
+                            @Override
+                            public void handleFault(BackendlessFault backendlessFault) {
+                                Toast.makeText(getContext(), backendlessFault.getMessage(),
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    } else
+                        Toast.makeText(getContext(), "No rating set!", Toast.LENGTH_SHORT).show();
+                    ratingPopup.dismiss();
+                }
             });
-        }else
+        } else
             Toast.makeText(getContext(), "No internet available! Please check connection.",
                     Toast.LENGTH_LONG).show();
     }
@@ -273,10 +282,13 @@ public class WordDetailFragment extends AppCompatDialogFragment implements Toolb
                     Toast.LENGTH_LONG).show();
     }
 
+    /**
+     * Streams the word audio from Backendless.
+     */
     public void streamWordAudio() {
-        if (PUOHelper.connectionAvailable(getContext())){
+        if (PUOHelper.connectionAvailable(getContext())) {
             mediaPlayer = new MediaPlayer();
-            audioDlg = ProgressDialog.show(getContext(),"Getting pronunciation", "Please wait...");
+            audioDlg = ProgressDialog.show(getContext(), "Getting pronunciation", "Please wait...");
             audioDlg.setCancelable(true);
 
             // Set type to streaming
@@ -285,27 +297,22 @@ public class WordDetailFragment extends AppCompatDialogFragment implements Toolb
             mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
                 @Override
                 public boolean onError(MediaPlayer mp, int what, int extra) {
-                    switch (extra) {
-                        case MEDIA_ERROR_IO:
-                            mp.reset();
+                    switch (what) {
+                        case MEDIA_ERROR_UNKNOWN:
                             audioDlg.cancel();
-                            return false;
+                            Toast.makeText(getContext(), "MEDIA_ERROR_UNKNOWN: " + what, Toast.LENGTH_SHORT).show();
+                            mp.reset();
+                            return true;
                         case MEDIA_ERROR_MALFORMED:
-                            mp.reset();
                             audioDlg.cancel();
-                            return false;
-                        case MEDIA_ERROR_UNSUPPORTED:
+                            Toast.makeText(getContext(), "MEDIA_ERROR_MALFORMED: " + what, Toast.LENGTH_SHORT).show();
                             mp.reset();
-                            audioDlg.cancel();
-                            return false;
-                        case MEDIA_ERROR_TIMED_OUT:
-                            mp.reset();
-                            audioDlg.cancel();
-                            return false;
+                            return true;
                         default:
-                            mp.reset();
                             audioDlg.cancel();
-                            return false;
+                            Toast.makeText(getContext(), "GENERAL_ERROR", Toast.LENGTH_SHORT).show();
+                            mp.reset();
+                            return true;
                     }
                 }
             });
@@ -323,6 +330,7 @@ public class WordDetailFragment extends AppCompatDialogFragment implements Toolb
             try {
                 mediaPlayer.setDataSource(Defaults.AUDIO_BASE_URL + selectedWord.getPronunciation());
             } catch (IOException e) {
+                Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
             // Listen for when the audio has completed playing.

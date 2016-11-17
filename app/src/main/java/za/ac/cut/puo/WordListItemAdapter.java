@@ -93,7 +93,7 @@ public class WordListItemAdapter extends RecyclerView.Adapter<WordListItemAdapte
         //change text color to green in word is supported.
         if (word.isSupported()&&!word.isBlocked()) {
             holder.wordStatus.setTextColor(getContext().getResources()
-                    .getColor(R.color.gGreen));
+                    .getColor(R.color.gLime));
             holder.supporters.setVisibility(View.VISIBLE);
             holder.ivBgSupporters.setVisibility(View.VISIBLE);
             holder.supporters.setText(String.valueOf(word.getSupporters()));

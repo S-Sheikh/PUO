@@ -221,7 +221,7 @@ public class HomeMenu extends AppCompatActivity {
             if (resultCode == Activity.RESULT_OK) {
                 Uri uri = data.getData();
                 try {
-                    bitmap = MediaStore.Images.Media.getBitmap(HomeMenu.this.getContentResolver(), uri);
+                    bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
                     ivAddImage.setImageBitmap(bitmap);
                 } catch (Exception e) {
                     //Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -361,7 +361,7 @@ public class HomeMenu extends AppCompatActivity {
     }
 
     private void ImageChooser() {
-        AlertDialog.Builder getImageFrom = new AlertDialog.Builder(HomeMenu.this);
+        AlertDialog.Builder getImageFrom = new AlertDialog.Builder(this);
         getImageFrom.setIcon(getResources().getDrawable(R.drawable.ic_add_image));
         getImageFrom.setTitle("Select an Option:");
         final CharSequence[] opsChars = {"Take a Picture", "Open Gallery"};
@@ -510,7 +510,7 @@ public class HomeMenu extends AppCompatActivity {
     public void AddImage(View view) {
         Intent choosePhotoIntent = new Intent(Intent.ACTION_GET_CONTENT);
         choosePhotoIntent.setType("image/*");
-        if (choosePhotoIntent.resolveActivity(HomeMenu.this.getPackageManager()) != null) {
+        if (choosePhotoIntent.resolveActivity(this.getPackageManager()) != null) {
             choosePhotoIntent.putExtra("imageUri", choosePhotoIntent.getData());
             startActivityForResult(choosePhotoIntent, REQUEST_CODE_CHOOSE_PHOTO);
         }

@@ -197,11 +197,9 @@
                 android:layout_weight="1"
                 android:clickable="true"
                 android:onClick=""
-                android:src="@drawable/ic_add_image"
+                app:srcCompat="@drawable/ic_add_image"
                 cardView:civ_border_color="@color/colorPrimary"
                 cardView:civ_border_width="0.5dip" />
-
-
         </LinearLayout>
 
         <LinearLayout

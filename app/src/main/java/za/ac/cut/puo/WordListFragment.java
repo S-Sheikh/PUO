@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -32,6 +33,7 @@ import com.backendless.exceptions.BackendlessFault;
 import com.backendless.persistence.BackendlessDataQuery;
 import com.backendless.persistence.QueryOptions;
 import com.google.common.base.Objects;
+import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
@@ -73,17 +75,25 @@ public class WordListFragment extends Fragment {
     public static void setmWords(List<Word> words) {
 
         /*Filter out existing words.*/
-        List<Word> newWords = new ArrayList<>(Collections2.filter(words, w -> {
-            for (Word word : mWords)
-                if (Objects.equal(word.getWord(), w.getWord()))
-                    return false;
-            return true;
+        List<Word> newWords = new ArrayList<>(Collections2.filter(words, new Predicate<Word>() {
+            @Override
+            public boolean apply(Word w) {
+                for (Word word : mWords)
+                    if (Objects.equal(word.getWord(), w.getWord()))
+                        return false;
+                return true;
+            }
         }));
 
         /*Filter out blocked words if user is Collector otherwise add new words.*/
         if (Backendless.UserService.CurrentUser().getProperty("role").toString()
                 .equalsIgnoreCase("Collector"))
-            mWords.addAll(Collections2.filter(newWords, Predicates.not(Word::isBlocked)));
+            mWords.addAll(Collections2.filter(newWords, Predicates.not(new Predicate<Word>() {
+                @Override
+                public boolean apply(Word word) {
+                    return word.isBlocked();
+                }
+            })));
         else
             mWords.addAll(newWords);
 
@@ -186,33 +196,36 @@ public class WordListFragment extends Fragment {
                         wordOptions.getMenu().removeItem(R.id.support);
                 }
 
-                wordOptions.setOnMenuItemClickListener(item -> {
-                    int position = mRecyclerView.findContainingViewHolder(v).getAdapterPosition();
-                    switch (item.getItemId()) {
-                        case R.id.support:
-                            mListener.onMenuOptionSelected(R.id.support);
-                            supportWord(position);
-                            return true;
-                        case R.id.unsupport:
-                            mListener.onMenuOptionSelected(R.id.unsupport);
-                            unSupportWord(position);
-                            return true;
-                        case R.id.block:
-                            mListener.onMenuOptionSelected(R.id.block);
-                            blockWord(position);
-                            return true;
-                        case R.id.rate:
-                            mListener.onMenuOptionSelected(R.id.rate);
-                            rateWord(position);
-                            return true;
-                        case R.id.add_to_word_chest:
-                            mListener.onMenuOptionSelected(R.id.add_to_word_chest);
-                            return true;
-                        case R.id.share:
-                            mListener.onMenuOptionSelected(R.id.share);
-                            return true;
-                        default:
-                            return false;
+                wordOptions.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        int position = mRecyclerView.findContainingViewHolder(v).getAdapterPosition();
+                        switch (item.getItemId()) {
+                            case R.id.support:
+                                mListener.onMenuOptionSelected(R.id.support);
+                                supportWord(position);
+                                return true;
+                            case R.id.unsupport:
+                                mListener.onMenuOptionSelected(R.id.unsupport);
+                                unSupportWord(position);
+                                return true;
+                            case R.id.block:
+                                mListener.onMenuOptionSelected(R.id.block);
+                                blockWord(position);
+                                return true;
+                            case R.id.rate:
+                                mListener.onMenuOptionSelected(R.id.rate);
+                                rateWord(position);
+                                return true;
+                            case R.id.add_to_word_chest:
+                                mListener.onMenuOptionSelected(R.id.add_to_word_chest);
+                                return true;
+                            case R.id.share:
+                                mListener.onMenuOptionSelected(R.id.share);
+                                return true;
+                            default:
+                                return false;
+                        }
                     }
                 });
                 wordOptions.show();
@@ -220,7 +233,12 @@ public class WordListFragment extends Fragment {
         });
 
         /*Set pull to refresh.*/
-        swipeRefreshWordList.setOnRefreshListener(this::loadData);
+        swipeRefreshWordList.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                loadData();
+            }
+        });
 
         spSortOptions.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -386,22 +404,25 @@ public class WordListFragment extends Fragment {
         ratingPopup.showAtLocation(new View(getContext()), Gravity.CENTER, 0, 0);
         final RatingBar ratingBar = (RatingBar) ratingPopup.getContentView().findViewById(R.id.rating_bar);
         Button rate = (Button) ratingPopup.getContentView().findViewById(R.id.btn_rate);
-        rate.setOnClickListener(v -> {
-            Word word = mWords.get(position);
-            word.setRating(ratingBar.getRating());
-            mAdapter.notifyItemChanged(position);
-            Backendless.Persistence.save(word, new AsyncCallback<Word>() {
-                @Override
-                public void handleResponse(Word word) {
-                }
+        rate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Word word = mWords.get(position);
+                word.setRating(ratingBar.getRating());
+                mAdapter.notifyItemChanged(position);
+                Backendless.Persistence.save(word, new AsyncCallback<Word>() {
+                    @Override
+                    public void handleResponse(Word word) {
+                    }
 
-                @Override
-                public void handleFault(BackendlessFault backendlessFault) {
-                    setSnackBar(rootView, backendlessFault.getMessage(),
-                            Snackbar.LENGTH_SHORT).show();
-                }
-            });
-            ratingPopup.dismiss();
+                    @Override
+                    public void handleFault(BackendlessFault backendlessFault) {
+                        setSnackBar(rootView, backendlessFault.getMessage(),
+                                Snackbar.LENGTH_SHORT).show();
+                    }
+                });
+                ratingPopup.dismiss();
+            }
         });
 
     }
@@ -430,7 +451,7 @@ public class WordListFragment extends Fragment {
         FragmentManager fm = getFragmentManager();
         WordDetailFragment wordDetailFragmentDialog = WordDetailFragment.newInstance(word, v.getDrawable(), position);
         // SETS the target fragment for use later when sending results
-        wordDetailFragmentDialog.setTargetFragment(WordListFragment.this, 400);
+        wordDetailFragmentDialog.setTargetFragment(this, 400);
         wordDetailFragmentDialog.show(fm, "fragment_word_detail");
     }
 
