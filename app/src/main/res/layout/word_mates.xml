@@ -124,6 +124,7 @@
      </LinearLayout>-->
 
     <include layout="@layout/progress_bar_circular" />
+
     <ListView
         android:id="@+id/lvContactList"
         android:layout_width="match_parent"

@@ -36,7 +36,7 @@ public class ChooseNicknameActivity extends Activity {
 
         if (owner) {
             Backendless.setUrl(Defaults.SERVER_URL);
-            Backendless.initApp(this, Defaults.APPLICATION_ID, Defaults.SECRET_KEY, Defaults.VERSION);
+            Backendless.initApp(this, Defaults.APP_ID, Defaults.SECRET_KEY, Defaults.APP_VERSION);
         }
 
         Backendless.Messaging.registerDevice(Defaults.GOOGLE_PROJECT_ID, Defaults.DEFAULT_CHANNEL, new AsyncCallback<Void>() {

@@ -19,9 +19,9 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/civ_word_pic"
-            android:layout_width="50dip"
-            android:layout_height="50dip"
-            android:layout_marginRight="6dip"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginRight="6dp"
             android:src="@drawable/dp"
             cardView:civ_border_color="@color/colorPrimary"
             cardView:civ_border_width="0.5dip" />

@@ -9,7 +9,7 @@ public class GameFillInTheBlank extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_fill_in_the_blank);
-        PUOHelper.setAppBar(this, getResources().getString(R.string.app_name))
+        PUOHelper.initAppBar(this, getResources().getString(R.string.app_name))
                 .setDisplayHomeAsUpEnabled(true);
     }
 

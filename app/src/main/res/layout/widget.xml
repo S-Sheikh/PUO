@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_height="fill_parent"
-    android:layout_width="fill_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:orientation="vertical" >
+        android:orientation="vertical">
+
         <ImageView
             android:layout_width="match_parent"
-            android:src="@drawable/rect_bar"
             android:layout_height="50dp"
             android:layout_marginLeft="3dp"
-            android:layout_marginRight="3dp"/>
+            android:layout_marginRight="3dp"
+            android:src="@drawable/rect_bar" />
 
         <ListView
             android:id="@+id/words"
@@ -29,44 +28,44 @@
 
     <ImageView
         android:id="@+id/update_list"
-        android:src="@drawable/ic_widget_update"
-        android:layout_marginRight="5dp"
         android:layout_width="50dp"
-        android:text="@string/update_list"
-        android:layout_alignParentTop="false"
-        android:layout_alignParentLeft="false"
-        android:layout_alignParentStart="false"
-        android:layout_alignParentRight="true"
-        android:background="@drawable/widget_background"
         android:layout_height="40dp"
-        android:layout_marginTop="5dp" />
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentTop="false"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/widget_background"
+        android:src="@drawable/ic_widget_update"
+        android:text="@string/update_list" />
 
     <ImageView
         android:id="@+id/widget_logo"
-        android:src="@drawable/logo_puo"
-        android:layout_marginLeft="5dp"
         android:layout_width="50dp"
-        android:text="@string/update_list"
-        android:layout_alignParentTop="false"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="false"
-        android:layout_alignParentRight="false"
-        android:background="@color/colorPrimary"
         android:layout_height="40dp"
-        android:layout_marginTop="5dp" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="false"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentTop="false"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:background="@color/colorPrimary"
+        android:src="@drawable/logo_puo"
+        android:text="@string/update_list" />
 
     <TextView
-    android:id="@+id/widget_title"
-    android:src="@drawable/logo_puo"
-    android:layout_width="wrap_content"
+        android:id="@+id/widget_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
 
-    android:text="@string/login_tv_talk_to_me"
-        android:background="@color/colorPrimary"
-    android:layout_height="wrap_content"
-        android:textSize="24sp"
-        android:textColor="@color/cardview_light_background"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp" />
+        android:layout_marginTop="10dp"
+        android:background="@color/colorPrimary"
+        android:src="@drawable/logo_puo"
+        android:text="@string/login_tv_talk_to_me"
+        android:textColor="@color/cardview_light_background"
+        android:textSize="24sp" />
 
 
 </RelativeLayout>

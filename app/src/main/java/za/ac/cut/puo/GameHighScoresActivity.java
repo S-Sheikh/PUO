@@ -18,10 +18,9 @@ import java.util.List;
 
 public class GameHighScoresActivity extends AppCompatActivity {
 
-    private List<GameHighScores> scores;
     ListView lvWords;
     ProgressBar circularBar;
-
+    private List<GameHighScores> scores;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +28,7 @@ public class GameHighScoresActivity extends AppCompatActivity {
         setContentView(R.layout.game_high_scores);
         lvWords = (ListView) findViewById(R.id.lv_highScores);
         circularBar = (ProgressBar) findViewById(R.id.progressBarCircular);
-        PUOHelper.setAppBar(GameHighScoresActivity.this, getResources().getString(R.string.app_name))
+        PUOHelper.initAppBar(GameHighScoresActivity.this, getResources().getString(R.string.app_name))
                 .setDisplayHomeAsUpEnabled(true);
 
         loadData();

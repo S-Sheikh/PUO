@@ -18,8 +18,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class AddWordAdapter extends ArrayAdapter<Word> {
     private final Context context;
     private final List<Word> values;
-    TextView tv_word_title, tv_word_status, tv_word_author, tvLanguage;
-    ImageView wordImg, iv_ic_popup;
+    private TextView tv_word_title, tv_word_status, tv_word_author, tvLanguage, supporters;
+    private ImageView wordImg, iv_ic_popup;
 
     public AddWordAdapter(Context context, List<Word> list) {
         super(context, R.layout.word_list_item, list);
@@ -38,6 +38,7 @@ public class AddWordAdapter extends ArrayAdapter<Word> {
         tv_word_status = (TextView) convertView.findViewById(R.id.tv_word_status);
         tv_word_author = (TextView) convertView.findViewById(R.id.tv_word_author);
         tvLanguage = (TextView) convertView.findViewById(R.id.tv_word_lexicon);
+        supporters = (TextView) convertView.findViewById(R.id.tv_supporters);
         tv_word_title.setText(values.get(position).getWord());
         tvLanguage.setText(values.get(position).getLexicon());
         tv_word_status.setText(values.get(position).getStatus());
@@ -54,7 +55,9 @@ public class AddWordAdapter extends ArrayAdapter<Word> {
         //change text color to green in word is supported.
         if (values.get(position).isSupported()) {
             tv_word_status.setTextColor(getContext().getResources()
-                    .getColor(R.color.gColorTime));
+                    .getColor(R.color.gGreen));
+            supporters.setVisibility(View.VISIBLE);
+            supporters.setText(String.valueOf(values.get(position).getSupporters()));
         } else {
             tv_word_status.setTextColor(getContext().getResources()
                     .getColor(R.color.colorPrimaryText));

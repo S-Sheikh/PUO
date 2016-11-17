@@ -10,7 +10,7 @@ public class WordChestActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_word_chest);
-        PUOHelper.setAppBar(this, getResources().getString(R.string.title_activity_word_chest))
+        PUOHelper.initAppBar(this, getResources().getString(R.string.title_activity_word_chest))
                 .setDisplayHomeAsUpEnabled(true);
     }
 

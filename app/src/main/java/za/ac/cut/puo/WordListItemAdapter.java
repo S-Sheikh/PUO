@@ -41,17 +41,10 @@ public class WordListItemAdapter extends RecyclerView.Adapter<WordListItemAdapte
         return mContext;
     }
 
-    /*Define the listener interface*/
-    public interface OnItemClickListener {
-        void onItemClicked(View itemView);
-
-        void onOverflowClicked(ImageView v);
-    }
-
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public CircleImageView wordDescImg;
-        public TextView wordText, wordStatus, wordAuthor, wordLexicon;
+        public TextView wordText, wordStatus, wordAuthor, wordLexicon, supporters;
         public RatingBar wordRating;
         public ImageView icPopupMenu;
 
@@ -61,6 +54,7 @@ public class WordListItemAdapter extends RecyclerView.Adapter<WordListItemAdapte
             wordDescImg = (CircleImageView) itemView.findViewById(R.id.civ_word_pic);
             wordText = (TextView) itemView.findViewById(R.id.tv_word_text);
             wordStatus = (TextView) itemView.findViewById(R.id.tv_word_status);
+            supporters = (TextView) itemView.findViewById(R.id.tv_supporters);
             wordAuthor = (TextView) itemView.findViewById(R.id.tv_word_author);
             wordLexicon = (TextView) itemView.findViewById(R.id.tv_word_lexicon);
             wordRating = (RatingBar) itemView.findViewById(R.id.rtb_word_rating);
@@ -98,7 +92,9 @@ public class WordListItemAdapter extends RecyclerView.Adapter<WordListItemAdapte
         //change text color to green in word is supported.
         if (word.isSupported()) {
             holder.wordStatus.setTextColor(getContext().getResources()
-                    .getColor(R.color.gColorTime));
+                    .getColor(R.color.gGreen));
+            holder.supporters.setVisibility(View.VISIBLE);
+            holder.supporters.setText(String.valueOf(word.getSupporters()));
         } else {
             holder.wordStatus.setTextColor(getContext().getResources()
                     .getColor(R.color.colorPrimaryText));
@@ -125,5 +121,12 @@ public class WordListItemAdapter extends RecyclerView.Adapter<WordListItemAdapte
     @Override
     public int getItemCount() {
         return mWords.size();
+    }
+
+    /*Define the listener interface*/
+    interface OnItemClickListener {
+        void onItemClicked(View itemView);
+
+        void onOverflowClicked(ImageView v);
     }
 }

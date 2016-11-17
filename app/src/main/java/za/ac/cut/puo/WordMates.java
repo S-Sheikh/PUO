@@ -1,10 +1,12 @@
 package za.ac.cut.puo;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -18,8 +20,10 @@ import com.backendless.exceptions.BackendlessFault;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Watlinton on 2016/10/26.
@@ -51,6 +55,23 @@ public class WordMates extends AppCompatActivity {
         AdRequest adRequest = new AdRequest.Builder()
                 .build();
         mAdView.loadAd(adRequest);
+
+        lvUsers.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (getCallingActivity() != null && getCallingActivity()
+                        .getShortClassName().equals("WordTreasure")) {
+                    onSelectUserForShare(usersList.get(position).getProperties());
+                }
+            }
+        });
+    }
+
+    private void onSelectUserForShare(Map<String, Object> properties) {
+        Intent result = new Intent();
+        result.putExtra("user_properties", (Serializable) properties);
+        setResult(RESULT_OK, result);
+        this.finish();
     }
 
     @Override

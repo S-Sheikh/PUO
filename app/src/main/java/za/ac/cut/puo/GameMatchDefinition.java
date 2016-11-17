@@ -88,9 +88,9 @@ public class GameMatchDefinition extends AppCompatActivity {
             }
         }
     };
+    List<Word> words;
     private SmallBang mSmallBang;
     private Random randomGenerator;
-    List<Word> words;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,7 +161,7 @@ public class GameMatchDefinition extends AppCompatActivity {
         answerAttempts = 0;
         scoreMulitplier = 1.00;
 
-        PUOHelper.setAppBar(this, getResources().getString(R.string.app_name))
+        PUOHelper.initAppBar(this, getResources().getString(R.string.app_name))
                 .setDisplayHomeAsUpEnabled(true);
 
         btn_question.setHorizontallyScrolling(true);

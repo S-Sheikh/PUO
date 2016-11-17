@@ -7,14 +7,14 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.Toast;
@@ -42,10 +42,6 @@ import za.ac.cut.puo.data.WordsDbAdapter;
  */
 
 public class PUOHelper {
-
-    public static final String BASE_EXTERNAL_APP_DIRECTORY =
-            Environment.getExternalStorageDirectory().toString() + "/PUO/";
-    public static final String PROFILE_PIC_SUB_DIRECTORY = "Profile_picture/";
 
     //Word List BoilerPlate
     public static List<Word> populateWordList() {
@@ -85,7 +81,7 @@ public class PUOHelper {
      *
      * @return ActionBar
      */
-    public static ActionBar setAppBar(AppCompatActivity activity, String title) {
+    public static ActionBar initAppBar(AppCompatActivity activity, String title) {
         Toolbar appBar = (Toolbar) activity.findViewById(R.id.puo_toolbar);
         appBar.setTitle(title);
         activity.setSupportActionBar(appBar);
@@ -94,7 +90,7 @@ public class PUOHelper {
 
     public static void writeImageToFile(Context context, Bitmap bitmap) {
         BackendlessUser user = Backendless.UserService.CurrentUser();
-        String path = BASE_EXTERNAL_APP_DIRECTORY + PROFILE_PIC_SUB_DIRECTORY;
+        String path = Defaults.BASE_EXTERNAL_APP_DIRECTORY + Defaults.PROFILE_PIC_SUB_DIRECTORY;
         OutputStream fOut;
         String filename = user.getEmail() + "_.png";
         File profilePicDirectory = new File(path);
@@ -117,7 +113,7 @@ public class PUOHelper {
     public static void readImage(ImageView view) {
         BackendlessUser user = Backendless.UserService.CurrentUser();
         String filename = user.getEmail() + ".png";
-        String filepath = BASE_EXTERNAL_APP_DIRECTORY + PROFILE_PIC_SUB_DIRECTORY + filename;
+        String filepath = Defaults.BASE_EXTERNAL_APP_DIRECTORY + Defaults.PROFILE_PIC_SUB_DIRECTORY + filename;
         File imagefile = new File(filepath);
         FileInputStream fis = null;
         if (imagefile.exists()) {
@@ -191,6 +187,24 @@ public class PUOHelper {
     }
 
     /**
+     * Returns a popup window for setting a word rating.
+     *
+     * @param container  view for anchoring the popup window.
+     * @param context activity that this method is being called from.
+     * @return popup
+     */
+    public static PopupWindow getPopup(Context context, @Nullable ViewGroup container) {
+        PopupWindow popup = new PopupWindow(WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.WRAP_CONTENT);
+        View layout = View.inflate(context, R.layout.rate_word_popup, container);
+        popup.setContentView(layout);
+        popup.setBackgroundDrawable(new BitmapDrawable());
+        popup.setOutsideTouchable(true);
+        popup.setFocusable(true);
+        return popup;
+    }
+
+    /**
      * Saves a Word object to the local SQLite database.
      */
     public static class SaveToWordChestTask extends AsyncTask<Word, Void, Long> {
@@ -224,16 +238,18 @@ public class PUOHelper {
      * @return a List<Word>
      */
     public static class LoadFromWordChestTask extends AsyncTask<Void, Void, List<Word>> {
-        private static WordsDbAdapter wordsDbAdapter;
-        private static Context mContext;
+        private WordsDbAdapter wordsDbAdapter;
+        private Context mContext;
+        WordListItemAdapter mAdapter;
 
-        private LoadFromWordChestTask(Context context) {
+        private LoadFromWordChestTask(Context context, WordListItemAdapter adapter) {
             wordsDbAdapter = new WordsDbAdapter(context);
+            mAdapter = adapter;
             mContext = context;
         }
 
-        public static LoadFromWordChestTask getTask(Context context) {
-            return new LoadFromWordChestTask(context);
+        public static LoadFromWordChestTask initialize(Context context, WordListItemAdapter adapter) {
+            return new LoadFromWordChestTask(context, adapter);
         }
 
         @Override
@@ -245,26 +261,10 @@ public class PUOHelper {
         protected void onPostExecute(List<Word> words) {
             if (words == null)
                 Toast.makeText(mContext, "No words in WordChest!", Toast.LENGTH_SHORT).show();
-            else
+            else {
                 WordListFragment.setmWords(words);
+                mAdapter.notifyItemRangeInserted(mAdapter.getItemCount(), words.size());
+            }
         }
-    }
-
-    /**
-     * Returns a popup window for setting a word rating.
-     *
-     * @param anchor  view for anchoring the popup window.
-     * @param context activity that this method is being called from.
-     * @return popup
-     */
-    public static PopupWindow getPopup(Context context, @Nullable View anchor) {
-        PopupWindow popup = new PopupWindow(context);
-        View layout = ((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE))
-                .inflate(R.layout.rate_word_popup, null);
-        popup.setContentView(layout);
-        popup.setBackgroundDrawable(new BitmapDrawable());
-        popup.setOutsideTouchable(true);
-        popup.setFocusable(true);
-        return popup;
     }
 }

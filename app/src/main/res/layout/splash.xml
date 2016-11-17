@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="za.ac.cut.puo.Splash">
+
     <android.support.v7.widget.Toolbar
         android:id="@+id/splash_toolBar"
         android:layout_width="match_parent"

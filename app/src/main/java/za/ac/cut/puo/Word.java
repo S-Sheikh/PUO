@@ -19,6 +19,7 @@ public class Word {
     private boolean supported;
     private boolean blocked;
     private int count;
+    private int supporters;
     private float rating;
     private String pronunciation;
     private Date created;
@@ -38,6 +39,7 @@ public class Word {
         this.repeatFlag = false;
         this.setCount(0);
         this.setRating(0);
+        setSupporters(0);
     }
 
     /*Game Word*/
@@ -230,5 +232,13 @@ public class Word {
 
     public void setImageLocation(String imageLocation) {
         this.imageLocation = imageLocation;
+    }
+
+    public int getSupporters() {
+        return supporters;
+    }
+
+    public void setSupporters(int supporters) {
+        this.supporters += supporters;
     }
 }

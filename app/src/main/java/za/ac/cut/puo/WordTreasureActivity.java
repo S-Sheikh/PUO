@@ -10,7 +10,7 @@ public class WordTreasureActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_word_treasure);
-        PUOHelper.setAppBar(this, getResources().getString(R.string.title_activity_word_treasure))
+        PUOHelper.initAppBar(this, getResources().getString(R.string.title_activity_word_treasure))
                 .setDisplayHomeAsUpEnabled(true);
 
     }

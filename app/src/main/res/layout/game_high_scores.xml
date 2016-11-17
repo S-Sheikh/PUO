@@ -67,12 +67,14 @@
                 android:contentDescription=""
                 app:srcCompat="@drawable/ic_high_scores" />
         </RelativeLayout>
+
         <include layout="@layout/progress_bar_circular" />
+
         <ListView
-            android:layout_marginTop="10dp"
             android:id="@+id/lv_highScores"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
             android:clickable="false"
             android:listSelector="@drawable/card_view_selector_bg" />
     </LinearLayout>

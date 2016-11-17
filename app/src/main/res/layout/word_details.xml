@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <TextView
         android:id="@+id/tv_word_text"
@@ -22,6 +23,32 @@
         android:textColor="@color/colorPrimaryText"
         android:textSize="12sp" />
 
+    <ImageView
+        android:id="@+id/iv_bg_supporters"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_supporters"
+        android:layout_alignBottom="@id/tv_word_status"
+        android:layout_below="@id/tv_word_text"
+        android:layout_marginLeft="2dp"
+        android:layout_toRightOf="@id/tv_word_status"/>
+
+    <TextView
+        android:id="@+id/tv_supporters"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/tv_word_status"
+        android:layout_below="@id/tv_word_text"
+        android:layout_marginLeft="2dp"
+        android:layout_toRightOf="@id/tv_word_status"
+        android:gravity="center"
+        android:paddingLeft="@dimen/dp4"
+        android:paddingRight="@dimen/dp4"
+        android:paddingTop="2dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:textSize="8sp"
+        android:visibility="gone" />
+
     <TextView
         android:id="@+id/tv_word_author"
         android:layout_width="wrap_content"
@@ -37,7 +64,7 @@
         android:id="@+id/tv_word_lexicon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/rtb_word_rating"
+        android:layout_alignLeft="@id/rtb_word_rating"
         android:layout_alignParentTop="true"
         android:layout_marginTop="4dp"
         android:text="Noun, Xhosa"
@@ -51,7 +78,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/tv_word_lexicon"
+        android:layout_below="@id/tv_word_lexicon"
         android:layout_marginRight="36dp"
         android:layout_marginTop="8dp"
         android:isIndicator="true"
