@@ -9,6 +9,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -22,6 +24,7 @@ public class HighScoreItemAdapter extends ArrayAdapter<GameHighScores> {
     private final List<GameHighScores> values;
     TextView tv_highName, tv_highTime, btn_circleScore;
     ImageView wordImg;
+    CircleImageView civ_user_pic;
 
     public HighScoreItemAdapter(Context context, List<GameHighScores> list) {
         super(context, R.layout.high_score_list_item, list);
@@ -34,12 +37,12 @@ public class HighScoreItemAdapter extends ArrayAdapter<GameHighScores> {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         convertView = inflater.inflate(R.layout.high_score_list_item, parent, false);
 
-        wordImg = (CircleImageView) convertView.findViewById(R.id.civ_word_pic);
         tv_highName = (TextView) convertView.findViewById(R.id.tv_highName);
         tv_highTime = (TextView) convertView.findViewById(R.id.tv_highTime);
         btn_circleScore = (Button) convertView.findViewById(R.id.btn_circleScore);
+        civ_user_pic = (CircleImageView)convertView.findViewById(R.id.civ_word_pic);
         tv_highName.setText(values.get(position).getUserName());
-        tv_highTime.setText(values.get(position).getStartDate());//TODO: Fix conversion
+        tv_highTime.setText(values.get(position).getStartDate());
         btn_circleScore.setText(String.valueOf(values.get(position).getScore()));
         //download the image from backendless;
         // String imageUri = "https://api.backendless.com/D200A885-7EED-CB51-FFAC-228F87E55D00/v1/files/WordPictures/" + values.get(position).getImageLocation();
@@ -58,6 +61,12 @@ public class HighScoreItemAdapter extends ArrayAdapter<GameHighScores> {
 
         //change text color to green in word is supported.
 
+        String imageUri = "https://api.backendless.com/D200A885-7EED-CB51-FFAC-228F87E55D00/v1/files/UserProfilePics/" + values.get(position).getUserMail() + "_.png";
+        if (!(imageUri.equals("")))
+            Picasso.with(context).load(imageUri).fit()
+                    .placeholder(PUOHelper.getTextDrawable(values.get(position)))
+                    .error(PUOHelper.getTextDrawable(values.get(position)))
+                    .into(civ_user_pic);
         return convertView;
     }
 }
