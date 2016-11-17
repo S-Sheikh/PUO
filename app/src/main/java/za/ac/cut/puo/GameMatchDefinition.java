@@ -134,26 +134,30 @@ public class GameMatchDefinition extends AppCompatActivity {
         int PAGESIZE = 100;
         BackendlessDataQuery dataQuery = new BackendlessDataQuery();
         dataQuery.setPageSize(PAGESIZE);
-        Backendless.Data.of(Word.class).find(dataQuery, new AsyncCallback<BackendlessCollection<Word>>() {
-            @Override
-            public void handleResponse(BackendlessCollection<Word> wordBackendlessCollection) {
-                words = wordBackendlessCollection.getData();
-                wordArrayList.clear();
-                for (Word word : words) {
-                    wordArrayList.add(new Word(word.getWord(), word.getLanguage(), word.getDefinition(), word.getPartOfSpeech()));
+        if(PUOHelper.connectionAvailable(GameMatchDefinition.this)){
+            Backendless.Data.of(Word.class).find(dataQuery, new AsyncCallback<BackendlessCollection<Word>>() {
+                @Override
+                public void handleResponse(BackendlessCollection<Word> wordBackendlessCollection) {
+                    words = wordBackendlessCollection.getData();
+                    wordArrayList.clear();
+                    for (Word word : words) {
+                        wordArrayList.add(new Word(word.getWord(), word.getLanguage(), word.getDefinition(), word.getPartOfSpeech()));
+                    }
+                    mHandler.sendEmptyMessage(MSG_START_TIMER);
+                    newScore.setStartDate(java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime()));
+                    progressDialog.dismiss();
                 }
-                mHandler.sendEmptyMessage(MSG_START_TIMER);
-                newScore.setStartDate(java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime()));
-                progressDialog.dismiss();
-            }
 
-            @Override
-            public void handleFault(BackendlessFault backendlessFault) {
-
-            }
-        });
-
-
+                @Override
+                public void handleFault(BackendlessFault backendlessFault) {
+                    progressDialog.dismiss();
+                    Toast.makeText(GameMatchDefinition.this, "Error, Could not get words from Internet", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }else{
+            Toast.makeText(this, "Please check your internet connection and try again", Toast.LENGTH_SHORT).show();
+            GameMatchDefinition.this.finish();
+        }
         randomGenerator = new Random(); // Initialize it
 
         populateButtonTxt();
@@ -167,7 +171,7 @@ public class GameMatchDefinition extends AppCompatActivity {
         btn_question.setHorizontallyScrolling(true);
         btn_question.setMaxLines(2);
         btn_question.setEllipsize(TextUtils.TruncateAt.END);
-        vibe = (Vibrator) getSystemService(this.VIBRATOR_SERVICE);
+        vibe = (Vibrator)getSystemService(this.VIBRATOR_SERVICE);
 
     }
 
@@ -229,9 +233,12 @@ public class GameMatchDefinition extends AppCompatActivity {
             newScore.setType("Definition");
             newScore.setUserName(user.getProperty("name") + " " + user.getProperty("surname"));
             newScore.setUserMail(user.getEmail());
+            progressDialog.show();
+
             Backendless.Persistence.save(newScore, new AsyncCallback<GameHighScores>() {
                 @Override
                 public void handleResponse(GameHighScores gameHighScores) {
+                    progressDialog.dismiss();
                     Toast.makeText(GameMatchDefinition.this, newScore.getUserName() + " Score Submitted!", Toast.LENGTH_SHORT).show();
                 }
 

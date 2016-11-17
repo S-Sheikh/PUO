@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:cardView="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="match_parent">
 
@@ -188,25 +189,19 @@
             android:gravity="center_horizontal"
             android:orientation="horizontal">
 
-            <ImageView
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/ivAddImage"
                 android:layout_width="0dp"
-                android:layout_height="40dp"
+                android:layout_height="60dp"
                 android:layout_marginTop="20dp"
                 android:layout_weight="1"
                 android:clickable="true"
-                android:onClick="AddImage"
-                app:srcCompat="@drawable/ic_add_image" />
+                android:onClick=""
+                android:src="@drawable/ic_add_image"
+                cardView:civ_border_color="@color/colorPrimary"
+                cardView:civ_border_width="0.5dip" />
 
-            <ImageView
-                android:id="@+id/ivTakePic"
-                android:layout_width="0dp"
-                android:layout_height="60dp"
-                android:layout_marginTop="10dp"
-                android:layout_weight="1"
-                android:clickable="true"
-                android:onClick="CaptureImage"
-                app:srcCompat="@drawable/ic_camera" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -223,16 +218,6 @@
                 android:layout_weight="1"
                 android:gravity="center_horizontal"
                 android:text="@string/add_image"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
-
-            <TextView
-                android:id="@+id/tvTakePic"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_weight="1"
-                android:gravity="center_horizontal"
-                android:text="@string/take_pic"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
         </LinearLayout>
 

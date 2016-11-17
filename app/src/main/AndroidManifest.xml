@@ -35,9 +35,6 @@
         android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-        <!-- android:screenOrientation="portrait"  I think ??!!?? this forces our app to be potrait only-->
-        @Watley:Makes sense keep it!!!-->
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />

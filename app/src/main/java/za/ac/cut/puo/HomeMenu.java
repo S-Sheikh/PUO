@@ -66,7 +66,7 @@ public class HomeMenu extends AppCompatActivity {
     List<Word> words;
     EditText etAddWord, etDefinition, etSentence;
     Spinner spLanguage, spPartOfSpeech;
-    ImageView ivAddImage, ivTakePick, ivBrowse, ivPlayClip, ivRecord;
+    ImageView ivAddImage, ivBrowse, ivPlayClip, ivRecord;
     CircleImageView civ_profile_Pic;
     SpotsDialog progressDialog;
     ProgressBar circularBar;
@@ -97,8 +97,9 @@ public class HomeMenu extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_menu);
-        mAdView = (AdView) findViewById(R.id.adView);
+        mAdView = (AdView) findViewById(R.id.AdView);
         AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
                 .build();
         mAdView.loadAd(adRequest);
 
@@ -107,6 +108,7 @@ public class HomeMenu extends AppCompatActivity {
 
         user = Backendless.UserService.CurrentUser();
         civ_profile_Pic = (CircleImageView) findViewById(R.id.civ_profile_pic);
+        ivAddImage = (ImageView) findViewById(R.id.ivAddImage);
         circularBar = (ProgressBar) findViewById(R.id.progressBarCircular);
         tvUsernameHome = (TextView) findViewById(R.id.tvUsernameHome);
         tvUserType = (TextView) findViewById(R.id.tvUserType);
@@ -128,9 +130,7 @@ public class HomeMenu extends AppCompatActivity {
                 tvWordInfo.setText(value);
             }
         });
-
     }
-
 
     //TODO:DONT FORGET TO IMPLEMENT RUN-TIME PERMISSIONS FOR CAMERA AND MIC!!!!!!!!
     private void displayWordCount() {
@@ -197,9 +197,6 @@ public class HomeMenu extends AppCompatActivity {
             case R.id.word_chest:
                 startActivity(new Intent(HomeMenu.this, WordChestActivity.class));
                 return true;
-            case R.id.word_2_word:
-                startActivity(new Intent(HomeMenu.this, ChooseNicknameActivity.class));
-                return true;
             case R.id.word_mates:
                 startActivity(new Intent(HomeMenu.this, WordMates.class));
                 return true;
@@ -235,7 +232,7 @@ public class HomeMenu extends AppCompatActivity {
             if (resultCode == Activity.RESULT_OK) {
                 try {
                     bitmap = (Bitmap) data.getExtras().get("data");
-                    ivTakePick.setImageBitmap(bitmap);
+                    ivAddImage.setImageBitmap(bitmap);
                 } catch (Exception e) {
                     //Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
@@ -322,6 +319,69 @@ public class HomeMenu extends AppCompatActivity {
                 Toast.makeText(HomeMenu.this, backendlessFault.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void StartDialog() {
+        AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(
+                HomeMenu.this);
+        myAlertDialog.setTitle("Upload Pictures Option");
+        myAlertDialog.setMessage("How do you want to set your picture?");
+        myAlertDialog.setPositiveButton("Gallery",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        Intent pictureActionIntent = null;
+
+                        pictureActionIntent = new Intent(
+                                Intent.ACTION_PICK,
+                                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        startActivityForResult(
+                                pictureActionIntent,
+                                REQUEST_CODE_CHOOSE_PHOTO);
+
+                    }
+                });
+
+        myAlertDialog.setNegativeButton("Camera",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface arg0, int arg1) {
+
+                        Intent intent = new Intent(
+                                MediaStore.ACTION_IMAGE_CAPTURE);
+                        File f = new File(android.os.Environment
+                                .getExternalStorageDirectory(), "temp.jpg");
+                        intent.putExtra(MediaStore.EXTRA_OUTPUT,
+                                Uri.fromFile(f));
+
+                        startActivityForResult(intent,
+                                REQUEST_CODE_CAPTURE);
+
+                    }
+                });
+        myAlertDialog.show();
+    }
+
+    private void ImageChooser() {
+        AlertDialog.Builder getImageFrom = new AlertDialog.Builder(HomeMenu.this);
+        getImageFrom.setIcon(getResources().getDrawable(R.drawable.ic_add_image));
+        getImageFrom.setTitle("Select an Option:");
+        final CharSequence[] opsChars = {"Take a Picture", "Open Gallery"};
+        getImageFrom.setItems(opsChars, new android.content.DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (which == 0) {
+                    Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                    startActivityForResult(cameraIntent, REQUEST_CODE_CAPTURE);
+                } else if (which == 1) {
+                    Intent intent = new Intent();
+                    intent.setType("image/*");
+                    intent.setAction(Intent.ACTION_GET_CONTENT);
+                    startActivityForResult(Intent.createChooser(intent, "Choose Gallery"), REQUEST_CODE_CHOOSE_PHOTO);
+                }
+                dialog.dismiss();
+            }
+        });
+        getImageFrom.show();
     }
 
     private void countWordWithPaging() {
@@ -427,16 +487,12 @@ public class HomeMenu extends AppCompatActivity {
             tvAddSound.setText("Record");
         }
         mStartRecording = !mStartRecording;
-        if (ivRecordclicked) {
-            ivBrowse.setEnabled(false);
-        }
     }
 
     public void PlayAudio(View view) {
         try {
             onPlay(mStartPlaying);
             if (mStartPlaying) {
-                //stop timer
                 ivPlayClip.setImageResource(0);
                 ivPlayClip.setImageResource(R.drawable.ic_stop);
                 tvPlayClip.setText("Stop");
@@ -444,11 +500,10 @@ public class HomeMenu extends AppCompatActivity {
                 ivPlayClip.setImageResource(0);
                 ivPlayClip.setImageResource(R.drawable.ic_play);
                 tvPlayClip.setText("Play Clip");
-                //Show and start timer
             }
             mStartPlaying = !mStartPlaying;
         } catch (Exception e) {
-            Toast.makeText(this, "Please Record or Select Audio :)", Toast.LENGTH_LONG).show();
+            //Toast.makeText(this, "Please Record or Select Audio :)", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -475,7 +530,12 @@ public class HomeMenu extends AppCompatActivity {
         spLanguage = (Spinner) view.findViewById(R.id.spLanguage);
         spPartOfSpeech = (Spinner) view.findViewById(R.id.spPartOfSpeech);
         ivAddImage = (ImageView) view.findViewById(R.id.ivAddImage);
-        ivTakePick = (ImageView) view.findViewById(R.id.ivTakePic);
+        ivAddImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ImageChooser();
+            }
+        });
         ivPlayClip = (ImageView) view.findViewById(R.id.ivPlayClip);
         tvAddSound = (TextView) view.findViewById(R.id.tvAddSound);
         tvPlayClip = (TextView) view.findViewById(R.id.tvPlayClip);
@@ -786,9 +846,6 @@ public class HomeMenu extends AppCompatActivity {
         intent.setAction(Intent.ACTION_GET_CONTENT);
         intent.setType("audio/*");
         startActivityForResult(Intent.createChooser(intent, "Select Audio:"), REQUEST_CODE__SELECT_AUDIO);
-        if (ivSelectAudioclicked) {
-            ivRecord.setEnabled(false);
-        }
     }
 
     private String getRealPathFromURI(Uri contentUri) {

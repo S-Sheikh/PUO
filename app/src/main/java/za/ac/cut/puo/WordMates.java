@@ -17,8 +17,6 @@ import com.backendless.BackendlessCollection;
 import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
 
 import java.io.Serializable;
 import java.util.Iterator;
@@ -35,7 +33,6 @@ public class WordMates extends AppCompatActivity {
     List<BackendlessUser> usersList;
     ProgressBar circularBar;
     TextView tvUsersOnline;
-    private AdView mAdView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,11 +48,6 @@ public class WordMates extends AppCompatActivity {
         tvUsersOnline = (TextView) findViewById(R.id.tvUsersOnline);
         loadData();
         countUsersOnline();
-        mAdView = (AdView) findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder()
-                .build();
-        mAdView.loadAd(adRequest);
-
         lvUsers.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -74,34 +66,12 @@ public class WordMates extends AppCompatActivity {
         this.finish();
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (mAdView != null) {
-            mAdView.pause();
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (mAdView != null) {
-            mAdView.resume();
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mAdView != null) {
-            mAdView.destroy();
-        }
-    }
 
     public void loadData() {
         circularBar.setVisibility(View.VISIBLE);
         if (usersList != null) {
             usersList.clear();
+
         }
         Backendless.Data.of(BackendlessUser.class).find(new AsyncCallback<BackendlessCollection<BackendlessUser>>() {
             @Override

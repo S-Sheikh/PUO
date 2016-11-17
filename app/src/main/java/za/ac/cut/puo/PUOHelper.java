@@ -185,6 +185,17 @@ public class PUOHelper {
                 .height(180)
                 .endConfig().buildRect(text, generator.getRandomColor());
     }
+    public static TextDrawable getTextDrawable(GameHighScores user) {
+        ColorGenerator generator = ColorGenerator.MATERIAL; // set random color generator
+        String text = user.getUserName().toString().substring(0, 2); // get first two letters of a user
+        return TextDrawable.builder()
+                .beginConfig()
+                .bold()
+                .fontSize(90)
+                .width(180)
+                .height(180)
+                .endConfig().buildRect(text, generator.getRandomColor());
+    }
 
     /**
      * Returns a popup window for setting a word rating.

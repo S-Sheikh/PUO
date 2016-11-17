@@ -83,7 +83,7 @@
         android:layout_gravity="center_horizontal"
         android:text="@string/tv_recent_words" />
 
-    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh_word_list_home"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
@@ -117,9 +117,10 @@
         android:textColor="@color/colorIcons" />
 
     <com.google.android.gms.ads.AdView
-        android:id="@+id/adView"
-        android:layout_width="match_parent"
+        android:id="@+id/AdView"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         ads:adSize="BANNER"
-        ads:adUnitId="@string/banner_home_footer" />
+        ads:adUnitId="@string/banner_home_footer">
 </LinearLayout>
