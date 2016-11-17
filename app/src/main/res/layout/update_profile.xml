@@ -82,7 +82,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:hint="@string/register_name_hint"
-                        android:inputType="textPersonName"/>
+                        android:inputType="textPersonName" />
                 </android.support.design.widget.TextInputLayout>
             </LinearLayout>
 
@@ -98,7 +98,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:hint="@string/register_surname_hint"
-                    android:inputType="textPersonName"/>
+                    android:inputType="textPersonName" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout

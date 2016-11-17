@@ -9,7 +9,7 @@
     android:orientation="vertical"
     tools:context="za.ac.cut.puo.GamePartsOfSpeech">
 
-    <include layout="@layout/puo_toolbar"/>
+    <include layout="@layout/puo_toolbar" />
 
     <LinearLayout
         android:layout_width="match_parent"

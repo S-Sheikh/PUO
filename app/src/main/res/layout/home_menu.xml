@@ -5,7 +5,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimaryLight"
     android:orientation="vertical"
     tools:context="za.ac.cut.puo.HomeMenu">
 
@@ -94,7 +93,6 @@
             android:id="@+id/lv_words"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/colorPrimaryLight"
             android:clickable="false"
             android:listSelector="@drawable/card_view_selector_bg" />
     </android.support.v4.widget.SwipeRefreshLayout>
@@ -124,7 +122,5 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         ads:adSize="BANNER"
-        ads:adUnitId="@string/banner_home_footer">
-
-    </com.google.android.gms.ads.AdView>
+        ads:adUnitId="@string/banner_home_footer"/>
 </LinearLayout>

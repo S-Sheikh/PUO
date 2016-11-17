@@ -27,14 +27,18 @@ import android.widget.Spinner;
 
 import com.backendless.Backendless;
 import com.backendless.BackendlessCollection;
+import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 import com.backendless.persistence.BackendlessDataQuery;
 import com.backendless.persistence.QueryOptions;
+import com.google.common.base.Objects;
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import jp.wasabeef.recyclerview.adapters.SlideInBottomAnimationAdapter;
@@ -51,38 +55,59 @@ import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
  */
 public class WordListFragment extends Fragment {
 
+    public WordListFragment mInstance = this;
     private static List<Word> mWords;
-    public static WordListFragment mInstance;
-    private static RecyclerView mRecyclerView;
-    private static WordListItemAdapter mAdapter;
+    private RecyclerView mRecyclerView;
+    private WordListItemAdapter mAdapter;
     private View rootView;
 
     private OnWordListItemClickListener mListener;
     private SwipeRefreshLayout swipeRefreshWordList;
     private ProgressBar circularBar;
     private Spinner spSortOptions;
+    static BackendlessUser user;
+
 
     public WordListFragment() {
         // Required empty public constructor
     }
 
     public static void setmWords(List<Word> words) {
-        if (mWords != null)
-            mWords.clear();
 
-        mWords.addAll(words);
-        int curSize = mAdapter.getItemCount();
-        mAdapter.notifyItemRangeInserted(curSize, mWords.size());
-        for (Word word : mWords) {
-            Log.d("WordListFragment", "setmWords: " + word.getWord() + word.getCreated());
+        /*Filter out existing words.*/
+        List<Word> newWords = new ArrayList<>(Collections2.filter(words, new Predicate<Word>() {
+            @Override
+            public boolean apply(Word w) {
+                for (Word word : mWords)
+                    if (Objects.equal(word.getWord(), w.getWord()))
+                        return false;
+                return true;
+            }
+        }));
+
+        /*Filter out blocked words if user is Collector otherwise add new words.*/
+        if (Backendless.UserService.CurrentUser().getProperty("role").toString()
+                .equalsIgnoreCase("Collector"))
+            mWords.addAll(Collections2.filter(newWords, Predicates.not(new Predicate<Word>() {
+                @Override
+                public boolean apply(Word word) {
+                    return word.isBlocked();
+                }
+            })));
+        else
+            mWords.addAll(newWords);
+
+        Log.d("setmWords: ", "Filtered List isEmpty: " + newWords.isEmpty());
+        for (Word word : newWords) {
+            Log.d("setmWords: ", "FilteredList: " + word.getWord());
         }
     }
 
-    public static RecyclerView getmRecyclerView() {
+    public RecyclerView getmRecyclerView() {
         return mRecyclerView;
     }
 
-    public static WordListItemAdapter getmAdapter() {
+    public WordListItemAdapter getmAdapter() {
         return mAdapter;
     }
 
@@ -91,18 +116,6 @@ public class WordListFragment extends Fragment {
      */
     public static WordListFragment newInstance() {
         return new WordListFragment();
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     */
-    public interface OnWordListItemClickListener {
-        void onMenuOptionSelected(int id);
-
-        void onWordSelected(int position);
     }
 
     /**
@@ -116,6 +129,8 @@ public class WordListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        mWords = new ArrayList<>();
+        mAdapter = new WordListItemAdapter(mWords, getContext());
     }
 
     @Override
@@ -127,23 +142,23 @@ public class WordListFragment extends Fragment {
         spSortOptions = (Spinner) rootView.findViewById(R.id.sp_ordering);
         swipeRefreshWordList = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_word_list);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.rv_word_list);
-        mWords = new ArrayList<>();
-        mAdapter = new WordListItemAdapter(mWords, getContext());
+        setUpRecyclerView();
+        swipeRefreshWordList.setColorSchemeResources(R.color.colorAccent);
+         /*load words*/
+        loadData();
+        return rootView;
+    }
+
+    public void setUpRecyclerView() {
         mRecyclerView.setAdapter(new SlideInBottomAnimationAdapter(mAdapter));
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setItemAnimator(new SlideInLeftAnimator());
         mRecyclerView.getItemAnimator().setAddDuration(300);
-        swipeRefreshWordList.setColorSchemeResources(R.color.colorAccent);
-
-        return rootView;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        /*load words*/
-        loadData();
 
         /*set adapter click listener*/
         mAdapter.setOnItemClickListener(new WordListItemAdapter.OnItemClickListener() {
@@ -162,15 +177,24 @@ public class WordListFragment extends Fragment {
             public void onOverflowClicked(final ImageView v) {
                 final PopupMenu wordOptions = new PopupMenu(getContext(), v);
                 MenuInflater inflater = wordOptions.getMenuInflater();
-                inflater.inflate(R.menu.popup_menu, wordOptions.getMenu());
+                inflater.inflate(R.menu.menu_popup, wordOptions.getMenu());
 
                 /**
-                 * Check if word is supported or not and remove menu options accordingly.*/
-                if (!mWords.get((mRecyclerView.findContainingViewHolder(v)
-                        .getAdapterPosition())).isSupported())
+                 * Check if user is Collector and remove menu options accordingly.*/
+                if (Backendless.UserService.CurrentUser().getProperty("role").toString()
+                        .equalsIgnoreCase("Collector")) {
                     wordOptions.getMenu().removeItem(R.id.unsupport);
-                else
                     wordOptions.getMenu().removeItem(R.id.support);
+                    wordOptions.getMenu().removeItem(R.id.block);
+                } else {
+                    /**
+                     * Check if word is supported and remove menu options accordingly.*/
+                    if (!mWords.get((mRecyclerView.findContainingViewHolder(v)
+                            .getAdapterPosition())).isSupported())
+                        wordOptions.getMenu().removeItem(R.id.unsupport);
+                    else
+                        wordOptions.getMenu().removeItem(R.id.support);
+                }
 
                 wordOptions.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
@@ -227,7 +251,6 @@ public class WordListFragment extends Fragment {
 
             }
         });
-
     }
 
     /**
@@ -245,13 +268,13 @@ public class WordListFragment extends Fragment {
 
             BackendlessDataQuery dataQuery = new BackendlessDataQuery();
             dataQuery.setQueryOptions(queryOptions);
-
+            swipeRefreshWordList.setRefreshing(false);
             Backendless.Persistence.of(Word.class).find(dataQuery, new AsyncCallback<BackendlessCollection<Word>>() {
                 @Override
                 public void handleResponse(BackendlessCollection<Word> puoWordList) {
                     setmWords(puoWordList.getData());
+                    mAdapter.notifyItemRangeInserted(mAdapter.getItemCount(), mWords.size());
                     circularBar.setVisibility(View.GONE);
-                    swipeRefreshWordList.setRefreshing(false);
                 }
 
                 @Override
@@ -261,19 +284,16 @@ public class WordListFragment extends Fragment {
                 }
             });
         } else if (getContext() instanceof WordChestActivity) {
-            PUOHelper.LoadFromWordChestTask.getTask(getContext()).execute();
-
-            int curSize = mAdapter.getItemCount();
-            mAdapter.notifyItemRangeInserted(curSize, mWords.size());
-            circularBar.setVisibility(View.GONE);
             swipeRefreshWordList.setRefreshing(false);
+            PUOHelper.LoadFromWordChestTask.initialize(getContext(), mAdapter).execute();
+            circularBar.setVisibility(View.GONE);
         }
     }
 
     /**
      * Updates a word status to supported.
      *
-     * @param position
+     * @param position positions of the selected word in the list.
      */
     public void supportWord(final int position) {
         //TODO: update support functionality to allow multiple support
@@ -312,34 +332,16 @@ public class WordListFragment extends Fragment {
                 mWords.get(position).setBlocked(true);
                 mWords.get(position).setSupported(false);
                 mAdapter.notifyItemChanged(position);
-                Backendless.Persistence.of(Word.class).findById(mWords.get(position), new AsyncCallback<Word>() {
+                Backendless.Persistence.save(mWords.get(position), new AsyncCallback<Word>() {
                     @Override
                     public void handleResponse(Word word) {
-                        if (!word.isBlocked()) {
-                            word.setBlocked(true);
-                            word.setSupported(false);
-                            mAdapter.notifyItemChanged(position);
-                            Backendless.Persistence.save(word, new AsyncCallback<Word>() {
-                                @Override
-                                public void handleResponse(Word word) {
-                                    setSnackBar(getView(), word.getWord() + ": is now blocked!",
-                                            Snackbar.LENGTH_SHORT).show();
-                                }
-
-                                @Override
-                                public void handleFault(BackendlessFault backendlessFault) {
-                                    setSnackBar(getView(), backendlessFault.getMessage(),
-                                            Snackbar.LENGTH_SHORT).show();
-                                }
-                            });
-                        } else
-                            setSnackBar(getView(), word.getWord() + ": is already blocked!",
-                                    Snackbar.LENGTH_SHORT).show();
+                        setSnackBar(getView(), word.getWord() + ": is now blocked!",
+                                Snackbar.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void handleFault(BackendlessFault backendlessFault) {
-                        setSnackBar(rootView, backendlessFault.getMessage(),
+                        setSnackBar(getView(), backendlessFault.getMessage(),
                                 Snackbar.LENGTH_SHORT).show();
                     }
                 });
@@ -426,22 +428,17 @@ public class WordListFragment extends Fragment {
     }
 
     public void sortList(final String sortOption) {
-        List<Word> sortedList = mWords;
-        if (sortedList != null || sortedList.size() < 0) {
-            Collections.sort(sortedList, new Comparator<Word>() {
-                @Override
-                public int compare(Word o1, Word o2) {
-                    if (sortOption.equalsIgnoreCase("Date Asc"))
-                        return o2.getCreated().compareTo(o1.getCreated());
-                    else
-                        return o1.getCreated().compareTo(o2.getCreated());
-                }
-            });
+        //List<Word> sortedList = mWords;
+        if (!mWords.isEmpty()) {
+            if (sortOption.equalsIgnoreCase("Date Asc")) {
+                setmWords(Lists.reverse(mWords));
+                mAdapter.notifyItemRangeChanged(0, mWords.size());
+            }
         }
-        for (Word word : sortedList) {
-            Log.d("WordListFragment", "sortList: " + word.getWord() + word.getCreated());
+        for (Word word : mWords) {
+            Log.d("WordListFragment", "sortList: " + word.getWord());
         }
-        setmWords(sortedList);
+
     }
 
     public Snackbar setSnackBar(View v, String message, int length) {
@@ -452,10 +449,9 @@ public class WordListFragment extends Fragment {
 
     private void showWordDetailDialogFragment(Word word, ImageView v, int position) {
         FragmentManager fm = getFragmentManager();
-        WordDetailFragment wordDetailFragmentDialog = WordDetailFragment.newInstance(word, v, position);
+        WordDetailFragment wordDetailFragmentDialog = WordDetailFragment.newInstance(word, v.getDrawable(), position);
         // SETS the target fragment for use later when sending results
-        wordDetailFragmentDialog.setTargetFragment(WordListFragment.this, 400);
-        //fm.beginTransaction().add(wordDetailFragmentDialog,"fragment_wor_detail").commit();
+        wordDetailFragmentDialog.setTargetFragment(this, 400);
         wordDetailFragmentDialog.show(fm, "fragment_word_detail");
     }
 
@@ -474,5 +470,17 @@ public class WordListFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     */
+    public interface OnWordListItemClickListener {
+        void onMenuOptionSelected(int id);
+
+        void onWordSelected(int position);
     }
 }

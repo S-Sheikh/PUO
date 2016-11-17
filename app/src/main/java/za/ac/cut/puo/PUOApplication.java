@@ -3,13 +3,25 @@ package za.ac.cut.puo;
 import android.app.Application;
 
 import com.backendless.Backendless;
+import com.backendless.async.callback.AsyncCallback;
+import com.backendless.exceptions.BackendlessFault;
 
 public class PUOApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        String appVersion = "v1";
-        Backendless.initApp(this, "D200A885-7EED-CB51-FFAC-228F87E55D00", "95A8B22D-7E32-572D-FF0B-C002E7959800", appVersion);
+        Backendless.initApp(this, Defaults.APP_ID, Defaults.SECRET_KEY, Defaults.APP_VERSION);
+        Backendless.Messaging.registerDevice(Defaults.GCM_SENDER_ID, new AsyncCallback<Void>() {
+            @Override
+            public void handleResponse(Void aVoid) {
+
+            }
+
+            @Override
+            public void handleFault(BackendlessFault backendlessFault) {
+
+            }
+        });
     }
 
 }

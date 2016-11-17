@@ -33,7 +33,7 @@ public class AcceptChatActivity extends Activity {
         initUI();
 
         Backendless.setUrl(Defaults.SERVER_URL);
-        Backendless.initApp(this, Defaults.APPLICATION_ID, Defaults.SECRET_KEY, Defaults.VERSION);
+        Backendless.initApp(this, Defaults.APP_ID, Defaults.SECRET_KEY, Defaults.APP_VERSION);
 
         publishOptions = new PublishOptions();
         publishOptions.setSubtopic(subtopic);

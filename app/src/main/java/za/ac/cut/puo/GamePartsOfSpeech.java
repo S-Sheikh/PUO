@@ -122,7 +122,7 @@ public class GamePartsOfSpeech extends AppCompatActivity {
         wordArrayList.add(new Word("thetha", "Xhosa", "conversation; discussion", "noun"));
         //Word Array BoilerPlate End
 
-        randomGenerator = new Random(); // getTask it lolololol
+        randomGenerator = new Random(); // initialize it lolololol
 
         populateButtonTxt();
 
@@ -131,7 +131,7 @@ public class GamePartsOfSpeech extends AppCompatActivity {
         scoreMulitplier = 1.00;
 
         mHandler.sendEmptyMessage(MSG_START_TIMER);
-        PUOHelper.setAppBar(this, getResources().getString(R.string.app_name))
+        PUOHelper.initAppBar(this, getResources().getString(R.string.app_name))
                 .setDisplayHomeAsUpEnabled(true);
 
 //        btn_question.setHorizontallyScrolling(true);

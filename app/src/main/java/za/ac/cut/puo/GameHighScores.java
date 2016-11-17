@@ -11,14 +11,6 @@ public class GameHighScores {
     private String userName;
     private String userMail;
 
-    public String getUserMail() {
-        return userMail;
-    }
-
-    public void setUserMail(String userMail) {
-        this.userMail = userMail;
-    }
-
     public GameHighScores() {
         this.type = null;
         setScore(0);
@@ -26,6 +18,14 @@ public class GameHighScores {
         this.userName = null;
         this.userMail = null;
 
+    }
+
+    public String getUserMail() {
+        return userMail;
+    }
+
+    public void setUserMail(String userMail) {
+        this.userMail = userMail;
     }
 
     public String getStartDate() {
