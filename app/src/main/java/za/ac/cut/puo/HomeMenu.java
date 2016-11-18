@@ -321,45 +321,6 @@ public class HomeMenu extends AppCompatActivity {
         });
     }
 
-    private void StartDialog() {
-        AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(
-                HomeMenu.this);
-        myAlertDialog.setTitle("Upload Pictures Option");
-        myAlertDialog.setMessage("How do you want to set your picture?");
-        myAlertDialog.setPositiveButton("Gallery",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface arg0, int arg1) {
-                        Intent pictureActionIntent = null;
-
-                        pictureActionIntent = new Intent(
-                                Intent.ACTION_PICK,
-                                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                        startActivityForResult(
-                                pictureActionIntent,
-                                REQUEST_CODE_CHOOSE_PHOTO);
-
-                    }
-                });
-
-        myAlertDialog.setNegativeButton("Camera",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface arg0, int arg1) {
-
-                        Intent intent = new Intent(
-                                MediaStore.ACTION_IMAGE_CAPTURE);
-                        File f = new File(android.os.Environment
-                                .getExternalStorageDirectory(), "temp.jpg");
-                        intent.putExtra(MediaStore.EXTRA_OUTPUT,
-                                Uri.fromFile(f));
-
-                        startActivityForResult(intent,
-                                REQUEST_CODE_CAPTURE);
-
-                    }
-                });
-        myAlertDialog.show();
-    }
-
     private void ImageChooser() {
         AlertDialog.Builder getImageFrom = new AlertDialog.Builder(this);
         getImageFrom.setIcon(getResources().getDrawable(R.drawable.ic_add_image));
@@ -382,67 +343,6 @@ public class HomeMenu extends AppCompatActivity {
             }
         });
         getImageFrom.show();
-    }
-
-    private void countWordWithPaging() {
-        final BackendlessUser user = Backendless.UserService.CurrentUser();
-        BackendlessDataQuery dataQuery = new BackendlessDataQuery();
-        queryOptions = new QueryOptions();
-        queryOptions.setPageSize(PAGE_SIZE);
-        queryOptions.setOffset(0);
-        dataQuery.setQueryOptions(queryOptions);
-        Backendless.Data.of(Word.class).find(dataQuery, new AsyncCallback<BackendlessCollection<Word>>() {
-            @Override
-            public void handleResponse(BackendlessCollection<Word> wordBackendlessCollection) {
-                if (wordBackendlessCollection.getCurrentPage().size() > PAGE_SIZE) {
-                    while (wordBackendlessCollection.getCurrentPage().size() > 0) {
-                        int count = 0;
-                        List<Word> words_ = wordBackendlessCollection.nextPage().getCurrentPage();
-                        for (Word word : words_) {
-                            if (user.getEmail().equals(word.getEmail())) {
-                                count = word.getCount();
-                                sum += count;
-                            }
-                        }
-                        user.setProperty("count", String.valueOf(sum));
-                        Backendless.UserService.update(user, new AsyncCallback<BackendlessUser>() {
-                            @Override
-                            public void handleResponse(BackendlessUser backendlessUser) {
-                            }
-
-                            @Override
-                            public void handleFault(BackendlessFault backendlessFault) {
-                            }
-                        });
-                    }
-                } else {
-                    int count = 0;
-                    List<Word> words_ = wordBackendlessCollection.getCurrentPage();
-                    for (Word word : words_) {
-                        if (user.getEmail().equals(word.getEmail())) {
-                            count = word.getCount();
-                            sum += count;
-                        }
-                    }
-                    user.setProperty("count", String.valueOf(sum));
-                    Backendless.UserService.update(user, new AsyncCallback<BackendlessUser>() {
-                        @Override
-                        public void handleResponse(BackendlessUser backendlessUser) {
-                        }
-
-                        @Override
-                        public void handleFault(BackendlessFault backendlessFault) {
-                        }
-                    });
-                }
-            }
-
-            @Override
-            public void handleFault(BackendlessFault backendlessFault) {
-
-            }
-        });
-        sum = 0;
     }
 
     private void countWords() {
@@ -507,19 +407,19 @@ public class HomeMenu extends AppCompatActivity {
         }
     }
 
-    public void AddImage(View view) {
-        Intent choosePhotoIntent = new Intent(Intent.ACTION_GET_CONTENT);
-        choosePhotoIntent.setType("image/*");
-        if (choosePhotoIntent.resolveActivity(this.getPackageManager()) != null) {
-            choosePhotoIntent.putExtra("imageUri", choosePhotoIntent.getData());
-            startActivityForResult(choosePhotoIntent, REQUEST_CODE_CHOOSE_PHOTO);
-        }
-    }
+//    public void AddImage(View view) {
+//        Intent choosePhotoIntent = new Intent(Intent.ACTION_GET_CONTENT);
+//        choosePhotoIntent.setType("image/*");
+//        if (choosePhotoIntent.resolveActivity(this.getPackageManager()) != null) {
+//            choosePhotoIntent.putExtra("imageUri", choosePhotoIntent.getData());
+//            startActivityForResult(choosePhotoIntent, REQUEST_CODE_CHOOSE_PHOTO);
+//        }
+//    }
 
-    public void CaptureImage(View view) {
-        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(cameraIntent, REQUEST_CODE_CAPTURE);
-    }
+//    public void CaptureImage(View view) {
+//        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+//        startActivityForResult(cameraIntent, REQUEST_CODE_CAPTURE);
+//    }
 
     public void AddWord() {
         LayoutInflater inflater = getLayoutInflater();
