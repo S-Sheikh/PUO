@@ -6,16 +6,28 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.BounceInterpolator;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.backendless.Backendless;
+import com.backendless.BackendlessCollection;
+import com.backendless.BackendlessUser;
+import com.backendless.async.callback.AsyncCallback;
+import com.backendless.exceptions.BackendlessFault;
+import com.backendless.persistence.BackendlessDataQuery;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 import java.util.Random;
 
+import dmax.dialog.SpotsDialog;
 import xyz.hanks.library.SmallBang;
 
 public class GamePartsOfSpeech extends AppCompatActivity {
@@ -37,6 +49,9 @@ public class GamePartsOfSpeech extends AppCompatActivity {
     int answerAttempts;
     boolean scoreStreak = false;
     int attemptCount = 0;
+    SpotsDialog progressDialog;
+    BackendlessUser user;
+    GameHighScores newScore;
     Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -72,7 +87,7 @@ public class GamePartsOfSpeech extends AppCompatActivity {
     };
     private SmallBang mSmallBang;
     private Random randomGenerator;
-
+    List<Word> words;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,7 +110,8 @@ public class GamePartsOfSpeech extends AppCompatActivity {
         buttonAdapter.add(new WordGameAdapter(btn_ans_topLeft));
         buttonAdapter.add(new WordGameAdapter(btn_ans_topRight));
         //end Init button adpater
-
+        user = Backendless.UserService.CurrentUser();
+        newScore = new GameHighScores();
         //Word Array BoilerPlate Start
         //English Words
         wordArrayList.add(new Word("eutaxy", "English", "good order or management", "noun"));
@@ -121,8 +137,37 @@ public class GamePartsOfSpeech extends AppCompatActivity {
         wordArrayList.add(new Word("umzabalazo", "Xhosa", "a forceful or violent effort to get free of restraint or resist attack", "noun"));
         wordArrayList.add(new Word("thetha", "Xhosa", "conversation; discussion", "noun"));
         //Word Array BoilerPlate End
+        GamePartsOfSpeech.this.progressDialog = new SpotsDialog(GamePartsOfSpeech.this, R.style.Custom);
+        GamePartsOfSpeech.this.progressDialog.show();
+        int PAGESIZE = 100;
+        BackendlessDataQuery dataQuery = new BackendlessDataQuery();
+        dataQuery.setPageSize(PAGESIZE);
+        if(PUOHelper.connectionAvailable(GamePartsOfSpeech.this)){
+            Backendless.Data.of(Word.class).find(dataQuery, new AsyncCallback<BackendlessCollection<Word>>() {
+                @Override
+                public void handleResponse(BackendlessCollection<Word> wordBackendlessCollection) {
+                    words = wordBackendlessCollection.getData();
+                    wordArrayList.clear();
+                    for (Word word : words) {
+                        wordArrayList.add(new Word(word.getWord(), word.getLanguage(), word.getDefinition(), word.getPartOfSpeech()));
+                    }
+                    mHandler.sendEmptyMessage(MSG_START_TIMER);
+                    newScore.setStartDate(java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime()));
+                    progressDialog.dismiss();
+                }
 
-        randomGenerator = new Random(); // initialize it lolololol
+                @Override
+                public void handleFault(BackendlessFault backendlessFault) {
+                    progressDialog.dismiss();
+                    Toast.makeText(GamePartsOfSpeech.this, "Error, Could not get words from Internet", Toast.LENGTH_SHORT).show();
+                    GamePartsOfSpeech.this.finish();
+                }
+            });
+        }else{
+            Toast.makeText(this, "Please check your internet connection and try again", Toast.LENGTH_SHORT).show();
+            GamePartsOfSpeech.this.finish();
+        }
+        randomGenerator = new Random(); // getTask it lolololol
 
         populateButtonTxt();
 
@@ -130,13 +175,12 @@ public class GamePartsOfSpeech extends AppCompatActivity {
         answerAttempts = 0;
         scoreMulitplier = 1.00;
 
-        mHandler.sendEmptyMessage(MSG_START_TIMER);
         PUOHelper.initAppBar(this, getResources().getString(R.string.app_name))
                 .setDisplayHomeAsUpEnabled(true);
 
-//        btn_question.setHorizontallyScrolling(true);
-//        btn_question.setMaxLines(2);
-//        btn_question.setEllipsize(TextUtils.TruncateAt.END);
+        btn_question.setHorizontallyScrolling(true);
+        btn_question.setMaxLines(2);
+        btn_question.setEllipsize(TextUtils.TruncateAt.END);
         vibe = (Vibrator) getSystemService(this.VIBRATOR_SERVICE);
 //        ActionBar actionbar = getSupportActionBar();
 //        actionbar.setDisplayHomeAsUpEnabled(true);
@@ -191,7 +235,30 @@ public class GamePartsOfSpeech extends AppCompatActivity {
         populateButtonTxt();
         attemptCount++;
         btn_attempts.setText("Words:  " + attemptCount + "/20");
+
+        //End Game handling
+
+        if (attemptCount == 20) {
+            newScore.setScore(Double.parseDouble(btn_circleScore.getText().toString()));
+            newScore.setType("Speech");
+            newScore.setUserName(user.getProperty("name") + " " + user.getProperty("surname"));
+            newScore.setUserMail(user.getEmail());
+
+            Backendless.Persistence.save(newScore, new AsyncCallback<GameHighScores>() {
+                @Override
+                public void handleResponse(GameHighScores gameHighScores) {
+                    Toast.makeText(GamePartsOfSpeech.this, newScore.getUserName() + " Score Submitted!", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void handleFault(BackendlessFault backendlessFault) {
+                    Toast.makeText(GamePartsOfSpeech.this, backendlessFault.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
+            GamePartsOfSpeech.this.finish();
+        }
     }
+
 
     public void populateButtonTxt() {
         //ReSet all Flags to False

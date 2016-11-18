@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     tools:context=".GameHome">
 
-    <include layout="@layout/puo_toolbar" />
+    <include layout="@layout/puo_toolbar"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -42,7 +43,7 @@
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/textView3"
             android:layout_toStartOf="@+id/textView3"
-            android:src="@drawable/ic_word_game" />
+            app:srcCompat="@drawable/ic_word_game" />
 
         <ImageView
             android:id="@+id/imageView10"
@@ -51,24 +52,63 @@
             android:layout_centerVertical="true"
             android:layout_toEndOf="@+id/textView3"
             android:layout_toRightOf="@+id/textView3"
-            android:src="@drawable/ic_word_game" />
+            app:srcCompat="@drawable/ic_word_game" />
     </RelativeLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:text="What Language?"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:id="@+id/textView9"
+            android:layout_weight="1"
+            android:textSize="18sp"
+            android:background="@drawable/rect_bar"
+            android:allowUndo="false"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp" />
+
+        <TextView
+            android:text="Parts of Speech"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:id="@+id/textView8"
+            android:layout_weight="1"
+            android:textSize="18sp"
+            android:background="@drawable/rect_bar"
+            android:allowUndo="false"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp" />
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:gravity="center_horizontal"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:baselineAligned="false">
 
         <ImageView
             android:id="@+id/iv_whatLanguage"
             android:layout_width="115dp"
+            android:layout_gravity=""
             android:layout_height="115dp"
             android:layout_margin="10dp"
             android:layout_marginLeft="5dp"
             android:onClick="onClick"
-            android:src="@drawable/ic_game_home" />
+            app:srcCompat="@drawable/ic_videogame"
+            android:layout_weight="1" />
 
         <ImageView
             android:id="@+id/iv_partsOfSpeech"
@@ -77,7 +117,28 @@
             android:layout_margin="10dp"
             android:layout_marginRight="5dp"
             android:onClick="onClick"
-            android:src="@drawable/ic_game_home" />
+            app:srcCompat="@drawable/ic_whatshot"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:text="Match Definition"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView2"
+            android:gravity="center_horizontal"
+            android:layout_weight="1"
+            android:textSize="18sp"
+            android:background="@drawable/rect_bar"
+            android:allowUndo="false"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="10dp" />
     </LinearLayout>
 
     <LinearLayout
@@ -94,16 +155,8 @@
             android:layout_margin="10dp"
             android:layout_marginLeft="5dp"
             android:onClick="onClick"
-            android:src="@drawable/ic_game_home" />
+            app:srcCompat="@drawable/ic_game_home" />
 
-        <ImageView
-            android:id="@+id/iv_fillInBlanks"
-            android:layout_width="115dp"
-            android:layout_height="115dp"
-            android:layout_margin="10dp"
-            android:layout_marginRight="5dp"
-            android:onClick="onClick"
-            android:src="@drawable/ic_game_home" />
     </LinearLayout>
 
     <RelativeLayout
@@ -112,23 +165,5 @@
         android:layout_below="@+id/linearLayout2"
         android:layout_centerHorizontal="true">
 
-        <ImageView
-            android:id="@+id/imageView6"
-            android:layout_width="250dp"
-            android:layout_height="50dp"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:src="@drawable/rect_bar" />
-
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:text="Mixed Game"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/background_floating_material_light"
-            android:textSize="28dp" />
     </RelativeLayout>
 </LinearLayout>

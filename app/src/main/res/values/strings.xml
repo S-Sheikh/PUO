@@ -61,13 +61,12 @@
     <string name="definition">Enter a definition</string>
     <string name="sentence_example">Enter sentence with word</string>
     <string name="change_password">Change Password</string>
-
     <!-- sort_filter_bar spinner entries -->
     <string-array name="entries_ordering">
-        <item>Date Desc</item>
         <item>Date Asc</item>
-        <item>Word Desc</item>
-        <item>Word Asc</item>
+        <item>Date Desc</item>
+        <item>Alphabetical Asc</item>
+        <item>Alphabetical Desc</item>
     </string-array>
 
     <string-array name="entries_part_of_speech">
@@ -163,8 +162,15 @@
     <string name="load_words">Loading Words</string>
     <string name="high_scores">High Scores</string>
 
+    <string-array name="highScoreSpinnerEntries">
+        <item>What Language</item>
+        <item>Match Defintion</item>
+        <item>Part Of Speech</item>
+    </string-array>
+
     <!-- AdMob ad unit IDs -->
     <string name="banner_home_footer">ca-app-pub-4259318414780369/9724814935</string>
+    <string name="interstitial_full_screen">ca-app-pub-0664570763252260/1769900428</string>
 
 
 </resources>
