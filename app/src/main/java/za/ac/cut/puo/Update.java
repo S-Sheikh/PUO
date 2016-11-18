@@ -138,7 +138,7 @@ public class Update extends AppCompatActivity {
                     bitmap = MediaStore.Images.Media.getBitmap(Update.this.getContentResolver(), uri);
                     ivProfilePic.setImageBitmap(bitmap);
                 } catch (IOException e) {
-                    Toast.makeText(Update.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(Update.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         }
@@ -405,7 +405,6 @@ public class Update extends AppCompatActivity {
         switch (v.getId()) {
             case R.id.ivProfilePic: {
                 AddImage();
-                tvAddPic.setVisibility(View.GONE);
             }
         }
     }
