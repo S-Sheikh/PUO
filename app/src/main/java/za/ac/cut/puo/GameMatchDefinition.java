@@ -88,15 +88,14 @@ public class GameMatchDefinition extends AppCompatActivity {
             }
         }
     };
-    List<Word> words;
     private SmallBang mSmallBang;
     private Random randomGenerator;
+    List<Word> words;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_match_definition);
-
         btn_question = (Button) findViewById(R.id.btn_question);
         btn_ans_topLeft = (Button) findViewById(R.id.btn_ans_topLeft);
         btn_ans_topRight = (Button) findViewById(R.id.btn_ans_topRight);
@@ -221,7 +220,6 @@ public class GameMatchDefinition extends AppCompatActivity {
             tv_multiplier.setText("+ " + Double.toString(scoreMulitplier));
         }
         mSmallBang.bang(v);
-
         populateButtonTxt();
         attemptCount++;
         btn_attempts.setText("Words:  " + attemptCount + "/20");
@@ -233,19 +231,16 @@ public class GameMatchDefinition extends AppCompatActivity {
             newScore.setType("Definition");
             newScore.setUserName(user.getProperty("name") + " " + user.getProperty("surname"));
             newScore.setUserMail(user.getEmail());
-            progressDialog.show();
 
             Backendless.Persistence.save(newScore, new AsyncCallback<GameHighScores>() {
                 @Override
                 public void handleResponse(GameHighScores gameHighScores) {
-                    progressDialog.dismiss();
                     Toast.makeText(GameMatchDefinition.this, newScore.getUserName() + " Score Submitted!", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
                 public void handleFault(BackendlessFault backendlessFault) {
                     Toast.makeText(GameMatchDefinition.this, backendlessFault.getMessage(), Toast.LENGTH_LONG).show();
-                    progressDialog.dismiss();
                 }
             });
             GameMatchDefinition.this.finish();

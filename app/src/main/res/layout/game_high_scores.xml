@@ -25,7 +25,6 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-
             android:layout_height="match_parent">
 
             <ImageView
@@ -68,13 +67,35 @@
                 app:srcCompat="@drawable/ic_high_scores" />
         </RelativeLayout>
 
-        <include layout="@layout/progress_bar_circular" />
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_height="match_parent">
 
+            <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:id="@+id/sp_sortHighScores"
+
+                android:entries="@array/highScoreSpinnerEntries"
+                android:gravity="center_horizontal"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+
+            android:layout_height="match_parent">
+
+        </RelativeLayout>
+        <include layout="@layout/progress_bar_circular" />
         <ListView
+            android:layout_marginTop="10dp"
             android:id="@+id/lv_highScores"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="10dp"
             android:clickable="false"
             android:listSelector="@drawable/card_view_selector_bg" />
     </LinearLayout>

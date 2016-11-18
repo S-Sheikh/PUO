@@ -11,12 +11,23 @@ import android.view.View;
 import android.view.animation.BounceInterpolator;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.backendless.Backendless;
+import com.backendless.BackendlessCollection;
+import com.backendless.BackendlessUser;
+import com.backendless.async.callback.AsyncCallback;
+import com.backendless.exceptions.BackendlessFault;
+import com.backendless.persistence.BackendlessDataQuery;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 import java.util.Random;
 
+import dmax.dialog.SpotsDialog;
 import xyz.hanks.library.SmallBang;
 
 public class GameWhatLanguage extends AppCompatActivity {
@@ -36,7 +47,11 @@ public class GameWhatLanguage extends AppCompatActivity {
     double score;
     double scoreMulitplier;
     int answerAttempts;
-    boolean scoreStreak = false;
+    boolean scoreStreak =false;
+            SpotsDialog
+    progressDialog;
+    BackendlessUser user;
+    GameHighScores newScore;
     int attemptCount = 0;
     Handler mHandler = new Handler() {
         @Override
@@ -73,7 +88,7 @@ public class GameWhatLanguage extends AppCompatActivity {
     };
     private SmallBang mSmallBang;
     private Random randomGenerator;
-
+    List<Word> words;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,7 +111,8 @@ public class GameWhatLanguage extends AppCompatActivity {
         buttonAdapter.add(new WordGameAdapter(btn_ans_topLeft));
         buttonAdapter.add(new WordGameAdapter(btn_ans_topRight));
         //end Init button adpater
-
+        user = Backendless.UserService.CurrentUser();
+        newScore = new GameHighScores();
         //Word Array BoilerPlate Start
         //English Words
         wordArrayList.add(new Word("some", "English", "not all, but not none", "determiner"));
@@ -122,14 +138,45 @@ public class GameWhatLanguage extends AppCompatActivity {
         wordArrayList.add(new Word("umzabalazo", "Xhosa", "a forceful or violent effort to get free of restraint or resist attack", "noun"));
         wordArrayList.add(new Word("thetha", "Xhosa", "conversation; discussion", "noun"));
         //Word Array BoilerPlate End
+        GameWhatLanguage.this.progressDialog = new SpotsDialog(GameWhatLanguage.this, R.style.Custom);
+        GameWhatLanguage.this.progressDialog.show();
+        int PAGESIZE = 100;
+        BackendlessDataQuery dataQuery = new BackendlessDataQuery();
+        dataQuery.setPageSize(PAGESIZE);
+        if(PUOHelper.connectionAvailable(GameWhatLanguage.this)){
+            Backendless.Data.of(Word.class).find(dataQuery, new AsyncCallback<BackendlessCollection<Word>>() {
+                @Override
+                public void handleResponse(BackendlessCollection<Word> wordBackendlessCollection) {
+                    words = wordBackendlessCollection.getData();
+                    for (Word word : words) {
+                        wordArrayList.add(new Word(word.getWord(), word.getLanguage(), word.getDefinition(), word.getPartOfSpeech()));
+                    }
+                    mHandler.sendEmptyMessage(MSG_START_TIMER);
 
-        randomGenerator = new Random(); // initialize it lolololol
+                    newScore.setStartDate(java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime()));
+                    GameWhatLanguage.this.progressDialog.dismiss();
+
+                }
+
+                @Override
+                public void handleFault(BackendlessFault backendlessFault) {
+                    Toast.makeText(GameWhatLanguage.this, "Error, Could not get words from Internet", Toast.LENGTH_SHORT).show();
+                    GameWhatLanguage.this.progressDialog.dismiss();
+
+                }
+            });
+        }else{
+            Toast.makeText(this, "Please check your internet connection and try again", Toast.LENGTH_SHORT).show();
+            GameWhatLanguage.this.finish();
+        }
+        randomGenerator = new Random(); // getTask it lolololol
+
 
         populateButtonTxt();
-
         score = 001;
+        answerAttempts = 0;
+        scoreMulitplier = 1.00;
 
-        mHandler.sendEmptyMessage(MSG_START_TIMER);
         PUOHelper.initAppBar(this, getResources().getString(R.string.app_name))
                 .setDisplayHomeAsUpEnabled(true);
 
@@ -194,6 +241,25 @@ public class GameWhatLanguage extends AppCompatActivity {
 //        }else{
         btn_attempts.setText("Words:  " + attemptCount + "/20");
 //        }
+        if (attemptCount == 20) {
+            newScore.setScore(Double.parseDouble(btn_circleScore.getText().toString()));
+            newScore.setType("Language");
+            newScore.setUserName(user.getProperty("name") + " " + user.getProperty("surname"));
+            newScore.setUserMail(user.getEmail());
+
+            Backendless.Persistence.save(newScore, new AsyncCallback<GameHighScores>() {
+                @Override
+                public void handleResponse(GameHighScores gameHighScores) {
+                    Toast.makeText(GameWhatLanguage.this, newScore.getUserName() + " Score Submitted!", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void handleFault(BackendlessFault backendlessFault) {
+                    Toast.makeText(GameWhatLanguage.this, backendlessFault.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
+            GameWhatLanguage.this.finish();
+        }
     }
 
     //Set Random Buttons with Random(non Repeating words) Words

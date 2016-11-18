@@ -23,7 +23,6 @@ public class GameHome extends AppCompatActivity {
         ivWhatLanguage = (ImageView) findViewById(R.id.iv_whatLanguage);
         ivPartsOfSpeech = (ImageView) findViewById(R.id.iv_partsOfSpeech);
         ivMatchDefinition = (ImageView) findViewById(R.id.iv_matchDefinition);
-        ivFillInBlanks = (ImageView) findViewById(R.id.iv_fillInBlanks);
 
     }
 
@@ -35,9 +34,6 @@ public class GameHome extends AppCompatActivity {
                 break;
             case R.id.iv_whatLanguage:
                 startActivity(new Intent(GameHome.this, GameWhatLanguage.class));
-                break;
-            case R.id.iv_fillInBlanks:
-                startActivity(new Intent(GameHome.this, GameFillInTheBlank.class));
                 break;
             case R.id.iv_matchDefinition:
                 startActivity(new Intent(GameHome.this, GameMatchDefinition.class));
