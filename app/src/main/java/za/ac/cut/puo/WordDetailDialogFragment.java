@@ -450,11 +450,11 @@ public class WordDetailDialogFragment extends AppCompatDialogFragment implements
             deliveryOptions.addPushSinglecast(userProperties.get("deviceId").toString());
 
             PublishOptions publishOptions = new PublishOptions();
-            publishOptions.putHeader( "android-ticker-text", "New Word Received!" );
-            publishOptions.putHeader( "android-content-title", "PUO" );
+            publishOptions.putHeader( "android-ticker-text", "Puo notification" );
+            publishOptions.putHeader( "android-content-title", "New word received" );
             publishOptions.putHeader( "android-content-text",
                     Backendless.UserService.CurrentUser().getProperty("name") +
-                            "Shared a word with you." );
+                            " shared a word with you." );
 
             Backendless.Messaging.publish(prepareMessage(), publishOptions, deliveryOptions, new AsyncCallback<MessageStatus>() {
                 @Override
