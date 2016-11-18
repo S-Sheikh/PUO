@@ -90,7 +90,8 @@ public class AddUserAdapter extends ArrayAdapter<BackendlessUser> {
                 sendIntent.putExtra("address", values.get(position).getProperty("cell").toString());
                 //sendIntent.putExtra("sms_body"  , "default");
                 sendIntent.setType("vnd.android-dir/mms-sms");
-                context.startActivity(sendIntent);
+                if (sendIntent.resolveActivity(context.getPackageManager()) != null)
+                    context.startActivity(sendIntent);
             }
         });
         return convertView;

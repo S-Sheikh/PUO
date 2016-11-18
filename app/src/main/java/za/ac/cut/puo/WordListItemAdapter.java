@@ -41,12 +41,12 @@ public class WordListItemAdapter extends RecyclerView.Adapter<WordListItemAdapte
         return mContext;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
 
         public CircleImageView wordDescImg;
         public TextView wordText, wordStatus, wordAuthor, wordLexicon, supporters;
         public RatingBar wordRating;
-        public ImageView icPopupMenu, ivBgSupporters;
+        public ImageView ivBgSupporters;
 
 
         public ViewHolder(View itemView) {
@@ -59,21 +59,14 @@ public class WordListItemAdapter extends RecyclerView.Adapter<WordListItemAdapte
             wordLexicon = (TextView) itemView.findViewById(R.id.tv_word_lexicon);
             wordRating = (RatingBar) itemView.findViewById(R.id.rtb_word_rating);
             ivBgSupporters = (ImageView) itemView.findViewById(R.id.iv_bg_supporters);
-            icPopupMenu = (ImageView) itemView.findViewById(R.id.iv_ic_popup_menu);
 
-            itemView.setOnClickListener(this);
-            icPopupMenu.setOnClickListener(this);
-        }
-
-        @Override
-        public void onClick(View v) {
-            if (onItemClickCallBack != null) {
-                if (v instanceof ImageView) {
-                    onItemClickCallBack.onOverflowClicked((ImageView) v);
-                } else {
-                    onItemClickCallBack.onItemClicked(v);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (onItemClickCallBack != null)
+                        onItemClickCallBack.onItemClicked(v);
                 }
-            }
+            });
         }
     }
 
@@ -91,7 +84,7 @@ public class WordListItemAdapter extends RecyclerView.Adapter<WordListItemAdapte
         Word word = mWords.get(position);
 
         //change text color to green in word is supported.
-        if (word.isSupported()&&!word.isBlocked()) {
+        if (word.isSupported() && !word.isBlocked()) {
             holder.wordStatus.setTextColor(getContext().getResources()
                     .getColor(R.color.gLime));
             holder.supporters.setVisibility(View.VISIBLE);
@@ -128,7 +121,5 @@ public class WordListItemAdapter extends RecyclerView.Adapter<WordListItemAdapte
     /*Define the listener interface*/
     interface OnItemClickListener {
         void onItemClicked(View itemView);
-
-        void onOverflowClicked(ImageView v);
     }
 }

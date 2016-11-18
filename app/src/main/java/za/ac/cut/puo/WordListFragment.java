@@ -8,21 +8,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
 import android.widget.ProgressBar;
-import android.widget.RatingBar;
 import android.widget.Spinner;
 
 import com.backendless.Backendless;
@@ -55,7 +48,6 @@ import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
  */
 public class WordListFragment extends Fragment {
 
-    public WordListFragment mInstance = this;
     private static List<Word> mWords;
     private RecyclerView mRecyclerView;
     private WordListItemAdapter mAdapter;
@@ -96,15 +88,6 @@ public class WordListFragment extends Fragment {
             })));
         else
             mWords.addAll(newWords);
-
-        Log.d("setmWords: ", "Filtered List isEmpty: " + newWords.isEmpty());
-        for (Word word : newWords) {
-            Log.d("setmWords: ", "FilteredList: " + word.getWord());
-        }
-    }
-
-    public RecyclerView getmRecyclerView() {
-        return mRecyclerView;
     }
 
     public WordListItemAdapter getmAdapter() {
@@ -165,70 +148,12 @@ public class WordListFragment extends Fragment {
             @Override
             public void onItemClicked(View itemView) {
                 int position = mRecyclerView.getChildAdapterPosition(itemView);
-                mListener.onWordSelected(position);
+                mListener.onWordSelected(mWords.get(position));
 
                 WordListItemAdapter.ViewHolder vh = (WordListItemAdapter.ViewHolder)
                         mRecyclerView.getChildViewHolder(itemView);
 
                 showWordDetailDialogFragment(mWords.get(position), vh.wordDescImg, position);
-            }
-
-            @Override
-            public void onOverflowClicked(final ImageView v) {
-                final PopupMenu wordOptions = new PopupMenu(getContext(), v);
-                MenuInflater inflater = wordOptions.getMenuInflater();
-                inflater.inflate(R.menu.menu_popup, wordOptions.getMenu());
-
-                /**
-                 * Check if user is Collector and remove menu options accordingly.*/
-                if (Backendless.UserService.CurrentUser().getProperty("role").toString()
-                        .equalsIgnoreCase("Collector")) {
-                    wordOptions.getMenu().removeItem(R.id.unsupport);
-                    wordOptions.getMenu().removeItem(R.id.support);
-                    wordOptions.getMenu().removeItem(R.id.block);
-                } else {
-                    /**
-                     * Check if word is supported and remove menu options accordingly.*/
-                    if (!mWords.get((mRecyclerView.findContainingViewHolder(v)
-                            .getAdapterPosition())).isSupported())
-                        wordOptions.getMenu().removeItem(R.id.unsupport);
-                    else
-                        wordOptions.getMenu().removeItem(R.id.support);
-                }
-
-                wordOptions.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        int position = mRecyclerView.findContainingViewHolder(v).getAdapterPosition();
-                        switch (item.getItemId()) {
-                            case R.id.support:
-                                mListener.onMenuOptionSelected(R.id.support);
-                                supportWord(position);
-                                return true;
-                            case R.id.unsupport:
-                                mListener.onMenuOptionSelected(R.id.unsupport);
-                                unSupportWord(position);
-                                return true;
-                            case R.id.block:
-                                mListener.onMenuOptionSelected(R.id.block);
-                                blockWord(position);
-                                return true;
-                            case R.id.rate:
-                                mListener.onMenuOptionSelected(R.id.rate);
-                                rateWord(position);
-                                return true;
-                            case R.id.add_to_word_chest:
-                                mListener.onMenuOptionSelected(R.id.add_to_word_chest);
-                                return true;
-                            case R.id.share:
-                                mListener.onMenuOptionSelected(R.id.share);
-                                return true;
-                            default:
-                                return false;
-                        }
-                    }
-                });
-                wordOptions.show();
             }
         });
 
@@ -252,6 +177,7 @@ public class WordListFragment extends Fragment {
             }
         });
     }
+
 
     /**
      * Checks if fragment is attached to WordTreasureActivity and loads words from Backendless,
@@ -290,149 +216,12 @@ public class WordListFragment extends Fragment {
         }
     }
 
-    /**
-     * Updates a word status to supported.
-     *
-     * @param position positions of the selected word in the list.
-     */
-    public void supportWord(final int position) {
-        //TODO: update support functionality to allow multiple support
-        if (PUOHelper.connectionAvailable(getContext())) {
-            Word word = mWords.get(position);
-            if (!word.isSupported()) {
-                word.setSupported(true);
-                mAdapter.notifyItemChanged(position);
-                Backendless.Persistence.save(word, new AsyncCallback<Word>() {
-                    @Override
-                    public void handleResponse(Word word) {
-                        setSnackBar(getView(), word.getWord() + ": is now supported!",
-                                Snackbar.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void handleFault(BackendlessFault backendlessFault) {
-                        setSnackBar(getView(), backendlessFault.getMessage(),
-                                Snackbar.LENGTH_SHORT).show();
-                    }
-                });
-            } else
-                setSnackBar(getView(), mWords.get(position).getWord() + ": is already supported!",
-                        Snackbar.LENGTH_SHORT).show();
-        } else
-            setSnackBar(getView(), "No internet available! Please check connection.",
-                    Snackbar.LENGTH_LONG).show();
-    }
-
-    /**
-     * Updates a word status to blocked and sets supported to false.
-     */
-    public void blockWord(final int position) {
-        if (PUOHelper.connectionAvailable(getContext())) {
-            if (!mWords.get(position).isBlocked()) {
-                mWords.get(position).setBlocked(true);
-                mWords.get(position).setSupported(false);
-                mAdapter.notifyItemChanged(position);
-                Backendless.Persistence.save(mWords.get(position), new AsyncCallback<Word>() {
-                    @Override
-                    public void handleResponse(Word word) {
-                        setSnackBar(getView(), word.getWord() + ": is now blocked!",
-                                Snackbar.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void handleFault(BackendlessFault backendlessFault) {
-                        setSnackBar(getView(), backendlessFault.getMessage(),
-                                Snackbar.LENGTH_SHORT).show();
-                    }
-                });
-            } else
-                setSnackBar(getView(), mWords.get(position).getWord() + ": is already blocked!",
-                        Snackbar.LENGTH_SHORT).show();
-        } else
-            setSnackBar(getView(), "No internet available! Please check connection.",
-                    Snackbar.LENGTH_LONG).show();
-    }
-
-    /**
-     * Updates a word status to unsupported.
-     */
-    public void unSupportWord(final int position) {
-        if (PUOHelper.connectionAvailable(getContext())) {
-            if (mWords.get(position).isSupported()) {
-                mWords.get(position).setSupported(false);
-                mAdapter.notifyItemChanged(position);
-                Backendless.Persistence.of(Word.class).findById(mWords.get(position), new AsyncCallback<Word>() {
-                    @Override
-                    public void handleResponse(Word word) {
-                        if (word.isSupported()) {
-                            word.setSupported(false);
-                            mAdapter.notifyItemChanged(position);
-                            Backendless.Persistence.save(word, new AsyncCallback<Word>() {
-                                @Override
-                                public void handleResponse(Word word) {
-                                    setSnackBar(getView(), word.getWord() + ": is now unsupported!",
-                                            Snackbar.LENGTH_SHORT).show();
-                                }
-
-                                @Override
-                                public void handleFault(BackendlessFault backendlessFault) {
-                                    setSnackBar(getView(), backendlessFault.getMessage(),
-                                            Snackbar.LENGTH_SHORT).show();
-                                }
-                            });
-                        } else
-                            setSnackBar(getView(), word.getWord() + ": is already unsupported!",
-                                    Snackbar.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void handleFault(BackendlessFault backendlessFault) {
-                        setSnackBar(rootView, backendlessFault.getMessage(),
-                                Snackbar.LENGTH_SHORT).show();
-                    }
-                });
-            } else
-                setSnackBar(getView(), mWords.get(position).getWord() + ": is already unsupported!",
-                        Snackbar.LENGTH_SHORT).show();
-        } else
-            setSnackBar(getView(), "No internet available! Please check connection.",
-                    Snackbar.LENGTH_LONG).show();
-    }
-
-    public void rateWord(final int position) {
-        final PopupWindow ratingPopup = PUOHelper.getPopup(getContext(), null);
-        ratingPopup.showAtLocation(new View(getContext()), Gravity.CENTER, 0, 0);
-        final RatingBar ratingBar = (RatingBar) ratingPopup.getContentView().findViewById(R.id.rating_bar);
-        Button rate = (Button) ratingPopup.getContentView().findViewById(R.id.btn_rate);
-        rate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Word word = mWords.get(position);
-                word.setRating(ratingBar.getRating());
-                mAdapter.notifyItemChanged(position);
-                Backendless.Persistence.save(word, new AsyncCallback<Word>() {
-                    @Override
-                    public void handleResponse(Word word) {
-                    }
-
-                    @Override
-                    public void handleFault(BackendlessFault backendlessFault) {
-                        setSnackBar(rootView, backendlessFault.getMessage(),
-                                Snackbar.LENGTH_SHORT).show();
-                    }
-                });
-                ratingPopup.dismiss();
-            }
-        });
-
-    }
-
     public void sortList(final String sortOption) {
         //List<Word> sortedList = mWords;
         if (!mWords.isEmpty()) {
             if (sortOption.equalsIgnoreCase("Date Asc")) {
                 setmWords(Lists.reverse(mWords));
-                mAdapter.notifyItemRangeChanged(0, mWords.size());
+                mAdapter.notifyDataSetChanged();
             }
         }
         for (Word word : mWords) {
@@ -449,10 +238,10 @@ public class WordListFragment extends Fragment {
 
     private void showWordDetailDialogFragment(Word word, ImageView v, int position) {
         FragmentManager fm = getFragmentManager();
-        WordDetailFragment wordDetailFragmentDialog = WordDetailFragment.newInstance(word, v.getDrawable(), position);
+        WordDetailDialogFragment wordDetailDialogFragmentDialog = WordDetailDialogFragment.newInstance(word, v.getDrawable(), position);
         // SETS the target fragment for use later when sending results
-        wordDetailFragmentDialog.setTargetFragment(this, 400);
-        wordDetailFragmentDialog.show(fm, "fragment_word_detail");
+        wordDetailDialogFragmentDialog.setTargetFragment(this, 400);
+        wordDetailDialogFragmentDialog.show(fm, "fragment_word_detail");
     }
 
     @Override
@@ -481,6 +270,6 @@ public class WordListFragment extends Fragment {
     public interface OnWordListItemClickListener {
         void onMenuOptionSelected(int id);
 
-        void onWordSelected(int position);
+        void onWordSelected(Word word);
     }
 }

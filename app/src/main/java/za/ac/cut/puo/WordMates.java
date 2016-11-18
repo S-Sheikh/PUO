@@ -33,6 +33,8 @@ public class WordMates extends AppCompatActivity {
     List<BackendlessUser> usersList;
     ProgressBar circularBar;
     TextView tvUsersOnline;
+    static final int REQUEST_SELECT_WORD_MATE = 3;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,8 +53,7 @@ public class WordMates extends AppCompatActivity {
         lvUsers.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (getCallingActivity() != null && getCallingActivity()
-                        .getShortClassName().equals("WordTreasure")) {
+                if (getIntent().getIntExtra("request_code", -300) == REQUEST_SELECT_WORD_MATE) {
                     onSelectUserForShare(usersList.get(position).getProperties());
                 }
             }

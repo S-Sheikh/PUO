@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
-    tools:context="za.ac.cut.puo.WordDetailFragment">
+    tools:context="za.ac.cut.puo.WordDetailDialogFragment">
 
     <include layout="@layout/word_detail_view" />
 

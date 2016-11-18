@@ -9,6 +9,7 @@ import android.support.v4.app.NotificationCompat;
 
 import com.backendless.messaging.PublishOptions;
 import com.backendless.push.BackendlessBroadcastReceiver;
+import com.backendless.push.BackendlessPushService;
 
 public class PushReceiver extends BackendlessBroadcastReceiver {
     @Override
@@ -23,7 +24,8 @@ public class PushReceiver extends BackendlessBroadcastReceiver {
             if (appIcon == 0)
                 appIcon = android.R.drawable.sym_def_app_icon;
 
-            Intent notificationIntent = new Intent(context, AcceptChatActivity.class);
+            Intent notificationIntent = new Intent(context, WordTreasureActivity.class);
+
             notificationIntent.putExtra("subtopic", subtopic);
             PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
@@ -43,6 +45,11 @@ public class PushReceiver extends BackendlessBroadcastReceiver {
         }
 
         return false;
+    }
+
+    @Override
+    public Class<? extends BackendlessPushService> getServiceClass() {
+        return super.getServiceClass();
     }
 }
                                             

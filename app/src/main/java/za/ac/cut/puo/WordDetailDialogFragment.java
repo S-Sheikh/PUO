@@ -1,17 +1,27 @@
 package za.ac.cut.puo;
 
 
+import android.app.Activity;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
+import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatDialogFragment;
-import android.support.v7.widget.ShareActionProvider;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
+import android.telephony.SmsManager;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -27,19 +37,28 @@ import android.widget.Toast;
 import com.backendless.Backendless;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
+import com.backendless.messaging.DeliveryOptions;
+import com.backendless.messaging.PublishOptions;
+import com.backendless.services.messaging.MessageStatus;
 
 import java.io.IOException;
+import java.util.Map;
 
+import static android.app.Activity.RESULT_OK;
 import static android.media.MediaPlayer.MEDIA_ERROR_MALFORMED;
 import static android.media.MediaPlayer.MEDIA_ERROR_UNKNOWN;
 
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link WordDetailFragment#newInstance} factory method to
+ * Use the {@link WordDetailDialogFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class WordDetailFragment extends AppCompatDialogFragment implements Toolbar.OnMenuItemClickListener {
+public class WordDetailDialogFragment extends AppCompatDialogFragment implements Toolbar.OnMenuItemClickListener {
+    static final int REQUEST_SELECT_PHONE_NUMBER = 1;
+    static final int REQUEST_SELECT_EMAIL = 2;
+    static final int REQUEST_SELECT_WORD_MATE = 3;
+    private static WordDetailDialogFragmentListener mListener;
     private static Word selectedWord;
     private static Drawable wordImage;
     private static int wordPosition;
@@ -47,25 +66,28 @@ public class WordDetailFragment extends AppCompatDialogFragment implements Toolb
     private RatingBar wordRatings;
     private Toolbar wordDetailToolbar, wordActionsBar;
     private TextView wordStatus, supporters;
-    private ShareActionProvider wordShareAction;
     private ViewGroup mContainer;
     private ImageView ivWordAudio, ivBgSupporters;
     private MediaPlayer mediaPlayer;
     private ProgressDialog audioDlg;
 
 
-    public WordDetailFragment() {
+    public WordDetailDialogFragment() {
         // Required empty public constructor
     }
 
+    public void setWordDetailDialogFragmentListener(WordDetailDialogFragmentListener listener) {
+        mListener = listener;
+    }
+
     /**
-     * @return A new instance of fragment WordDetailFragment.
+     * @return A new instance of fragment WordDetailDialogFragment.
      */
-    public static WordDetailFragment newInstance(Word word, Drawable image, int position) {
+    public static WordDetailDialogFragment newInstance(Word word, Drawable image, int position) {
         selectedWord = word;
         wordImage = image;
         wordPosition = position;
-        return new WordDetailFragment();
+        return new WordDetailDialogFragment();
     }
 
     @Override
@@ -99,9 +121,6 @@ public class WordDetailFragment extends AppCompatDialogFragment implements Toolb
         wordSentence.setText(selectedWord.getSentence());
         wordRatings.setRating(selectedWord.getRating());
         wordActionsBar.inflateMenu(R.menu.menu_word_actions);
-        wordShareAction = (ShareActionProvider) MenuItemCompat
-                .getActionProvider(wordActionsBar.getMenu().findItem(R.id.share));
-        wordDetailToolbar.inflateMenu(R.menu.menu_word_detail);
         collapsingToolbar.setTitle(selectedWord.getWord());
 
         /*change text color to green if word is supported.*/
@@ -127,11 +146,10 @@ public class WordDetailFragment extends AppCompatDialogFragment implements Toolb
                 .equalsIgnoreCase("Collector")) {
             wordActionsBar.getMenu().removeItem(R.id.support);
             wordActionsBar.getMenu().removeItem(R.id.block);
-            wordDetailToolbar.getMenu().removeItem(R.id.edit_word);
+            wordActionsBar.getMenu().removeItem(R.id.edit_word);
         }
 
         wordActionsBar.setOnMenuItemClickListener(this);
-        wordDetailToolbar.setOnMenuItemClickListener(this);
         ivWordAudio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -152,6 +170,7 @@ public class WordDetailFragment extends AppCompatDialogFragment implements Toolb
             case R.id.edit_word:
                 return true;
             case R.id.share:
+                prepareShareOptions(wordActionsBar);
                 return true;
             case R.id.add_to_word_chest:
                 PUOHelper.SaveToWordChestTask.getTask(getContext()).execute(selectedWord);
@@ -349,4 +368,195 @@ public class WordDetailFragment extends AppCompatDialogFragment implements Toolb
 
     }
 
+    /**
+     * Prepare and display word share options popup menu.
+     */
+    public void prepareShareOptions(View v) {
+        PopupMenu shareOptions = new PopupMenu(getContext(), v);
+        shareOptions.inflate(R.menu.menu_word_share);
+        shareOptions.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.word_mate:
+                        sendToWordMate();
+                        return true;
+                    case R.id.email:
+                        selectContact(REQUEST_SELECT_EMAIL);
+                        return true;
+                    case R.id.sms:
+                        selectContact(REQUEST_SELECT_PHONE_NUMBER);
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        });
+        shareOptions.show();
+    }
+
+    interface WordDetailDialogFragmentListener {
+        void onWordActionClicked(int Id, @Nullable Object data);
+    }
+
+    /**
+     * Start an activity for the user to pick a contact from device.
+     */
+    public void selectContact(int requestCode) {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        switch (requestCode) {
+            case REQUEST_SELECT_PHONE_NUMBER:
+                intent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
+                break;
+            case REQUEST_SELECT_EMAIL:
+                intent.setType(ContactsContract.CommonDataKinds.Email.CONTENT_TYPE);
+                break;
+        }
+        if (intent.resolveActivity(getContext().getPackageManager()) != null) {
+            startActivityForResult(intent, requestCode);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_SELECT_PHONE_NUMBER && resultCode == RESULT_OK) {
+            // Get the URI and query the content provider for the phone number
+            Uri contactUri = data.getData();
+            String[] projection = new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER};
+            Cursor cursor = getContext().getContentResolver().query(contactUri, projection,
+                    null, null, null);
+            // If the cursor returned is valid, get the phone number
+            if (cursor != null && cursor.moveToFirst()) {
+                int numberIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+                String number = cursor.getString(numberIndex);
+                sendSMS(number,prepareMessage());
+            }
+        } else if (requestCode == REQUEST_SELECT_EMAIL && resultCode == RESULT_OK) {
+            // Get the URI and query the content provider for the email
+            Uri contactUri = data.getData();
+            String[] projection = new String[]{ContactsContract.CommonDataKinds.Email.ADDRESS};
+            Cursor cursor = getContext().getContentResolver().query(contactUri, projection,
+                    null, null, null);
+            // If the cursor returned is valid, get the email
+            if (cursor != null && cursor.moveToFirst()) {
+                int numberIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS);
+                String email = cursor.getString(numberIndex);
+                sendEmail(email,prepareMessage());
+            }
+        }else if (requestCode == REQUEST_SELECT_WORD_MATE && resultCode == RESULT_OK) {
+            Map<String, Object> userProperties = (Map<String, Object>) data.getSerializableExtra("user_properties");
+
+            DeliveryOptions deliveryOptions = new DeliveryOptions();
+            deliveryOptions.addPushSinglecast(userProperties.get("deviceId").toString());
+
+            PublishOptions publishOptions = new PublishOptions();
+            publishOptions.putHeader( "android-ticker-text", "New Word Received!" );
+            publishOptions.putHeader( "android-content-title", "PUO" );
+            publishOptions.putHeader( "android-content-text",
+                    Backendless.UserService.CurrentUser().getProperty("name") +
+                            "Shared a word with you." );
+
+            Backendless.Messaging.publish(prepareMessage(), publishOptions, deliveryOptions, new AsyncCallback<MessageStatus>() {
+                @Override
+                public void handleResponse(MessageStatus messageStatus) {
+                    Toast.makeText(getContext(), messageStatus.toString(), Toast.LENGTH_LONG).show();
+                }
+
+                @Override
+                public void handleFault(BackendlessFault backendlessFault) {
+
+                }
+            });
+        }
+    }
+
+    /**
+     * Send an sms message to another device.
+     */
+    private void sendSMS(String number, String message) {
+
+        PendingIntent sentIntent = PendingIntent.getBroadcast(getContext(), 0,
+                new Intent("SMS_SENT"), 0);
+
+        PendingIntent deliveredIntent = PendingIntent.getBroadcast(getContext(), 0,
+                new Intent("SMS_DELIVERED"), 0);
+
+        //SMS sent broadcast receiver
+        getActivity().registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                switch (getResultCode()) {
+                    case RESULT_OK:
+                        Toast.makeText(context, "SMS sent", Toast.LENGTH_LONG).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
+                        Toast.makeText(context, "Generic failure", Toast.LENGTH_LONG).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_NO_SERVICE:
+                        Toast.makeText(context, "No service", Toast.LENGTH_LONG).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_NULL_PDU:
+                        Toast.makeText(context, "Null PDU", Toast.LENGTH_LONG).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_RADIO_OFF:
+                        Toast.makeText(context, "Radio off", Toast.LENGTH_LONG).show();
+                        break;
+                }
+            }
+        }, new IntentFilter("SMS_SENT"));
+
+        //SMS delivered broadcast receiver
+        getActivity().registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                switch (getResultCode()) {
+                    case RESULT_OK:
+                        Toast.makeText(context, "SMS delivered",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        Toast.makeText(context, "SMS not delivered",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        }, new IntentFilter("SMS_DELIVERED"));
+
+        SmsManager.getDefault().sendTextMessage(number, null, message, sentIntent, deliveredIntent);
+    }
+
+    /**
+     * Send an email message to another device.
+     */
+    private void sendEmail(String address, String message) {
+        Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
+        emailIntent.setData(Uri.parse("mailto:"));
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{address});
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.share_word_subject));
+        emailIntent.putExtra(Intent.EXTRA_TEXT, message);
+        if (emailIntent.resolveActivity(getContext().getPackageManager()) != null)
+            startActivity(emailIntent);
+    }
+
+    /**
+     * Start an activity for the user to pick a user from the app.
+     */
+    private void sendToWordMate(){
+        Intent wordMateIntent = new Intent(getContext(),WordMates.class);
+        wordMateIntent.putExtra("request_code", REQUEST_SELECT_WORD_MATE);
+        startActivityForResult(wordMateIntent,REQUEST_SELECT_WORD_MATE);
+    }
+
+    private String prepareMessage() {
+
+        return selectedWord.getWord() +
+                "\n" + "Languge: " +
+                selectedWord.getLanguage() +
+                "\n" + "Part of speech: " +
+                selectedWord.getPartOfSpeech() +
+                "\n" + "Definition: " +
+                selectedWord.getDefinition() +
+                "\n" + "Sentence: " +
+                "\n" + selectedWord.getSentence();
+    }
 }

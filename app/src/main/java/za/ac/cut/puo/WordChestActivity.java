@@ -20,7 +20,9 @@ public class WordChestActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onWordSelected(int position) {
+    public void onWordSelected(Word word) {
 
     }
+
+
 }

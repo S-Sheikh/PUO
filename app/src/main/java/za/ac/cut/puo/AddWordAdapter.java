@@ -20,7 +20,7 @@ public class AddWordAdapter extends ArrayAdapter<Word> {
     private final Context context;
     private final List<Word> values;
     private TextView tv_word_title, tv_word_status, tv_word_author, tvLanguage, supporters;
-    private ImageView wordImg, iv_ic_popup, ivBgSupporters;
+    private ImageView wordImg, ivBgSupporters;
     private RatingBar wordRating;
 
     public AddWordAdapter(Context context, List<Word> list) {
@@ -30,10 +30,9 @@ public class AddWordAdapter extends ArrayAdapter<Word> {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         convertView = inflater.inflate(R.layout.word_list_item, parent, false);
-        iv_ic_popup = (ImageView) convertView.findViewById(R.id.iv_ic_popup_menu);
         wordImg = (CircleImageView) convertView.findViewById(R.id.civ_word_pic);
         tv_word_title = (TextView) convertView.findViewById(R.id.tv_word_text);
         tv_word_status = (TextView) convertView.findViewById(R.id.tv_word_status);
@@ -56,16 +55,15 @@ public class AddWordAdapter extends ArrayAdapter<Word> {
 
         //change text color to green in word is supported.
         if (values.get(position).isSupported()) {
-            tv_word_status.setTextColor(getContext().getResources()
+            tv_word_status.setTextColor(context.getResources()
                     .getColor(R.color.gLime));
             supporters.setVisibility(View.VISIBLE);
             ivBgSupporters.setVisibility(View.VISIBLE);
             supporters.setText(String.valueOf(values.get(position).getSupporters()));
         } else {
-            tv_word_status.setTextColor(getContext().getResources()
+            tv_word_status.setTextColor(context.getResources()
                     .getColor(R.color.colorPrimaryText));
         }
-
         return convertView;
     }
 }

@@ -166,6 +166,10 @@
     <!-- AdMob ad unit IDs -->
     <string name="banner_home_footer">ca-app-pub-4259318414780369/9724814935</string>
     <string name="interstitial_full_screen">ca-app-pub-0664570763252260/1769900428</string>
+    <string name="share_word_subject">New Word from PUO app</string>
+    <string name="sms">via Sms</string>
+    <string name="email">via Email</string>
+    <string name="word_mate">to Word Mate</string>
 
 
 </resources>
