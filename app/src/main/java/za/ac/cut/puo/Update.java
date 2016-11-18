@@ -39,17 +39,17 @@ import dmax.dialog.SpotsDialog;
 
 public class Update extends AppCompatActivity {
     public static final int REQUEST_CODE_CHOOSE_PHOTO = 1;
-    Spinner spRoles, spLocation;
-    EditText etName, etSurname, etEmail, etCellPhone, etPassword, etRePassword, etNewPass, etRePass, etUsername;
+    private static final String TODO = "";
+    Spinner spRoles;
+    EditText etName, etSurname, etEmail, etCellPhone, etPassword, etRePassword, etNewPass, etRePass, etUsername, etLocation;
     TextView tvAddPic;
     ImageView ivProfilePic;
-    TextInputLayout nameInput, surnameInput, emailInput, passwordInput, rePasswordInput, cellInput, usernameInput;
+    TextInputLayout nameInput, surnameInput, emailInput, passwordInput, rePasswordInput, cellInput, usernameInput, Location_input;
     SpotsDialog progressDialog;
     Toolbar update_toolBar;
     Button btn_update_submit, btnResetPass;
     Menu update_edit__menu_item;
     Bitmap bitmap = null;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,6 +76,7 @@ public class Update extends AppCompatActivity {
                 etUsername.setEnabled(false);
                 etEmail.setEnabled(false);
                 etPassword.setEnabled(false);
+                etLocation.setEnabled(false);
                 ivProfilePic.setEnabled(false);
                 btnResetPass.setVisibility(View.GONE);
                 etPassword.setVisibility(View.GONE);
@@ -84,22 +85,27 @@ public class Update extends AppCompatActivity {
                 etRePassword.setVisibility(View.GONE);
                 etCellPhone.setEnabled(false);
                 spRoles.setEnabled(false);
-                spLocation.setEnabled(false);
                 btn_update_submit.setVisibility(View.GONE);
                 etName.setText(user.getProperty("name").toString().trim());
                 etSurname.setText(user.getProperty("surname").toString().trim());
                 etUsername.setText(user.getProperty("username").toString().trim());
+                String arr[] = new String[]{"Collector", "Specialist", "Administrator"};
+                for (int i = 0; i < arr.length; i++) {
+                    if (user.getProperty("role").toString().equals(arr[i])) {
+                        spRoles.setSelection(i);
+                    }
+                }
                 PUOHelper.readImage((ivProfilePic));
                 etEmail.setText(user.getEmail());
                 etPassword.setText(user.getPassword());
                 etRePassword.setText(user.getPassword());
                 etCellPhone.setText(user.getProperty("cell").toString().trim());
-                //TODO: DO validation when spinner is selected or not!!
-                //spRoles.setSelection(getIndex(spRoles,user.getProperty("roles").toString().trim()));
-                //spLocation.setSelection(getIndex(spLocation,user.getProperty("location").toString().trim()));
+                etLocation.setText(user.getProperty("location").toString().trim());
             }
+
         }
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -138,9 +144,9 @@ public class Update extends AppCompatActivity {
         }
     }
 
+
     public void initViews() {
         spRoles = (Spinner) findViewById(R.id.spRoles);
-        spLocation = (Spinner) findViewById(R.id.spLocation);
         etName = (EditText) findViewById(R.id.etName);
         etSurname = (EditText) findViewById(R.id.etSurname);
         etUsername = (EditText) findViewById(R.id.etUsername);
@@ -161,6 +167,8 @@ public class Update extends AppCompatActivity {
         btn_update_submit = (Button) findViewById(R.id.btn_update_submit);
         btnResetPass = (Button) findViewById(R.id.btnResetPass);
         update_edit__menu_item = (Menu) findViewById(R.id.update_edit__menu_item);
+        etLocation = (EditText) findViewById(R.id.etLocation);
+        Location_input = (TextInputLayout) findViewById(R.id.Location_input);
         setSupportActionBar(update_toolBar);
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
@@ -331,6 +339,28 @@ public class Update extends AppCompatActivity {
                 }
             }
         });
+        etLocation.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                validateEditText(s, etLocation);
+            }
+        });
+        etLocation.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    validateEditText(((EditText) v).getText(), etLocation);
+                }
+            }
+        });
     }
 
     private void validateEditText(Editable s, View v) {
@@ -349,6 +379,8 @@ public class Update extends AppCompatActivity {
                 cellInput.setError(null);
             else if (v.getId() == R.id.etUsername)
                 usernameInput.setError(null);
+            else if (v.getId() == R.id.etLocation)
+                Location_input.setError(null);
         } else {
             if (v.getId() == R.id.etEmail)
                 emailInput.setError(getString(R.string.txt_input_layout));
@@ -364,6 +396,8 @@ public class Update extends AppCompatActivity {
                 cellInput.setError(getString(R.string.txt_input_layout));
             else if (v.getId() == R.id.etUsername)
                 usernameInput.setError(getString(R.string.txt_input_layout));
+            else if (v.getId() == R.id.etLocation)
+                Location_input.setError(getString(R.string.txt_input_layout));
         }
     }
 
@@ -371,6 +405,7 @@ public class Update extends AppCompatActivity {
         switch (v.getId()) {
             case R.id.ivProfilePic: {
                 AddImage();
+                tvAddPic.setVisibility(View.GONE);
             }
         }
     }
@@ -381,7 +416,8 @@ public class Update extends AppCompatActivity {
         if (PUOHelper.connectionAvailable(this)) {
             if (etName.getText().toString().trim().isEmpty() || etSurname.getText().toString().trim().isEmpty() ||
                     etEmail.getText().toString().trim().isEmpty()
-                    || etCellPhone.getText().toString().trim().isEmpty()) {
+                    || etCellPhone.getText().toString().trim().isEmpty()
+                    || etLocation.getText().toString().trim().isEmpty()) {
                 Toast.makeText(Update.this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
             } else {
                 progressDialog = new SpotsDialog(Update.this, R.style.Custom);
@@ -391,8 +427,8 @@ public class Update extends AppCompatActivity {
                 user.setProperty("surname", etSurname.getText().toString().trim());
                 user.setProperty("username", etUsername.getText().toString().trim());
                 user.setProperty("cell", etCellPhone.getText().toString().trim());
+                user.setProperty("location", etLocation.getText().toString().trim());
                 user.setProperty("role", spRoles.getSelectedItem().toString().trim());
-                user.setProperty("location", spLocation.getSelectedItem().toString().trim());
                 user.setProperty("isUpdated", true);
                 final UserProfilePictures userProfilePictures = new UserProfilePictures();
                 userProfilePictures.setUserMail(user.getEmail());
@@ -456,19 +492,13 @@ public class Update extends AppCompatActivity {
         rePasswordInput.setVisibility(View.GONE);
         etRePassword.setVisibility(View.GONE);
         etCellPhone.setEnabled(true);
+        etLocation.setEnabled(true);
         spRoles.setEnabled(false);
-        //spRoles.setVisibility(View.GONE);
-        spLocation.setEnabled(true);
-        //update_edit__menu_item.setGroupVisible(0,false);
         etPassword.setHint(getString(R.string.change_password));
-        //etPassword.setVisibility(View.VISIBLE);
-        //etPassword.setEnabled(true);
         btnResetPass.setVisibility(View.VISIBLE);
         btn_update_submit.setVisibility(View.VISIBLE);
         ivProfilePic.setEnabled(true);
-
     }
-
     public void ChangePassword(View v) {
         LayoutInflater inflater = getLayoutInflater();
         final View view = inflater.inflate(R.layout.change_password, null);
@@ -517,5 +547,8 @@ public class Update extends AppCompatActivity {
         });
         dlg.show();
     }
+
 }
+
+
 

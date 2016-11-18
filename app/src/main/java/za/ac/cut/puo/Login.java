@@ -105,6 +105,7 @@ public class Login extends AppCompatActivity {
                                 intent.putExtra("objectId", backendlessUser.getObjectId());
                                 startActivity(intent);
                             } else {
+
                                 startActivity(new Intent(Login.this, HomeMenu.class));
                             }
 

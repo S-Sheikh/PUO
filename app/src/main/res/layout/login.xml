@@ -62,8 +62,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:focusableInTouchMode="true"
-                            android:hint="@string/login_email_hint"
-                            android:inputType="textEmailAddress"
+                            android:hint="@string/register_username_hint"
+                            android:inputType="textPersonName"
                             android:maxLines="1"
                             android:textColor="@color/colorSecondaryText" />
                     </android.support.design.widget.TextInputLayout>
