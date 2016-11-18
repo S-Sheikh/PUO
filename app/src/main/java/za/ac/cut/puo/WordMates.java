@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
@@ -17,6 +18,7 @@ import com.backendless.BackendlessCollection;
 import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
+import com.backendless.persistence.BackendlessDataQuery;
 
 import java.io.Serializable;
 import java.util.Iterator;
@@ -34,7 +36,8 @@ public class WordMates extends AppCompatActivity {
     ProgressBar circularBar;
     TextView tvUsersOnline;
     static final int REQUEST_SELECT_WORD_MATE = 3;
-
+    BackendlessUser listUser;
+    BackendlessUser loggedInUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +51,7 @@ public class WordMates extends AppCompatActivity {
         lvUsers = (ListView) findViewById(R.id.lvContactList);
         circularBar = (ProgressBar) findViewById(R.id.progressBarCircular);
         tvUsersOnline = (TextView) findViewById(R.id.tvUsersOnline);
+        loggedInUser = Backendless.UserService.CurrentUser();
         loadData();
         countUsersOnline();
         lvUsers.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -58,6 +62,41 @@ public class WordMates extends AppCompatActivity {
                 }
             }
         });
+        if(loggedInUser.getProperty("role").toString().equals("Administrator")){
+            lvUsers.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                    listUser = usersList.get(position);
+                    if(!listUser.equals(loggedInUser)){
+                        listUser.setProperty("blocked","blocked");
+                        if(PUOHelper.connectionAvailable(WordMates.this)){
+                            Backendless.UserService.update(listUser, new AsyncCallback<BackendlessUser>() {
+                                @Override
+                                public void handleResponse(BackendlessUser backendlessUser) {
+                                    Toast.makeText(WordMates.this, "User " + listUser.getProperty("email").toString()  + " now Blocked!"
+                                            , Toast.LENGTH_SHORT).show();
+                                }
+
+                                @Override
+                                public void handleFault(BackendlessFault backendlessFault) {
+                                    Toast.makeText(WordMates.this, "Error: " + backendlessFault.getMessage()
+                                            , Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }else{
+                            Toast.makeText(WordMates.this, "Error: Please Check your internet Connection", Toast.LENGTH_SHORT).show();
+                        }
+                    }else{
+                        Toast.makeText(WordMates.this, "You may Not Attempt to block yourself", Toast.LENGTH_SHORT).show();
+                    }
+
+                    return true;
+                }
+            });
+        }else{
+            Toast.makeText(this, "Only An Administrator may block a user", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     private void onSelectUserForShare(Map<String, Object> properties) {
@@ -74,7 +113,9 @@ public class WordMates extends AppCompatActivity {
             usersList.clear();
 
         }
-        Backendless.Data.of(BackendlessUser.class).find(new AsyncCallback<BackendlessCollection<BackendlessUser>>() {
+        BackendlessDataQuery dataQuery = new BackendlessDataQuery();
+        dataQuery.setWhereClause("blocked = 'unblocked'");
+        Backendless.Data.of(BackendlessUser.class).find(dataQuery,new AsyncCallback<BackendlessCollection<BackendlessUser>>() {
             @Override
             public void handleResponse(BackendlessCollection<BackendlessUser> users) {
                 try {

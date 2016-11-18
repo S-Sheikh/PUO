@@ -148,11 +148,11 @@ public class GameWhatLanguage extends AppCompatActivity {
                 @Override
                 public void handleResponse(BackendlessCollection<Word> wordBackendlessCollection) {
                     words = wordBackendlessCollection.getData();
+                    wordArrayList.clear();
                     for (Word word : words) {
                         wordArrayList.add(new Word(word.getWord(), word.getLanguage(), word.getDefinition(), word.getPartOfSpeech()));
                     }
                     mHandler.sendEmptyMessage(MSG_START_TIMER);
-
                     newScore.setStartDate(java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime()));
                     GameWhatLanguage.this.progressDialog.dismiss();
 
