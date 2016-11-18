@@ -76,7 +76,7 @@
                 android:value=".Login" />
         </activity>
         <activity
-            android:name=".HomeMenu"
+            android:name=".HomeScreen"
             android:parentActivityName=".Login">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -84,10 +84,10 @@
         </activity>
         <activity
             android:name=".Update"
-            android:parentActivityName=".HomeMenu">
+            android:parentActivityName=".HomeScreen">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".HomeMenu" />
+                android:value=".HomeScreen" />
         </activity>
         <activity
             android:name=".GameMatchDefinition"
@@ -119,53 +119,36 @@
         </activity>
         <activity
             android:name=".GameHome"
-            android:parentActivityName=".HomeMenu">
+            android:parentActivityName=".HomeScreen">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".HomeMenu" />
+                android:value=".HomeScreen" />
         </activity>
-        <activity android:name=".Splash" />
         <activity
             android:name=".WordTreasureActivity"
-            android:parentActivityName=".HomeMenu">
+            android:parentActivityName=".HomeScreen">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".HomeMenu" />
+                android:value=".HomeScreen" />
         </activity>
         <activity
             android:name=".WordChestActivity"
-            android:parentActivityName=".HomeMenu">
+            android:parentActivityName=".HomeScreen">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".HomeMenu" />
-        </activity>
-        <activity
-            android:name=".ChooseNicknameActivity"
-            android:parentActivityName=".HomeMenu"
-            android:screenOrientation="portrait">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".HomeMenu" />
+                android:value=".HomeScreen" />
         </activity>
         <activity
             android:name=".WordMates"
-            android:parentActivityName=".HomeMenu">
+            android:parentActivityName=".HomeScreen">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".HomeMenu" />
-        </activity>
-        <activity
-            android:name=".AcceptChatActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ChatActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".SelectUserActivity"
-            android:screenOrientation="portrait" />
+                android:value=".HomeScreen" />
+        </activity><![CDATA[
 
         !--Include the AdActivity configChanges and theme. -->
 
+        ]]>
         <receiver
             android:name=".WidgetProvider"
             android:exported="false"

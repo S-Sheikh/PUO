@@ -15,7 +15,6 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatDialogFragment;
@@ -45,8 +44,6 @@ import java.io.IOException;
 import java.util.Map;
 
 import static android.app.Activity.RESULT_OK;
-import static android.media.MediaPlayer.MEDIA_ERROR_MALFORMED;
-import static android.media.MediaPlayer.MEDIA_ERROR_UNKNOWN;
 
 
 /**
@@ -58,7 +55,6 @@ public class WordDetailDialogFragment extends AppCompatDialogFragment implements
     static final int REQUEST_SELECT_PHONE_NUMBER = 1;
     static final int REQUEST_SELECT_EMAIL = 2;
     static final int REQUEST_SELECT_WORD_MATE = 3;
-    private static WordDetailDialogFragmentListener mListener;
     private static Word selectedWord;
     private static Drawable wordImage;
     private static int wordPosition;
@@ -76,9 +72,6 @@ public class WordDetailDialogFragment extends AppCompatDialogFragment implements
         // Required empty public constructor
     }
 
-    public void setWordDetailDialogFragmentListener(WordDetailDialogFragmentListener listener) {
-        mListener = listener;
-    }
 
     /**
      * @return A new instance of fragment WordDetailDialogFragment.
@@ -156,8 +149,11 @@ public class WordDetailDialogFragment extends AppCompatDialogFragment implements
                 if (selectedWord.getPronunciation() != null)
                     if (!selectedWord.getPronunciation().isEmpty())
                         streamWordAudio();
+                    else
+                        Toast.makeText(getContext(), "No pronunciation set for this word!", Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(getContext(), "No pronunciation set for this word!", Toast.LENGTH_SHORT).show();
 
-                Toast.makeText(getContext(), "No pronunciation set for this word!", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -316,23 +312,9 @@ public class WordDetailDialogFragment extends AppCompatDialogFragment implements
             mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
                 @Override
                 public boolean onError(MediaPlayer mp, int what, int extra) {
-                    switch (what) {
-                        case MEDIA_ERROR_UNKNOWN:
-                            audioDlg.cancel();
-                            Toast.makeText(getContext(), "MEDIA_ERROR_UNKNOWN: " + what, Toast.LENGTH_SHORT).show();
-                            mp.reset();
-                            return true;
-                        case MEDIA_ERROR_MALFORMED:
-                            audioDlg.cancel();
-                            Toast.makeText(getContext(), "MEDIA_ERROR_MALFORMED: " + what, Toast.LENGTH_SHORT).show();
-                            mp.reset();
-                            return true;
-                        default:
-                            audioDlg.cancel();
-                            Toast.makeText(getContext(), "GENERAL_ERROR", Toast.LENGTH_SHORT).show();
-                            mp.reset();
-                            return true;
-                    }
+                    audioDlg.cancel();
+                    mp.reset();
+                    return false;
                 }
             });
 
@@ -349,7 +331,6 @@ public class WordDetailDialogFragment extends AppCompatDialogFragment implements
             try {
                 mediaPlayer.setDataSource(Defaults.AUDIO_BASE_URL + selectedWord.getPronunciation());
             } catch (IOException e) {
-                Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
             // Listen for when the audio has completed playing.
@@ -377,7 +358,7 @@ public class WordDetailDialogFragment extends AppCompatDialogFragment implements
         shareOptions.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()){
+                switch (item.getItemId()) {
                     case R.id.word_mate:
                         sendToWordMate();
                         return true;
@@ -395,9 +376,6 @@ public class WordDetailDialogFragment extends AppCompatDialogFragment implements
         shareOptions.show();
     }
 
-    interface WordDetailDialogFragmentListener {
-        void onWordActionClicked(int Id, @Nullable Object data);
-    }
 
     /**
      * Start an activity for the user to pick a contact from device.
@@ -429,7 +407,7 @@ public class WordDetailDialogFragment extends AppCompatDialogFragment implements
             if (cursor != null && cursor.moveToFirst()) {
                 int numberIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
                 String number = cursor.getString(numberIndex);
-                sendSMS(number,prepareMessage());
+                sendSMS(number, prepareMessage());
             }
         } else if (requestCode == REQUEST_SELECT_EMAIL && resultCode == RESULT_OK) {
             // Get the URI and query the content provider for the email
@@ -441,20 +419,20 @@ public class WordDetailDialogFragment extends AppCompatDialogFragment implements
             if (cursor != null && cursor.moveToFirst()) {
                 int numberIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS);
                 String email = cursor.getString(numberIndex);
-                sendEmail(email,prepareMessage());
+                sendEmail(email, prepareMessage());
             }
-        }else if (requestCode == REQUEST_SELECT_WORD_MATE && resultCode == RESULT_OK) {
+        } else if (requestCode == REQUEST_SELECT_WORD_MATE && resultCode == RESULT_OK) {
             Map<String, Object> userProperties = (Map<String, Object>) data.getSerializableExtra("user_properties");
 
             DeliveryOptions deliveryOptions = new DeliveryOptions();
             deliveryOptions.addPushSinglecast(userProperties.get("deviceId").toString());
 
             PublishOptions publishOptions = new PublishOptions();
-            publishOptions.putHeader( "android-ticker-text", "Puo notification" );
-            publishOptions.putHeader( "android-content-title", "New word received" );
-            publishOptions.putHeader( "android-content-text",
+            publishOptions.putHeader("android-ticker-text", "Puo notification");
+            publishOptions.putHeader("android-content-title", "New word received");
+            publishOptions.putHeader("android-content-text",
                     Backendless.UserService.CurrentUser().getProperty("name") +
-                            " shared a word with you." );
+                            " shared a word with you.");
 
             Backendless.Messaging.publish(prepareMessage(), publishOptions, deliveryOptions, new AsyncCallback<MessageStatus>() {
                 @Override
@@ -541,10 +519,10 @@ public class WordDetailDialogFragment extends AppCompatDialogFragment implements
     /**
      * Start an activity for the user to pick a user from the app.
      */
-    private void sendToWordMate(){
-        Intent wordMateIntent = new Intent(getContext(),WordMates.class);
+    private void sendToWordMate() {
+        Intent wordMateIntent = new Intent(getContext(), WordMates.class);
         wordMateIntent.putExtra("request_code", REQUEST_SELECT_WORD_MATE);
-        startActivityForResult(wordMateIntent,REQUEST_SELECT_WORD_MATE);
+        startActivityForResult(wordMateIntent, REQUEST_SELECT_WORD_MATE);
     }
 
     private String prepareMessage() {

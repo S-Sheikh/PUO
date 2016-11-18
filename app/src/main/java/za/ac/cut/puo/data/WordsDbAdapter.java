@@ -29,7 +29,7 @@ public class WordsDbAdapter {
         contentValues.put(WordEntry.COLUMN_DEFINITION, word.getDefinition());
         contentValues.put(WordEntry.COLUMN_SENTENCE, word.getSentence());
         contentValues.put(WordEntry.COLUMN_SUPPORTED, word.isSupported());
-        contentValues.put(WordEntry.COLUMN_RATING, word.isSupported());
+        contentValues.put(WordEntry.COLUMN_RATING, word.getRating());
         contentValues.put(WordEntry.COLUMN_IMAGELOCATION, word.getImageLocation());
         contentValues.put(WordEntry.COLUMN_NAME, word.getName());
         contentValues.put(WordEntry.COLUMN_SURNAME, word.getSurname());

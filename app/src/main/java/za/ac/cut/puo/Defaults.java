@@ -14,6 +14,7 @@ public class Defaults {
     public static final String PROFILE_PIC_SUB_DIRECTORY = "Profile_picture/";
     public static final String AUDIO_BASE_URL = "https://api.backendless.com/D200A885-7EED-CB51-FFAC-228F87E55D00/v1/files/Voice_Clips/";
     public static final String WORD_IMAGE_BASE_URL = "https://api.backendless.com/D200A885-7EED-CB51-FFAC-228F87E55D00/v1/files/WordPictures/";
+    public static final String PROF_PIC_BASE_URL = "https://api.backendless.com/D200A885-7EED-CB51-FFAC-228F87E55D00/v1/files/UserProfilePics/";
 
 
 }

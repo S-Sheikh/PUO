@@ -106,7 +106,7 @@ public class Login extends AppCompatActivity {
                                 startActivity(intent);
                             } else {
 
-                                startActivity(new Intent(Login.this, HomeMenu.class));
+                                startActivity(new Intent(Login.this, HomeScreen.class));
                             }
 
                             Toast.makeText(Login.this, backendlessUser.getEmail() + " successfully logged in!", Toast.LENGTH_SHORT).show();

@@ -32,7 +32,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 import za.ac.cut.puo.data.WordsDbAdapter;
@@ -42,37 +41,6 @@ import za.ac.cut.puo.data.WordsDbAdapter;
  */
 
 public class PUOHelper {
-
-    //Word List BoilerPlate
-    public static List<Word> populateWordList() {
-        List<Word> words = new ArrayList<>();
-
-        //English Words
-        words.add(new Word("eutaxy", "English", "good order or management", "noun"));
-        words.add(new Word("dabster", "English", "Slang. an expert", "noun"));
-        words.add(new Word("pulverulent", "English", "covered with dust or powder.", "adjective"));
-        words.add(new Word("vilipend", "English", "to vilify; depreciate", "verb"));
-
-        //Afrikaans Words
-        words.add(new Word("vark", "Afrikaans", "an omnivorous domesticated hoofed mammal", "noun"));
-        words.add(new Word("evalueer", "Afrikaans", "evaluate or estimate the nature, ability, or quality of", "verb"));
-        words.add(new Word("piek", "Afrikaans", "a thin, pointed piece of metal, wood, or another rigid material", "noun"));
-        words.add(new Word("golf", "Afrikaans", "a gesture or signal made by moving one's hand to and fro", "noun"));
-
-        //Zulu Words
-        words.add(new Word("ukuzibulala", "Zulu", "the action of killing oneself intentionally", "noun"));
-        words.add(new Word("bazizwa", "Zulu", "experience (an emotion or sensation)", "verb"));
-        words.add(new Word("kuzwakale", "Zulu", "in good condition; not damaged, injured, or diseased", "adjective"));
-        words.add(new Word("ingadi", "Zulu", "a piece of ground, often near a house, used for growing flowers, fruit, or vegetablesy", "noun"));
-
-        //Xhosa Words
-        words.add(new Word("inja", "Xhosa", "a domesticated carnivorous mammal that typically has a long snout", "noun"));
-        words.add(new Word("Dudula", "Xhosa", "an act of exerting force on someone or something", "verb"));
-        words.add(new Word("umzabalazo", "Xhosa", "a forceful or violent effort to get free of restraint or resist attack", "noun"));
-        words.add(new Word("thetha", "Xhosa", "conversation; discussion", "noun"));
-
-        return words;
-    }
 
     /**
      * Sets up and returns the action bar for an activity using the toolbar puo_toolbar.xml layout.
@@ -152,7 +120,7 @@ public class PUOHelper {
         BackendlessUser user = Backendless.UserService.CurrentUser();
         String imageLocation = user.getEmail() + "_.png";
         try {
-            URL url = new URL("https://api.backendless.com/D200A885-7EED-CB51-FFAC-228F87E55D00/v1/files/UserProfilePics/" + imageLocation);
+            URL url = new URL(Defaults.PROF_PIC_BASE_URL + imageLocation);
             task.execute(url);
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -185,6 +153,7 @@ public class PUOHelper {
                 .height(180)
                 .endConfig().buildRect(text, generator.getRandomColor());
     }
+
     public static TextDrawable getTextDrawable(GameHighScores user) {
         ColorGenerator generator = ColorGenerator.MATERIAL; // set random color generator
         String text = user.getUserName().toString().substring(0, 2); // get first two letters of a user

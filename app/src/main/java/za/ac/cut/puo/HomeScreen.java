@@ -52,7 +52,7 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 import dmax.dialog.SpotsDialog;
 
-public class HomeMenu extends AppCompatActivity {
+public class HomeScreen extends AppCompatActivity {
     public static final int REQUEST_CODE_CHOOSE_PHOTO = 1;
     public static final int REQUEST_CODE_CAPTURE = 2;
     public static final int REQUEST_CODE__SELECT_AUDIO = 3;
@@ -88,7 +88,7 @@ public class HomeMenu extends AppCompatActivity {
     private MediaPlayer mPlayer = null;
     private AdView mAdView;
 
-    public HomeMenu() {
+    public HomeScreen() {
         mFileName = Environment.getExternalStorageDirectory().toString();
         mFileName += "/_AUD_" + currentDateTime + "_.3gp";
     }
@@ -192,19 +192,19 @@ public class HomeMenu extends AppCompatActivity {
                 updateProfileData();
                 return true;
             case R.id.word_treasure:
-                startActivity(new Intent(HomeMenu.this, WordTreasureActivity.class));
+                startActivity(new Intent(HomeScreen.this, WordTreasureActivity.class));
                 return true;
             case R.id.word_chest:
-                startActivity(new Intent(HomeMenu.this, WordChestActivity.class));
+                startActivity(new Intent(HomeScreen.this, WordChestActivity.class));
                 return true;
             case R.id.word_mates:
-                startActivity(new Intent(HomeMenu.this, WordMates.class));
+                startActivity(new Intent(HomeScreen.this, WordMates.class));
                 return true;
             case R.id.word_game:
-                startActivity(new Intent(HomeMenu.this, GameHome.class));
+                startActivity(new Intent(HomeScreen.this, GameHome.class));
                 return true;
             case R.id.word_highscore:
-                startActivity(new Intent(HomeMenu.this, GameHighScoresActivity.class));
+                startActivity(new Intent(HomeScreen.this, GameHighScoresActivity.class));
                 return true;
             case R.id.logout:
                 logout();
@@ -252,7 +252,7 @@ public class HomeMenu extends AppCompatActivity {
     }
 
     public void updateProfileData() {
-        Intent intent = new Intent(HomeMenu.this, Update.class);
+        Intent intent = new Intent(HomeScreen.this, Update.class);
         intent.putExtra("user", user.getEmail());
         intent.putExtra("objectId", user.getObjectId());
         intent.putExtra("password", user.getPassword());
@@ -305,7 +305,7 @@ public class HomeMenu extends AppCompatActivity {
                 }
 
                 if (supported) {
-                    AddWordAdapter adapter = new AddWordAdapter(HomeMenu.this, words);
+                    AddWordAdapter adapter = new AddWordAdapter(HomeScreen.this, words);
                     lvWords.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
                     circularBar.setVisibility(View.GONE);
@@ -316,7 +316,7 @@ public class HomeMenu extends AppCompatActivity {
 
             @Override
             public void handleFault(BackendlessFault backendlessFault) {
-                Toast.makeText(HomeMenu.this, backendlessFault.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(HomeScreen.this, backendlessFault.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -449,7 +449,7 @@ public class HomeMenu extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
 
                 if (PUOHelper.connectionAvailable(getApplicationContext())) {
-                    progressDialog = new SpotsDialog(HomeMenu.this, R.style.Custom);
+                    progressDialog = new SpotsDialog(HomeScreen.this, R.style.Custom);
                     progressDialog.show();
                     if (!(etAddWord.getText().toString().trim().isEmpty() || etSentence.getText().toString().trim().isEmpty() ||
                             etDefinition.getText().toString().trim().isEmpty())) {
@@ -462,7 +462,7 @@ public class HomeMenu extends AppCompatActivity {
                                 for (Word word : words) {
                                     if (word.getWord().trim().equalsIgnoreCase(etAddWord.getText().toString().trim())) {
                                         wordExists = true;//word exists in database
-                                        Toast.makeText(HomeMenu.this, "Word already exists!Please enter a new word :)", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(HomeScreen.this, "Word already exists!Please enter a new word :)", Toast.LENGTH_SHORT).show();
                                         progressDialog.dismiss();
                                     }
                                 }
@@ -498,7 +498,7 @@ public class HomeMenu extends AppCompatActivity {
 
                                                             @Override
                                                             public void handleFault(BackendlessFault backendlessFault) {
-                                                                Toast.makeText(HomeMenu.this, backendlessFault.getMessage(), Toast.LENGTH_LONG).show();
+                                                                Toast.makeText(HomeScreen.this, backendlessFault.getMessage(), Toast.LENGTH_LONG).show();
                                                                 progressDialog.dismiss();
                                                             }
                                                         });
@@ -511,14 +511,14 @@ public class HomeMenu extends AppCompatActivity {
 
                                                             @Override
                                                             public void handleFault(BackendlessFault backendlessFault) {
-                                                                Toast.makeText(HomeMenu.this, backendlessFault.getMessage(), Toast.LENGTH_LONG).show();
+                                                                Toast.makeText(HomeScreen.this, backendlessFault.getMessage(), Toast.LENGTH_LONG).show();
                                                                 progressDialog.dismiss();
                                                             }
                                                         });
                                                         Backendless.Persistence.save(newWord, new AsyncCallback<Word>() {
                                                             @Override
                                                             public void handleResponse(Word word) {
-                                                                Toast.makeText(HomeMenu.this, word.getWord() + " saved successfully!", Toast.LENGTH_SHORT).show();
+                                                                Toast.makeText(HomeScreen.this, word.getWord() + " saved successfully!", Toast.LENGTH_SHORT).show();
                                                                 loadData();
                                                                 countWords();
                                                                 displayWordCount();
@@ -527,7 +527,7 @@ public class HomeMenu extends AppCompatActivity {
 
                                                             @Override
                                                             public void handleFault(BackendlessFault backendlessFault) {
-                                                                Toast.makeText(HomeMenu.this, backendlessFault.getMessage(), Toast.LENGTH_LONG).show();
+                                                                Toast.makeText(HomeScreen.this, backendlessFault.getMessage(), Toast.LENGTH_LONG).show();
                                                                 progressDialog.dismiss();
                                                             }
                                                         });
@@ -535,7 +535,7 @@ public class HomeMenu extends AppCompatActivity {
 
                                                     @Override
                                                     public void handleFault(BackendlessFault backendlessFault) {
-                                                        Toast.makeText(HomeMenu.this, backendlessFault.getMessage(), Toast.LENGTH_LONG).show();
+                                                        Toast.makeText(HomeScreen.this, backendlessFault.getMessage(), Toast.LENGTH_LONG).show();
                                                         progressDialog.dismiss();
                                                     }
                                                 });
@@ -550,7 +550,7 @@ public class HomeMenu extends AppCompatActivity {
 
                                             @Override
                                             public void handleFault(BackendlessFault backendlessFault) {
-                                                Toast.makeText(HomeMenu.this, backendlessFault.getMessage(), Toast.LENGTH_LONG).show();
+                                                Toast.makeText(HomeScreen.this, backendlessFault.getMessage(), Toast.LENGTH_LONG).show();
                                                 progressDialog.dismiss();
                                             }
                                         });
@@ -563,14 +563,14 @@ public class HomeMenu extends AppCompatActivity {
 
                                             @Override
                                             public void handleFault(BackendlessFault backendlessFault) {
-                                                Toast.makeText(HomeMenu.this, backendlessFault.getMessage(), Toast.LENGTH_LONG).show();
+                                                Toast.makeText(HomeScreen.this, backendlessFault.getMessage(), Toast.LENGTH_LONG).show();
                                                 progressDialog.dismiss();
                                             }
                                         });
                                         Backendless.Persistence.save(newWord, new AsyncCallback<Word>() {
                                             @Override
                                             public void handleResponse(Word word) {
-                                                Toast.makeText(HomeMenu.this, word.getWord() + " saved successfully!", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(HomeScreen.this, word.getWord() + " saved successfully!", Toast.LENGTH_SHORT).show();
                                                 loadData();
                                                 countWords();
                                                 displayWordCount();
@@ -579,7 +579,7 @@ public class HomeMenu extends AppCompatActivity {
 
                                             @Override
                                             public void handleFault(BackendlessFault backendlessFault) {
-                                                Toast.makeText(HomeMenu.this, backendlessFault.getMessage(), Toast.LENGTH_LONG).show();
+                                                Toast.makeText(HomeScreen.this, backendlessFault.getMessage(), Toast.LENGTH_LONG).show();
                                                 progressDialog.dismiss();
                                             }
                                         });
@@ -589,16 +589,16 @@ public class HomeMenu extends AppCompatActivity {
 
                             @Override
                             public void handleFault(BackendlessFault backendlessFault) {
-                                Toast.makeText(HomeMenu.this, backendlessFault.getMessage(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(HomeScreen.this, backendlessFault.getMessage(), Toast.LENGTH_SHORT).show();
                                 progressDialog.dismiss();
                             }
                         });
                     } else {
-                        Toast.makeText(HomeMenu.this, "Please fill in all fields!!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(HomeScreen.this, "Please fill in all fields!!", Toast.LENGTH_SHORT).show();
                         progressDialog.dismiss();
                     }
                 } else {
-                    Toast.makeText(HomeMenu.this, "Please connect to the internet!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(HomeScreen.this, "Please connect to the internet!", Toast.LENGTH_SHORT).show();
                     progressDialog.dismiss();
                 }
             }
@@ -612,7 +612,7 @@ public class HomeMenu extends AppCompatActivity {
     }
 
     public void logout() {
-        progressDialog = new SpotsDialog(HomeMenu.this, R.style.Custom);
+        progressDialog = new SpotsDialog(HomeScreen.this, R.style.Custom);
         progressDialog.show();
         Backendless.UserService.logout(new AsyncCallback<Void>() {
             @Override
@@ -629,15 +629,15 @@ public class HomeMenu extends AppCompatActivity {
                         //
                     }
                 });
-                Toast.makeText(HomeMenu.this, "Successfully logged out!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(HomeScreen.this, "Successfully logged out!", Toast.LENGTH_SHORT).show();
                 progressDialog.dismiss();
-                HomeMenu.this.finish();
-                //startActivity(new Intent(HomeMenu.this, Login.class));
+                HomeScreen.this.finish();
+                //startActivity(new Intent(HomeScreen.this, Login.class));
             }
 
             @Override
             public void handleFault(BackendlessFault backendlessFault) {
-                Toast.makeText(HomeMenu.this, backendlessFault.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(HomeScreen.this, backendlessFault.getMessage(), Toast.LENGTH_SHORT).show();
                 progressDialog.dismiss();
             }
         });
@@ -750,7 +750,7 @@ public class HomeMenu extends AppCompatActivity {
 
     private String getRealPathFromURI(Uri contentUri) {
         String[] proj = {MediaStore.Images.Media.DATA};
-        CursorLoader loader = new CursorLoader(HomeMenu.this, contentUri, proj, null, null, null);
+        CursorLoader loader = new CursorLoader(HomeScreen.this, contentUri, proj, null, null, null);
         Cursor cursor = loader.loadInBackground();
         int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
         cursor.moveToFirst();

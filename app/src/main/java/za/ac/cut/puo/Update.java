@@ -465,7 +465,7 @@ public class Update extends AppCompatActivity {
                                 etSurname.getText().toString().trim() +
                                 " successfully updated :)", Toast.LENGTH_LONG).show();
                         progressDialog.dismiss();
-                        startActivity(new Intent(Update.this, HomeMenu.class));
+                        startActivity(new Intent(Update.this, HomeScreen.class));
                         Update.this.finish();
 
                     }

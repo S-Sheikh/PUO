@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="8dip"
-    android:orientation="horizontal">
+    android:layout_marginBottom="8dip">
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:orientation="vertical">
 
         <TextView
@@ -22,48 +20,5 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:entries="@array/entries_ordering" />
-
     </LinearLayout>
-
-    <View style="@style/divider" />
-
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="@dimen/tv_label_left_margin"
-            android:text="@string/tv_label_language" />
-
-        <Spinner
-            android:id="@+id/sp_language_filter"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:entries="@array/entries_language" />
-    </LinearLayout>
-
-    <View style="@style/divider" />
-
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="@dimen/tv_label_left_margin"
-            android:text="@string/tv_label_part_of_speech" />
-
-        <Spinner
-            android:id="@+id/sp_part_of_speech_filter"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:entries="@array/entries_part_of_speech" />
-    </LinearLayout>
-</LinearLayout>
+</RelativeLayout>

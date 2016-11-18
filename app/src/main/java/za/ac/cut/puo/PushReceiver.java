@@ -20,7 +20,7 @@ public class PushReceiver extends BackendlessBroadcastReceiver {
         String subtopic = intent.getStringExtra("message");
 
         if (tickerText != null && tickerText.length() > 0) {
-            int appIcon = context.getApplicationInfo().icon;
+            int appIcon = R.drawable.ic_logo_puo;
             if (appIcon == 0)
                 appIcon = android.R.drawable.sym_def_app_icon;
 
